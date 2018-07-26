@@ -59,7 +59,6 @@ class LoginController: UIViewController {
                 return
             }
             print("hello from login")
-            self.feedController?.determineMyCurrentLocation()
             self.dismiss(animated: true, completion: nil)
         }
     }
