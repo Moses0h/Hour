@@ -28,6 +28,9 @@ class PostController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
         navigationItem.leftBarButtonItem?.tintColor = UIColor.white
         
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .plain, target: self, action: #selector(handlePost))
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+
         ref = Database.database().reference()
         geoFire = GeoFire(firebaseRef: ref.child("posts_location"))
     
@@ -38,8 +41,8 @@ class PostController: UIViewController {
         let ac = UIView()
         ac.backgroundColor = UIColor.white
         ac.translatesAutoresizingMaskIntoConstraints = false
-        ac.layer.cornerRadius = 5
-        ac.layer.masksToBounds = true
+//        ac.layer.cornerRadius = 5
+//        ac.layer.masksToBounds = true
         return ac
     }()
     
@@ -75,8 +78,8 @@ class PostController: UIViewController {
         let dc = UIView()
         dc.backgroundColor = UIColor.white
         dc.translatesAutoresizingMaskIntoConstraints = false
-        dc.layer.cornerRadius = 5
-        dc.layer.masksToBounds = true
+//        dc.layer.cornerRadius = 5
+//        dc.layer.masksToBounds = true
         return dc
     }()
     
@@ -94,8 +97,8 @@ class PostController: UIViewController {
         let lc = UIView()
         lc.backgroundColor = UIColor.white
         lc.translatesAutoresizingMaskIntoConstraints = false
-        lc.layer.cornerRadius = 5
-        lc.layer.masksToBounds = true
+//        lc.layer.cornerRadius = 5
+//        lc.layer.masksToBounds = true
         return lc
     }()
     
@@ -114,8 +117,8 @@ class PostController: UIViewController {
         let cc = UIView()
         cc.backgroundColor = UIColor.white
         cc.translatesAutoresizingMaskIntoConstraints = false
-        cc.layer.cornerRadius = 5
-        cc.layer.masksToBounds = true
+//        cc.layer.cornerRadius = 5
+//        cc.layer.masksToBounds = true
         return cc
     }()
     
@@ -245,7 +248,7 @@ class PostController: UIViewController {
         activityContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
         activityContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10).isActive = true
         activityContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        activityContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -15).isActive = true
+        activityContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
         
         activityContainer.addSubview(activityTextField)
         
@@ -256,9 +259,9 @@ class PostController: UIViewController {
         scrollView.addSubview(descriptionContainer)
         
         descriptionContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        descriptionContainer.topAnchor.constraint(equalTo: activityContainer.bottomAnchor, constant: 10).isActive = true
+        descriptionContainer.topAnchor.constraint(equalTo: activityContainer.bottomAnchor, constant: 5).isActive = true
         descriptionContainer.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        descriptionContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -15).isActive = true
+        descriptionContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         
         descriptionContainer.addSubview(descriptionTextField)
         
@@ -270,9 +273,9 @@ class PostController: UIViewController {
         scrollView.addSubview(dateAndTimeContainer)
         
         dateAndTimeContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        dateAndTimeContainer.topAnchor.constraint(equalTo: descriptionContainer.bottomAnchor, constant: 10).isActive = true
+        dateAndTimeContainer.topAnchor.constraint(equalTo: descriptionContainer.bottomAnchor, constant: 5).isActive = true
         dateAndTimeContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        dateAndTimeContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -15).isActive = true
+        dateAndTimeContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         
         dateAndTimeContainer.addSubview(dateAndTimeLabel)
         
@@ -282,9 +285,9 @@ class PostController: UIViewController {
         scrollView.addSubview(locationContainer)
         
         locationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        locationContainer.topAnchor.constraint(equalTo: dateAndTimeContainer.bottomAnchor, constant: 10).isActive = true
+        locationContainer.topAnchor.constraint(equalTo: dateAndTimeContainer.bottomAnchor, constant: 5).isActive = true
         locationContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        locationContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -15).isActive = true
+        locationContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         
         locationContainer.addSubview(locationLabel)
         
@@ -294,8 +297,8 @@ class PostController: UIViewController {
         scrollView.addSubview(categoryContainer)
         
         categoryContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        categoryContainer.topAnchor.constraint(equalTo: locationContainer.bottomAnchor, constant: 10).isActive = true
-        categoryContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -15).isActive = true
+        categoryContainer.topAnchor.constraint(equalTo: locationContainer.bottomAnchor, constant: 5).isActive = true
+        categoryContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         
         categoryContainer.addSubview(categoryLabel)
         
@@ -362,8 +365,8 @@ class PostController: UIViewController {
 
         scrollView.addSubview(numberOfPeopleContainer)
         numberOfPeopleContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        numberOfPeopleContainer.topAnchor.constraint(equalTo: categoryContainer.bottomAnchor, constant: 10).isActive = true
-        numberOfPeopleContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -15).isActive = true
+        numberOfPeopleContainer.topAnchor.constraint(equalTo: categoryContainer.bottomAnchor, constant: 5).isActive = true
+        numberOfPeopleContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         numberOfPeopleContainer.heightAnchor.constraint(equalToConstant: 120).isActive = true
 
         numberOfPeopleContainer.addSubview(numberOfPeopleLabel)
@@ -383,9 +386,9 @@ class PostController: UIViewController {
         deleteButton.centerXAnchor.constraint(equalTo: numberOfPeopleContainer.centerXAnchor, constant: -70).isActive = true
         deleteButton.centerYAnchor.constraint(equalTo: numberOfPeopleContainer.centerYAnchor).isActive = true
         
-        scrollView.addSubview(postButton)
-        postButton.topAnchor.constraint(equalTo: numberOfPeopleContainer.bottomAnchor, constant: 20).isActive = true
-        postButton.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
+//        scrollView.addSubview(postButton)
+//        postButton.topAnchor.constraint(equalTo: numberOfPeopleContainer.bottomAnchor, constant: 20).isActive = true
+//        postButton.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
        
     }
     
@@ -458,7 +461,7 @@ class PostController: UIViewController {
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.dismiss(animated: true, completion: nil)
-                            self.feedController?.determineMyCurrentLocation()
+                            self.feedController?.checkIfUserIsLoggedIn()
                         }
                     }
                     

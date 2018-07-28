@@ -15,23 +15,23 @@ class CustomTabBarController: UITabBarController {
         
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let feedNavigationController = UINavigationController(rootViewController: feedController)
-        feedNavigationController.title = "News Feed"
-        feedNavigationController.tabBarItem.image = UIImage()
+        feedNavigationController.title = "Feed"
+        feedNavigationController.tabBarItem.image = #imageLiteral(resourceName: "feed")
         
         let messagesController = MessagesController()
         let messagesNavigationController = UINavigationController(rootViewController: messagesController)
         messagesNavigationController.title = "Messages"
-        messagesNavigationController.tabBarItem.image = UIImage()
+        messagesNavigationController.tabBarItem.image = #imageLiteral(resourceName: "messages")
         
         let notificationController = NotificationController()
         let notificationNavigationController = UINavigationController(rootViewController: notificationController)
         notificationNavigationController.title = "Notification"
-        notificationNavigationController.tabBarItem.image = UIImage()
+        notificationNavigationController.tabBarItem.image = #imageLiteral(resourceName: "notification")
         
         let settingController = SettingController()
         let settingNavigationController = UINavigationController(rootViewController: settingController)
-        settingNavigationController.title = "Setting"
-        settingNavigationController.tabBarItem.image = UIImage()
+        settingNavigationController.title = "Profile"
+        settingNavigationController.tabBarItem.image = #imageLiteral(resourceName: "profile")
         
         viewControllers = [feedNavigationController, messagesNavigationController, notificationNavigationController, settingNavigationController]
         tabBar.isTranslucent = false

@@ -136,8 +136,8 @@
 		7B4EDA572037E89E00EA540E /* Controller */ = {
 			isa = PBXGroup;
 			children = (
-				7BF4A2C82109A16B0060EDA3 /* FeedController.swift */,
 				7B51D65E2042D03D006B24C9 /* CustomTabBarController.swift */,
+				7BF4A2C82109A16B0060EDA3 /* FeedController.swift */,
 				7B4EDA582037E8CD00EA540E /* LoginController.swift */,
 				7B4EDA5A203B48D100EA540E /* PostController.swift */,
 				7B17D75520470A3500C69A9E /* MessagesController.swift */,

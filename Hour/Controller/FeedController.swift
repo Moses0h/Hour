@@ -47,9 +47,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         refreshView.addSubview(refresher)
         
         navigationItem.title = "Feed"
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .plain, target: self, action: #selector(handleNewPost))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "write"), style: .plain, target: self, action: #selector(handleNewPost))
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-        navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: #imageLiteral(resourceName: "logout"), style: .plain, target: self, action: #selector(handleLogout))
         navigationItem.leftBarButtonItem?.tintColor = UIColor.white
         navigationController?.hidesBarsOnSwipe = true
         
@@ -78,23 +78,19 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         }
         else{
             print("checking")
-            self.locationManager.startUpdatingLocation()
+            self.determineMyCurrentLocation()
         }
     }
     
     @objc func updateFeed() {
         self.refreshView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.locationManager.startUpdatingLocation()
+            self.determineMyCurrentLocation()
         }
     }
     
     func determineMyCurrentLocation() {
-        self.posts.removeAll()
-        self.keyArray.removeAll()
-        refreshPostArray()
-
-        
+        locationManager.startUpdatingLocation()
     }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
@@ -102,7 +98,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if(currLocation == nil)
         {
             currLocation = locations.last
-            determineMyCurrentLocation()
+            refreshPostArray()
             print("updated location")
         }
         self.refresher.endRefreshing()
@@ -114,6 +110,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func refreshPostArray() {
+        self.posts.removeAll()
+        self.keyArray.removeAll()
         circleQuery = geoFire.query(at: currLocation, withRadius: 100)
         var distanceArray = [Double]()
         circleQuery.observe(.keyEntered) { (key: String!, location: CLLocation!) in
@@ -124,7 +122,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         circleQuery.observeReady {
             if(self.keyArray.count > 0)
             {
-                print("128")
                 for index in 0...self.keyArray.count-1{
                     self.geoFire.getLocationForKey(self.keyArray[index], withCallback: { (keyLocation, error) in
                         let distance = keyLocation?.distance(from: self.currLocation)
@@ -141,11 +138,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     })
                 }
             }
-            //            self.circleQuery.removeAllObservers()
         }
         
         dispatchGroup.notify(queue: .main) {
-            print("149")
             self.posts = self.posts.sorted(by: { $0.distance < $1.distance })
             self.collectionView?.reloadData()
             self.currLocation = nil

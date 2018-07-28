@@ -10,7 +10,7 @@ import UIKit
 
 struct Colors {
     static var darkGray = #colorLiteral(red: 0.3764705882, green: 0.3647058824, blue: 0.3647058824, alpha: 1)
-    static var darkRed = #colorLiteral(red: 0.5019607843, green: 0.1529411765, blue: 0.1764705882, alpha: 1)
+    static var darkRed = UINavigationBar.appearance().barTintColor
 }
 
 struct Style {
@@ -52,6 +52,7 @@ class CalenderView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
     var presentYear = 0
     var todaysDate = 0
     var firstWeekDayOfMonth = 0   //(Sunday-Saturday 1-7)
+    var currentDay: String = "0"
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -130,10 +131,23 @@ class CalenderView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
     }
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        print("selected \(indexPath)")
         let cell=collectionView.cellForItem(at: indexPath)
-        cell?.backgroundColor=Colors.darkRed
-        let lbl = cell?.subviews[1] as! UILabel
-        lbl.textColor=UIColor.white
+        if(cell?.backgroundColor == Colors.darkRed)
+        {
+            print("unselected this shit")
+            cell?.isSelected = false
+            cell?.backgroundColor=UIColor.clear
+            let lbl = cell?.subviews[1] as! UILabel
+            lbl.textColor = Style.activeCellLblColor
+        }
+        else
+        {
+            cell?.backgroundColor=Colors.darkRed
+            let lbl = cell?.subviews[1] as! UILabel
+            lbl.textColor=UIColor.white
+            currentDay = lbl.text!
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
