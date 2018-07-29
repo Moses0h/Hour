@@ -110,7 +110,7 @@ class MessagesController: UITableViewController {
         let groupsChildValues = ["name":"test","users": groupUsers] as [String : Any]
         groupsRef.updateChildValues([groupKey.key : groupsChildValues])
         
-        Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("groups").updateChildValues([groupKey.key : true])
+    Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("groups").updateChildValues([groupKey.key : true])
         for user in users {
             let userRef = Database.database().reference().child("users").child(user.uid!).child("groups")
             userRef.updateChildValues([groupKey.key : true])

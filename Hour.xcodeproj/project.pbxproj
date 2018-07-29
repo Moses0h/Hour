@@ -19,6 +19,7 @@
 		7B3A991121095B3B00FF8959 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B3A991021095B3A00FF8959 /* CoreLocation.framework */; };
 		7B4015752053AF09008D2865 /* LocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4015742053AF09008D2865 /* LocationController.swift */; };
 		7B4015792053B0E8008D2865 /* MapKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B4015782053B0E8008D2865 /* MapKit.framework */; };
+		7B4D622F210C11030099C146 /* JoinButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4D622E210C11030099C146 /* JoinButton.swift */; };
 		7B4EDA592037E8CD00EA540E /* LoginController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4EDA582037E8CD00EA540E /* LoginController.swift */; };
 		7B4EDA5B203B48D100EA540E /* PostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4EDA5A203B48D100EA540E /* PostController.swift */; };
 		7B51D65F2042D03D006B24C9 /* CustomTabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B51D65E2042D03D006B24C9 /* CustomTabBarController.swift */; };
@@ -57,6 +58,7 @@
 		7B3A991021095B3A00FF8959 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		7B4015742053AF09008D2865 /* LocationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationController.swift; sourceTree = "<group>"; };
 		7B4015782053B0E8008D2865 /* MapKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MapKit.framework; path = System/Library/Frameworks/MapKit.framework; sourceTree = SDKROOT; };
+		7B4D622E210C11030099C146 /* JoinButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinButton.swift; sourceTree = "<group>"; };
 		7B4EDA582037E8CD00EA540E /* LoginController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginController.swift; sourceTree = "<group>"; };
 		7B4EDA5A203B48D100EA540E /* PostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PostController.swift; sourceTree = "<group>"; };
 		7B51D65E2042D03D006B24C9 /* CustomTabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomTabBarController.swift; sourceTree = "<group>"; };
@@ -129,6 +131,7 @@
 				7B0F6BEB20604923001F394F /* HUser.swift */,
 				7B0F6BED206058EA001F394F /* Message.swift */,
 				7BC9D87C2069AED400E45D2C /* Group.swift */,
+				7B4D622E210C11030099C146 /* JoinButton.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -346,6 +349,7 @@
 				7B4EDA5B203B48D100EA540E /* PostController.swift in Sources */,
 				7BB10E5A205280CB001AC82D /* BounceButton.swift in Sources */,
 				7B4EDA592037E8CD00EA540E /* LoginController.swift in Sources */,
+				7B4D622F210C11030099C146 /* JoinButton.swift in Sources */,
 				7B6A08942050ED1A003178E6 /* CalenderView.swift in Sources */,
 				7B9A8871204B735D00FEDAC3 /* ChatLogController.swift in Sources */,
 				7B0F6BF120605F65001F394F /* UserCell.swift in Sources */,

@@ -59,7 +59,10 @@ class LoginController: UIViewController {
                 return
             }
             print("hello from login")
-            self.dismiss(animated: true, completion: nil)
+            self.feedController?.determineMyCurrentLocation()
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                self.dismiss(animated: true, completion: nil)
+            }
         }
     }
     @objc func handleRegister() {

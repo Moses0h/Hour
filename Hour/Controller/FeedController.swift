@@ -166,6 +166,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         present(navController, animated: true, completion: nil)
     }
     
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return posts.count
     }
@@ -175,8 +176,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         if indexPath.row < posts.count {
             let post = posts[indexPath.row]
             feedCell.post = post
+            feedCell.key = post.key
             feedCell.activity = post.activity
+            feedCell.descriptionString = post.description
             feedCell.name = post.name
+            feedCell.usersUid = post.usersUid
             return feedCell
         }
         return feedCell

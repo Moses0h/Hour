@@ -11,7 +11,8 @@ import FirebaseDatabase
 
 struct Post {
     
-    var uid: String!
+    var key: String!
+    var usersUid = [String]()
     var name: String!
     var activity: String!
     var description: String!
@@ -24,7 +25,13 @@ struct Post {
         
         if let dictionary = snapshot.value as? [String: AnyObject] {
             
-            uid = dictionary["uid"] as? String
+            key = snapshot.key
+            if(snapshot.hasChild("usersUid"))
+            {
+                let temp = dictionary["usersUid"] as! [String: AnyObject]
+                usersUid = Array(temp.keys)
+            }
+            usersUid.insert((dictionary["uid"] as? String)!, at: 0)
             name = dictionary["name"] as? String
             activity = dictionary["activity"] as? String
             description = dictionary["description"] as? String
@@ -36,14 +43,14 @@ struct Post {
     }
     
     
-    init(uid: String, name: String, activity: String, description: String, location: String, time: String, groupCount: Int) {
-        
-        self.uid = uid
-        self.name = name
-        self.activity = activity
-        self.description = description
-        self.location = location
-        self.time = time
-        self.groupCount = groupCount
-    }
+//    init(uid: String, name: String, activity: String, description: String, location: String, time: String, groupCount: Int) {
+//
+//        self.hostUid = uid
+//        self.name = name
+//        self.activity = activity
+//        self.description = description
+//        self.location = location
+//        self.time = time
+//        self.groupCount = groupCount
+//    }
 }

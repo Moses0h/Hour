@@ -38,7 +38,7 @@ class DateAndTimeController: UIViewController {
     let startTimeLabel: UILabel = {
         let tl = UILabel()
         tl.textColor = UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1)
-        tl.text = "Start Time"
+        tl.text = "Start"
         tl.font = UIFont.init(name: "Helvetica Neue", size: 18)
         tl.translatesAutoresizingMaskIntoConstraints = false
         return tl
@@ -63,7 +63,7 @@ class DateAndTimeController: UIViewController {
     let endTimeLabel: UILabel = {
         let tl = UILabel()
         tl.textColor = UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1)
-        tl.text = "End Time"
+        tl.text = "End"
         tl.font = UIFont.init(name: "Helvetica Neue", size: 18)
         tl.translatesAutoresizingMaskIntoConstraints = false
         return tl
@@ -123,7 +123,7 @@ class DateAndTimeController: UIViewController {
         startTimeLabel.leftAnchor.constraint(equalTo: startTimeContainer.leftAnchor, constant: 10).isActive = true
         
         startTimeContainer.addSubview(startTimePicker)
-        startTimePicker.leftAnchor.constraint(equalTo: startTimeLabel.rightAnchor, constant: 30).isActive = true
+        startTimePicker.rightAnchor.constraint(equalTo: startTimeContainer.rightAnchor, constant: -60).isActive = true
         startTimePicker.centerYAnchor.constraint(equalTo: startTimeContainer.centerYAnchor).isActive = true
         startTimePicker.widthAnchor.constraint(equalTo: startTimeContainer.widthAnchor, multiplier: 1/2).isActive = true
         
@@ -138,7 +138,7 @@ class DateAndTimeController: UIViewController {
         endTimeLabel.leftAnchor.constraint(equalTo: endTimeContainer.leftAnchor, constant: 10).isActive = true
         
         endTimeContainer.addSubview(endTimePicker)
-        endTimePicker.leftAnchor.constraint(equalTo: endTimeLabel.rightAnchor, constant: 30).isActive = true
+        endTimePicker.rightAnchor.constraint(equalTo: endTimeContainer.rightAnchor, constant: -60).isActive = true
         endTimePicker.centerYAnchor.constraint(equalTo: endTimeContainer.centerYAnchor).isActive = true
         endTimePicker.widthAnchor.constraint(equalTo: endTimeContainer.widthAnchor, multiplier: 1/2).isActive = true
 

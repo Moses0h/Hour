@@ -113,6 +113,9 @@ class PostController: UIViewController {
     }()
     
     //Category
+    
+    var listOfButtons = [UIButton]()
+    
     let categoryContainer: UIView = {
         let cc = UIView()
         cc.backgroundColor = UIColor.white
@@ -134,6 +137,7 @@ class PostController: UIViewController {
     let tripsButton: CategoryButton = {
         let tb = CategoryButton()
         tb.setTitle("Trips", for: .normal)
+//        tb.addTarget(self, action: pressed, for: UIControlEvents.allTouchEvents)
         return tb
     }()
 
@@ -439,10 +443,10 @@ class PostController: UIViewController {
             let userID = Auth.auth().currentUser?.uid
             ref.child("users").child(userID!).observeSingleEvent(of: .value) { (snapshot) in
                 if let dictionary = snapshot.value as? [String: AnyObject] {
-                    let todaysDate:Date = Date()
+//                    let todaysDate:Date = Date()
                     let dateFormatter:DateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
-                    let DateInFormat:String = dateFormatter.string(from: todaysDate)
+//                    let DateInFormat:String = dateFormatter.string(from: todaysDate)
                     let post = ["name": dictionary["name"] ?? "noname",
                                 "uid": dictionary["uid"] ?? "nouid",
                                 "activity": self.activityTextField.text!,
@@ -452,8 +456,16 @@ class PostController: UIViewController {
                                 "location": self.locationLabel.title(for: .normal)!,
                                 "groupCount": self.numberOfPeople] as [String : Any]
                     let child = ["/posts/\(key)": post]
-                    
+                    let userPosts = [key: true]
                     //update FireBase posts
+                    let ref = Database.database().reference().child("users").child(userID!).child("posts")
+                    ref.updateChildValues(userPosts) {(err,ref) in
+                        if err != nil{
+                            print(err ?? "error")
+                            return
+                        }
+                    }
+                    
                     self.ref.updateChildValues(child) { (err, ref) in
                         if err != nil{
                             print(err ?? "error")
