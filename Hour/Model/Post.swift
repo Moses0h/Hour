@@ -12,7 +12,7 @@ import FirebaseDatabase
 struct Post {
     
     var key: String!
-    var usersUid = [String]()
+    var usersUid = [String: Any]()
     var name: String!
     var activity: String!
     var description: String!
@@ -28,10 +28,9 @@ struct Post {
             key = snapshot.key
             if(snapshot.hasChild("usersUid"))
             {
-                let temp = dictionary["usersUid"] as! [String: AnyObject]
-                usersUid = Array(temp.keys)
+                usersUid = dictionary["usersUid"] as! [String: AnyObject]
             }
-            usersUid.insert((dictionary["uid"] as? String)!, at: 0)
+
             name = dictionary["name"] as? String
             activity = dictionary["activity"] as? String
             description = dictionary["description"] as? String

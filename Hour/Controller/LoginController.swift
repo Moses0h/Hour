@@ -70,27 +70,29 @@ class LoginController: UIViewController {
             print("Form is not valid")
             return
         }
-//        Auth.auth().createUser(withEmail: email, password: password, completion: { (user: User?, error) in
-//            if error != nil {
-//                print(error ?? "error")
-//                return
-//            }
-//            guard let uid = user?.uid else {
-//                return
-//            }
-//            
-//            let ref = Database.database().reference()
-//            let usersReference = ref.child("users").child(uid)
-//            let values = ["name": self.nameTextField.text!, "email": email, "uid": uid] as [String : Any]
-//            usersReference.updateChildValues(values) { (err, ref) in
-//                if err != nil{
-//                    print(err ?? "error")
-//                    return
-//                }
-////                self.feedController?.fetchPosts()
-//                self.dismiss(animated: true, completion: nil)
-//            }
-//        })
+        
+        Auth.auth().createUser(withEmail: email, password: password, completion: { (result, error) in
+            if error != nil {
+                print(error ?? "error")
+                return
+            }
+            print("Before register")
+            guard let uid = result?.user.uid else {
+                return
+            }
+            print("After register")
+            let ref = Database.database().reference()
+            let usersReference = ref.child("users").child(uid)
+            let values = ["name": self.nameTextField.text!, "email": email, "uid": uid] as [String : Any]
+            usersReference.updateChildValues(values) { (err, ref) in
+                if err != nil{
+                    print(err ?? "error")
+                    return
+                }
+                self.feedController?.determineMyCurrentLocation()
+                self.dismiss(animated: true, completion: nil)
+            }
+        })
     }
     
     let nameTextField: UITextField = {

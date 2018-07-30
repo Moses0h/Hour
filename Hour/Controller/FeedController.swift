@@ -101,6 +101,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             refreshPostArray()
             print("updated location")
         }
+        else{
+            print("trying to update")
+        }
         self.refresher.endRefreshing()
 
     }
@@ -180,7 +183,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             feedCell.activity = post.activity
             feedCell.descriptionString = post.description
             feedCell.name = post.name
-            feedCell.usersUid = post.usersUid
+            feedCell.usersUid = post.usersUid as? [String : Int]
             return feedCell
         }
         return feedCell

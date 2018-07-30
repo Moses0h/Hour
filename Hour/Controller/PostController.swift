@@ -442,11 +442,13 @@ class PostController: UIViewController {
             let key = ref.child("posts").childByAutoId().key
             let userID = Auth.auth().currentUser?.uid
             ref.child("users").child(userID!).observeSingleEvent(of: .value) { (snapshot) in
+                MessagesController(nibName: nil, bundle: nil).createChat([HUser(snapshot: snapshot)])
                 if let dictionary = snapshot.value as? [String: AnyObject] {
 //                    let todaysDate:Date = Date()
                     let dateFormatter:DateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
 //                    let DateInFormat:String = dateFormatter.string(from: todaysDate)
+                    let usersUid = [userID!: -1] as [String: Int]
                     let post = ["name": dictionary["name"] ?? "noname",
                                 "uid": dictionary["uid"] ?? "nouid",
                                 "activity": self.activityTextField.text!,
@@ -454,7 +456,8 @@ class PostController: UIViewController {
 //                                "time": DateInFormat,
                                 "time": ServerValue.timestamp(),
                                 "location": self.locationLabel.title(for: .normal)!,
-                                "groupCount": self.numberOfPeople] as [String : Any]
+                                "groupCount": self.numberOfPeople,
+                                "usersUid": usersUid] as [String : Any]
                     let child = ["/posts/\(key)": post]
                     let userPosts = [key: true]
                     //update FireBase posts
@@ -472,8 +475,8 @@ class PostController: UIViewController {
                             return
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self.feedController?.determineMyCurrentLocation()
                             self.dismiss(animated: true, completion: nil)
-                            self.feedController?.checkIfUserIsLoggedIn()
                         }
                     }
                     

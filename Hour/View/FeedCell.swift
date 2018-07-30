@@ -30,6 +30,11 @@ class FeedCell: UICollectionViewCell {
         }
     }
     var key: String?
+    {
+        didSet{
+            joinButton.postKey = key
+        }
+    }
     
     var name: String?
     
@@ -52,16 +57,20 @@ class FeedCell: UICollectionViewCell {
 //        }
 //    }
     
-    var usersUid: [String]? {
+    var usersUid: [String: Int]? {
         didSet{
             let uid : String! = Auth.auth().currentUser?.uid
-            if(uid == usersUid![0])
+            if(usersUid![uid] == -1)
             {
                 joinButton.setUserStatus(stat: JoinButton.status.host)
             }
-            else if(usersUid?.contains(uid))!
+            else if(usersUid![uid] == 1)
             {
                 joinButton.setUserStatus(stat: JoinButton.status.joined)
+            }
+            else if(usersUid![uid] == 0)
+            {
+                joinButton.setUserStatus(stat: JoinButton.status.requested)
             }
             else
             {

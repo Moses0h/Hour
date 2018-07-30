@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Firebase
 
 class JoinButton: UIButton {
     var isOn = false
@@ -19,7 +20,9 @@ class JoinButton: UIButton {
         case unknown
     }
     
+    var postKey: String?
     var currentStatus: status = status.unknown
+    var ref = Database.database().reference()
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.transform = CGAffineTransform(scaleX: 1.1, y:1.1)
@@ -51,34 +54,36 @@ class JoinButton: UIButton {
         translatesAutoresizingMaskIntoConstraints = false
     }
     
-//    @objc func buttonPressed() {
-//        print("pressed")
-//        switch currentStatus {
-//        case .host:
-//            setTitleColor(UIColor.gray, for: .normal)
-//            backgroundColor = UIColor(white: 0.95, alpha: 1)
-//
-//            break
-//        case .join:
-//            setTitleColor(UIColor.white, for: .normal)
-//            backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
-//            break
-//        case .joined:
-//            setTitleColor(UIColor.gray, for: .normal)
-//            backgroundColor = UIColor(white: 0.95, alpha: 1)
-//            setTitle("Joined", for: .normal)
-//            break
-//        case .requested:
-//            break
-//        case .unknown:
-//            break
-//        }
-//    }
-    
     @objc func buttonPressed() {
-        print("hello")
-        activatedButton(bool: !isOn)
+        print("pressed")
+        switch currentStatus {
+        case .host:
+            break
+        case .join:
+            setUserStatus(stat: .requested)
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid")
+            let value = [(Auth.auth().currentUser?.uid)!: 0] as [String: Any]
+            ref.updateChildValues(value)
+            break
+        case .joined:
+            setUserStatus(stat: .join)
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
+            ref.removeValue()
+            break
+        case .requested:
+            setUserStatus(stat: .join)
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
+            ref.removeValue()
+            break
+        case .unknown:
+            break
+        }
     }
+    
+//    @objc func buttonPressed() {
+//        print("hello")
+//        activatedButton(bool: !isOn)
+//    }
     
     func activatedButton(bool: Bool) {
         isOn = bool
@@ -108,19 +113,21 @@ class JoinButton: UIButton {
             backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
             setTitle("Join", for: .normal)
             currentStatus = .join
+            isUserInteractionEnabled = true
             break
         case .joined:
             setTitleColor(UIColor.gray, for: .normal)
             backgroundColor = UIColor(white: 0.95, alpha: 1)
             setTitle("Joined", for: .normal)
-            isUserInteractionEnabled = false
             currentStatus = .joined
+            isUserInteractionEnabled = true
             break
         case .requested:
             setTitleColor(UIColor.gray, for: .normal)
             backgroundColor = UIColor(white: 0.95, alpha: 1)
             setTitle("Requested", for: .normal)
             currentStatus = .requested
+            isUserInteractionEnabled = true
             break
         case .unknown:
             currentStatus = .unknown

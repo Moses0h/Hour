@@ -16,6 +16,16 @@ class MessagesController: UITableViewController {
     var groups = [Group]()
     
     let cellId = "cellId"
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        print("MessagesController loaded")
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
@@ -97,6 +107,7 @@ class MessagesController: UITableViewController {
     }
     
     func createChat(_ users: [HUser]) {
+        print("creating chat")
         let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
         
         chatLogController.hidesBottomBarWhenPushed = true

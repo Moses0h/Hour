@@ -18,7 +18,7 @@ class CustomTabBarController: UITabBarController {
         feedNavigationController.title = "Feed"
         feedNavigationController.tabBarItem.image = #imageLiteral(resourceName: "feed")
         
-        let messagesController = MessagesController()
+        let messagesController = MessagesController(nibName: nil, bundle: nil)
         let messagesNavigationController = UINavigationController(rootViewController: messagesController)
         messagesNavigationController.title = "Messages"
         messagesNavigationController.tabBarItem.image = #imageLiteral(resourceName: "messages")

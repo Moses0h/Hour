@@ -66,7 +66,7 @@ class UserCell: UITableViewCell {
         
     }
     let profileImageView: UIImageView = {
-        let imageView = UIImageView()
+        let imageView = UIImageView(image: #imageLiteral(resourceName: "food"))
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 24
         imageView.layer.masksToBounds = true
