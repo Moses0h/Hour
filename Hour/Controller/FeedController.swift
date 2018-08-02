@@ -71,7 +71,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func checkIfUserIsLoggedIn() {
-        let postController = PostController()
+        let postController = PostController(nibName: nil, bundle: nil)
         postController.feedController = self
         if (Auth.auth().currentUser == nil) {
             perform(#selector(handleLogout), with: nil, afterDelay: 0)
@@ -163,7 +163,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func handleNewPost(){
-        let newPostController = PostController()
+        let newPostController = PostController(nibName: nil, bundle: nil)
         newPostController.feedController = self
         let navController = UINavigationController(rootViewController: newPostController)
         present(navController, animated: true, completion: nil)

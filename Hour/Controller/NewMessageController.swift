@@ -44,7 +44,7 @@ class NewMessageController: UITableViewController {
     
     @objc func handleCreate() {
         dismiss(animated: true) {
-            self.messagesController?.createChat(self.selectedUsers)
+            self.messagesController?.createChat(self.selectedUsers, name: "")
         }
     }
     

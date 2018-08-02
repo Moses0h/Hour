@@ -20,17 +20,10 @@ class Group {
     var timestamp: Double?
     
     
-    init(uid: String) {
+    init(uid: String?, groupName: String?, lastMessage: String?, timestamp: Double?) {
         self.uid = uid
-        let groupRef = Database.database().reference().child("groups").child(uid)
-        groupRef.observeSingleEvent(of: .value) { (_snapshot) in
-            if let dictionary = _snapshot.value as? [String: AnyObject] {
-                
-                self.groupName = dictionary["name"] as? String
-                self.lastMessage = dictionary["last message"] as? String
-                self.timestamp = dictionary["timestamp"] as? Double
-                
-            }
-        }
+        self.groupName = groupName
+        self.lastMessage = lastMessage
+        self.timestamp = timestamp
     }
 }

@@ -20,6 +20,15 @@ class PostController: UIViewController {
     var loginController: LoginController?
     var childUpdates: [String: Any] = [:]
     var numberOfPeople: Int = 0
+    
+    override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
+        super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboard()
@@ -226,140 +235,150 @@ class PostController: UIViewController {
         return db
     }()
     
-    let priceLabel: UILabel = {
-        let pl = UILabel()
-        return pl
+    let enableChatContainer: UIView = {
+        let nopc = UIView()
+        nopc.backgroundColor = UIColor.white
+        nopc.translatesAutoresizingMaskIntoConstraints = false
+        nopc.layer.cornerRadius = 5
+        nopc.layer.masksToBounds = true
+        return nopc
     }()
     
-    let postButton: BounceButton = {
-        let pb = BounceButton(type: .system)
-        pb.setTitle("Post", for: .normal)
-        pb.addTarget(self, action: #selector(handlePost), for: .touchUpInside)
-        return pb
+    let enableChatLabel: UILabel = {
+        let ecl = UILabel()
+        ecl.text = "Enable Group Chat"
+        ecl.textColor = UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1)
+        ecl.font = UIFont.init(name: "Helvetica Neue", size: 18)
+        ecl.translatesAutoresizingMaskIntoConstraints = false
+        return ecl
     }()
+    
+    let enableChatSwitch : UISwitch = {
+        let ecs = UISwitch()
+        ecs.addTarget(self, action: #selector(enableGroupChat), for: .valueChanged)
+        ecs.translatesAutoresizingMaskIntoConstraints = false
+        return ecs
+    }()
+    
+    let enableChatTitleView: UIView = {
+        let ac = UIView()
+        ac.backgroundColor = UIColor.white
+        ac.translatesAutoresizingMaskIntoConstraints = false
+        //        ac.layer.cornerRadius = 5
+        //        ac.layer.masksToBounds = true
+        return ac
+    }()
+    
+    let enableChatTitleText: UITextField = {
+        let atv = UITextField()
+        atv.placeholder = " Group Chat Title"
+        atv.font = UIFont.init(name: "Helvetica Neue", size: 18)
+        atv.textColor = UIColor.gray
+        atv.translatesAutoresizingMaskIntoConstraints = false
+        return atv
+    }()
+    
+    @objc func enableGroupChat() {
+//        enableChatTitleViewHeightAnchor?.constant = enableChatSwitch.isOn == true ? 50 : 0
+//        enableChatTitleTextHeightAnchor = enableChatTitleText.centerYAnchor.constraint(equalTo: enableChatTitleView.centerYAnchor)
+        
+    }
     
     func setupViews() {
-        //activity
         
+        /** ScrollView Setup **/
         let scrollView = UIScrollView(frame: view.bounds)
-        scrollView.contentSize = CGSize(width:self.view.frame.size.width, height: self.view.frame.size.height + 200)
         scrollView.isScrollEnabled = true
+        scrollView.contentSize = CGSize(width:self.view.frame.size.width, height: self.view.frame.size.height + 230)
         
         view.addSubview(scrollView)
-
+        scrollView.topAnchor.constraint(equalTo: view.topAnchor)
+        scrollView.heightAnchor.constraint(equalTo: view.heightAnchor)
+        scrollView.systemLayoutSizeFitting(UILayoutFittingExpandedSize)
+        
+        /** Activity Setup **/
         scrollView.addSubview(activityContainer)
-        
-        activityContainer.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
-        activityContainer.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 10).isActive = true
-        activityContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        activityContainer.widthAnchor.constraint(equalTo: scrollView.widthAnchor).isActive = true
-        
+        activityContainer.SetContainer(otherContainer: scrollView, top: 10, height: 50)
         activityContainer.addSubview(activityTextField)
-        
         activityTextField.centerYAnchor.constraint(equalTo: activityContainer.centerYAnchor).isActive = true
         activityTextField.leftAnchor.constraint(equalTo: activityContainer.leftAnchor, constant: 10).isActive = true
         activityTextField.widthAnchor.constraint(equalTo: activityContainer.widthAnchor, constant: -10).isActive = true
-        //description
+        
+        /** Description Setup**/
         scrollView.addSubview(descriptionContainer)
-        
-        descriptionContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        descriptionContainer.topAnchor.constraint(equalTo: activityContainer.bottomAnchor, constant: 5).isActive = true
-        descriptionContainer.heightAnchor.constraint(equalToConstant: 150).isActive = true
-        descriptionContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        
+        descriptionContainer.SetContainer(otherContainer: activityContainer, top: 5, height: 150)
         descriptionContainer.addSubview(descriptionTextField)
-        
         descriptionTextField.topAnchor.constraint(equalTo: descriptionContainer.topAnchor, constant: 10).isActive = true
         descriptionTextField.heightAnchor.constraint(equalTo: descriptionContainer.heightAnchor, constant: 10).isActive = true
         descriptionTextField.leftAnchor.constraint(equalTo: descriptionContainer.leftAnchor, constant: 5).isActive = true
         descriptionTextField.widthAnchor.constraint(equalTo: descriptionContainer.widthAnchor, constant: -10).isActive = true
-        //date and time
+
+        /** Date and Time Setup **/
         scrollView.addSubview(dateAndTimeContainer)
-        
-        dateAndTimeContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        dateAndTimeContainer.topAnchor.constraint(equalTo: descriptionContainer.bottomAnchor, constant: 5).isActive = true
-        dateAndTimeContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        dateAndTimeContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        
+        dateAndTimeContainer.SetContainer(otherContainer: descriptionContainer, top: 5, height: 50)
         dateAndTimeContainer.addSubview(dateAndTimeLabel)
-        
         dateAndTimeLabel.centerYAnchor.constraint(equalTo: dateAndTimeContainer.centerYAnchor).isActive = true
         dateAndTimeLabel.leftAnchor.constraint(equalTo: dateAndTimeContainer.leftAnchor, constant: 10).isActive = true
-        //location
+
+        /** Location Setup **/
         scrollView.addSubview(locationContainer)
-        
-        locationContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        locationContainer.topAnchor.constraint(equalTo: dateAndTimeContainer.bottomAnchor, constant: 5).isActive = true
-        locationContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        locationContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        
+        locationContainer.SetContainer(otherContainer: dateAndTimeContainer, top: 5, height: 50)
         locationContainer.addSubview(locationLabel)
-        
         locationLabel.centerYAnchor.constraint(equalTo: locationContainer.centerYAnchor).isActive = true
         locationLabel.leftAnchor.constraint(equalTo: locationContainer.leftAnchor, constant: 10).isActive = true
-        //category
+
+        /** Category Setup **/
         scrollView.addSubview(categoryContainer)
-        
         categoryContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         categoryContainer.topAnchor.constraint(equalTo: locationContainer.bottomAnchor, constant: 5).isActive = true
         categoryContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        
         categoryContainer.addSubview(categoryLabel)
-        
         categoryLabel.topAnchor.constraint(equalTo: categoryContainer.topAnchor, constant: 10).isActive = true
         categoryLabel.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 10).isActive = true
-        
+
         categoryContainer.addSubview(tripsButton)
-        tripsButton.postController = self
         tripsButton.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 20).isActive = true
         tripsButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
         tripsButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         tripsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
         categoryContainer.addSubview(natureButton)
-        natureButton.postController = self
         natureButton.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 20).isActive = true
         natureButton.leftAnchor.constraint(equalTo: tripsButton.rightAnchor, constant: 40).isActive = true
         natureButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         natureButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
         categoryContainer.addSubview(foodDrinkButton)
-        foodDrinkButton.postController = self
         foodDrinkButton.topAnchor.constraint(equalTo: tripsButton.bottomAnchor, constant: 20).isActive = true
         foodDrinkButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
         foodDrinkButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         foodDrinkButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
         categoryContainer.addSubview(concertsButton)
-        concertsButton.postController = self
         concertsButton.topAnchor.constraint(equalTo: natureButton.bottomAnchor, constant: 20).isActive = true
         concertsButton.leftAnchor.constraint(equalTo: foodDrinkButton.rightAnchor, constant: 40).isActive = true
         concertsButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         concertsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
         categoryContainer.addSubview(nightlifeButton)
-        nightlifeButton.postController = self
         nightlifeButton.topAnchor.constraint(equalTo: foodDrinkButton.bottomAnchor, constant:20).isActive = true
         nightlifeButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
         nightlifeButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         nightlifeButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
         categoryContainer.addSubview(carpoolButton)
-        carpoolButton.postController = self
         carpoolButton.topAnchor.constraint(equalTo: concertsButton.bottomAnchor, constant: 20).isActive = true
         carpoolButton.leftAnchor.constraint(equalTo: nightlifeButton.rightAnchor, constant: 40).isActive = true
         carpoolButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         carpoolButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
         categoryContainer.addSubview(sportsButton)
-        sportsButton.postController = self
         sportsButton.topAnchor.constraint(equalTo: nightlifeButton.bottomAnchor, constant:20).isActive = true
         sportsButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
         sportsButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         sportsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
         categoryContainer.addSubview(workButton)
-        workButton.postController = self
         workButton.topAnchor.constraint(equalTo: carpoolButton.bottomAnchor, constant:20).isActive = true
         workButton.leftAnchor.constraint(equalTo: sportsButton.rightAnchor, constant: 40).isActive = true
         workButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
@@ -367,12 +386,9 @@ class PostController: UIViewController {
         
         categoryContainer.bottomAnchor.constraint(equalTo: workButton.bottomAnchor, constant: 20).isActive = true
 
+        /** Number of People Setup **/
         scrollView.addSubview(numberOfPeopleContainer)
-        numberOfPeopleContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        numberOfPeopleContainer.topAnchor.constraint(equalTo: categoryContainer.bottomAnchor, constant: 5).isActive = true
-        numberOfPeopleContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        numberOfPeopleContainer.heightAnchor.constraint(equalToConstant: 120).isActive = true
-
+        numberOfPeopleContainer.SetContainer(otherContainer: categoryContainer, top: 5, height: 120)
         numberOfPeopleContainer.addSubview(numberOfPeopleLabel)
         numberOfPeopleLabel.topAnchor.constraint(equalTo: numberOfPeopleContainer.topAnchor, constant: 10).isActive = true
         numberOfPeopleLabel.leftAnchor.constraint(equalTo: numberOfPeopleContainer.leftAnchor, constant: 10).isActive = true
@@ -390,11 +406,39 @@ class PostController: UIViewController {
         deleteButton.centerXAnchor.constraint(equalTo: numberOfPeopleContainer.centerXAnchor, constant: -70).isActive = true
         deleteButton.centerYAnchor.constraint(equalTo: numberOfPeopleContainer.centerYAnchor).isActive = true
         
-//        scrollView.addSubview(postButton)
-//        postButton.topAnchor.constraint(equalTo: numberOfPeopleContainer.bottomAnchor, constant: 20).isActive = true
-//        postButton.centerXAnchor.constraint(equalTo: scrollView.centerXAnchor).isActive = true
-       
+        /** Enable Chat Setup **/
+        scrollView.addSubview(enableChatContainer)
+        enableChatContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        enableChatContainer.topAnchor.constraint(equalTo: numberOfPeopleContainer.bottomAnchor, constant: 5).isActive = true
+        enableChatContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        enableChatContainerHeightAnchor = enableChatContainer.heightAnchor.constraint(equalToConstant: 50)
+        enableChatContainerHeightAnchor?.isActive = true
+        
+        enableChatContainer.addSubview(enableChatLabel)
+        enableChatLabel.topAnchor.constraint(equalTo: enableChatContainer.topAnchor, constant: 10).isActive = true
+        enableChatLabel.leftAnchor.constraint(equalTo: enableChatContainer.leftAnchor, constant: 10).isActive = true
+        
+        enableChatContainer.addSubview(enableChatSwitch)
+        enableChatSwitch.topAnchor.constraint(equalTo: enableChatContainer.topAnchor, constant: 10).isActive = true
+        enableChatSwitch.rightAnchor.constraint(equalTo: enableChatContainer.rightAnchor, constant: -80).isActive = true
+        
+        scrollView.addSubview(enableChatTitleView)
+        enableChatTitleView.topAnchor.constraint(equalTo: enableChatContainer.bottomAnchor, constant: 5).isActive = true
+        enableChatTitleView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        enableChatTitleViewHeightAnchor = enableChatTitleView.heightAnchor.constraint(equalToConstant: 0)
+        enableChatTitleViewHeightAnchor?.isActive = true
+        
+//        enableChatTitleView.addSubview(enableChatTitleText)
+//        enableChatTitleTextHeightAnchor = enableChatTitleText.centerYAnchor.constraint(equalTo: enableChatTitleView.centerYAnchor)
+//        enableChatTitleTextHeightAnchor?.isActive = true
+//        enableChatTitleText.leftAnchor.constraint(equalTo: enableChatTitleView.leftAnchor, constant: 10).isActive = true
+//        enableChatTitleText.widthAnchor.constraint(equalTo: enableChatTitleView.widthAnchor, constant: -10).isActive = true
+        
     }
+    
+    var enableChatTitleViewHeightAnchor: NSLayoutConstraint?
+    var enableChatTitleTextHeightAnchor: NSLayoutConstraint?
+    var enableChatContainerHeightAnchor: NSLayoutConstraint?
     
     //UI Functions
     
@@ -442,24 +486,25 @@ class PostController: UIViewController {
             let key = ref.child("posts").childByAutoId().key
             let userID = Auth.auth().currentUser?.uid
             ref.child("users").child(userID!).observeSingleEvent(of: .value) { (snapshot) in
-                MessagesController(nibName: nil, bundle: nil).createChat([HUser(snapshot: snapshot)])
+                if(self.enableChatSwitch.isOn)
+                {
+                    MessagesController(nibName: nil, bundle: nil).createChat([HUser(snapshot: snapshot)], name: self.activityTextField.text!)
+                }
                 if let dictionary = snapshot.value as? [String: AnyObject] {
-//                    let todaysDate:Date = Date()
                     let dateFormatter:DateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
-//                    let DateInFormat:String = dateFormatter.string(from: todaysDate)
                     let usersUid = [userID!: -1] as [String: Int]
                     let post = ["name": dictionary["name"] ?? "noname",
                                 "uid": dictionary["uid"] ?? "nouid",
                                 "activity": self.activityTextField.text!,
                                 "description": self.descriptionTextField.text,
-//                                "time": DateInFormat,
                                 "time": ServerValue.timestamp(),
                                 "location": self.locationLabel.title(for: .normal)!,
                                 "groupCount": self.numberOfPeople,
                                 "usersUid": usersUid] as [String : Any]
                     let child = ["/posts/\(key)": post]
                     let userPosts = [key: true]
+                    
                     //update FireBase posts
                     let ref = Database.database().reference().child("users").child(userID!).child("posts")
                     ref.updateChildValues(userPosts) {(err,ref) in
@@ -497,19 +542,6 @@ class PostController: UIViewController {
             }
             print("posted")
         }
-        
-//        func convertToCLLocation(address: String) -> CLLocationCoordinate2D{
-//            let geocoder = CLGeocoder()
-//            geocoder.geocodeAddressString(address, completionHandler: {(placemarks, error) -> Void in
-//                if((error) != nil){
-//                    print("Error", error ?? "")
-//                }
-//                if let placemark = placemarks?.first {
-//                    return placemark.location!.coordinate
-////                    print("Lat: \(coordinates.latitude) -- Long: \(coordinates.longitude)")
-//                }
-//            })
-//        }
         
     }
     
@@ -581,6 +613,24 @@ class PostController: UIViewController {
 //        
 //    }
 
+}
+
+extension UIView {
+    func SetContainer(otherContainer: UIView, top: CGFloat, height: CGFloat) {
+        self.centerXAnchor.constraint(equalTo: otherContainer.centerXAnchor).isActive = true
+        self.topAnchor.constraint(equalTo: otherContainer.bottomAnchor, constant: top).isActive = true
+        self.heightAnchor.constraint(equalToConstant: height).isActive = true
+        self.widthAnchor.constraint(equalTo: otherContainer.widthAnchor).isActive = true
+    }
+    
+    func SetContainer(topContainer: UIView, otherContainer: UIView, top: CGFloat, left: CGFloat, widthMult: CGFloat, heightMult: CGFloat)
+    {
+        self.topAnchor.constraint(equalTo: topContainer.bottomAnchor, constant: top).isActive = true
+        self.leftAnchor.constraint(equalTo: otherContainer.leftAnchor, constant: left).isActive = true
+        self.widthAnchor.constraint(equalTo: otherContainer.widthAnchor, multiplier: widthMult).isActive = true
+        self.heightAnchor.constraint(equalTo: otherContainer.heightAnchor, multiplier: heightMult).isActive = true
+    }
+    
 }
 
 extension PostController

@@ -11,8 +11,6 @@ import UIKit
 
 class CategoryButton: UIButton {
     
-    var postController: PostController?
-    
     var isOn = false
     var childUpdates : [String: Any] = [:]
     
@@ -55,10 +53,10 @@ class CategoryButton: UIButton {
         let background = bool ? UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1) : UIColor(white: 0.95, alpha: 1)
         let text = bool ? UIColor.white : UIColor.gray
         if(bool){
-            postController?.childUpdates.updateValue(true, forKey: (titleLabel?.text)!)
+            PostController(nibName: nil, bundle: nil).childUpdates.updateValue(true, forKey: (titleLabel?.text)!)
         }
         else{
-            postController?.childUpdates.removeValue(forKey: (titleLabel?.text)!)
+            PostController(nibName: nil, bundle: nil).childUpdates.removeValue(forKey: (titleLabel?.text)!)
         }
         backgroundColor = background
         setTitleColor(text, for: .normal)
