@@ -90,7 +90,6 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
     
     @objc func setLocation(){
         let location: String = (locationSearchTable?.selectedLocation)!
-        postController?.childUpdates.updateValue(location, forKey: "Location")
         postController?.locationLabel.setTitle(location, for: .normal)
         postController?.locationLabel.setTitleColor(UIColor.gray, for: .normal)
         handleCancel()

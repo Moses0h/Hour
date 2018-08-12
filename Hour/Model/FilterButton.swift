@@ -1,15 +1,18 @@
 //
-//  Bounce.swift
+//  FilterButton.swift
 //  Hour
 //
-//  Created by Moses Oh on 3/9/18.
+//  Created by Moses Oh on 8/11/18.
 //  Copyright © 2018 Moses Oh. All rights reserved.
 //
 
-
+import Foundation
 import UIKit
 
-class BounceButton: UIButton {
+class FilterButton: UIButton {
+    
+    var isOn = false
+    var childUpdates : [String: Any] = [:]
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.transform = CGAffineTransform(scaleX: 1.01, y:1.01)
@@ -35,10 +38,21 @@ class BounceButton: UIButton {
         setTitleColor(UIColor.gray, for: .normal)
         backgroundColor = UIColor(white: 0.95, alpha: 1)
         titleLabel?.font = UIFont.init(name: "Helvetica Neue", size: 18)!
+        addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
         layer.cornerRadius = 5
         layer.masksToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
     }
     
+    @objc func buttonPressed() {
+        activatedButton(bool: !isOn)
+    }
+    
+    func activatedButton(bool: Bool) {
+        isOn = bool
+        let background = bool ? UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1) : UIColor.white
+        let text = bool ? UIColor.white : UIColor.gray
+        backgroundColor = background
+        setTitleColor(text, for: .normal)
+    }
 }
-

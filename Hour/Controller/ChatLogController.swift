@@ -140,7 +140,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         containerViewBottomAnchor?.constant = -keyboardFame.height
         UIView.animate(withDuration: TimeInterval(truncating: keyboardDuration)) {
             self.view.layoutIfNeeded()
-            self.collectionView?.scrollToItem(at: IndexPath(item:self.messages.count-1, section: 0), at: .bottom, animated: true)
+            let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
+            let lastItemIndex = IndexPath(item: item, section: 0)
+            self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
+            
 
         }
 
@@ -159,25 +162,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func observeMessages() {
-//        guard let uid = Auth.auth().currentUser?.uid, let toId = user?.uid else {
-//            return
-//        }
-//        let userMessagesRef = Database.database().reference().child("user-messages").child(uid).child(toId)
-//
-//        userMessagesRef.queryOrderedByKey().queryLimited(toLast: UInt(messagesLimit)).observe(.childAdded) { (snapshot) in
-//            let messageId = snapshot.key
-//            self.lastValue = messageId
-//            let messagesRef = Database.database().reference().child("messages").child(messageId)
-//            messagesRef.observeSingleEvent(of: .value, with: { (snapshot) in
-//                let message = Message(snapshot: snapshot)
-//                self.messages.append(message)
-//                DispatchQueue.main.async {
-//                    self.collectionView?.reloadData()
-//                    self.collectionView?.scrollToItem(at: IndexPath(item:self.messages.count-1, section: 0), at: .bottom, animated: true)
-//                }
-//            })
-//        }
-        
         
         let messagesRef = Database.database().reference().child("group-messages").child(groupKey!)
         messagesRef.observe(.childAdded) { (snapshot) in
@@ -185,11 +169,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             print(snapshot.key)
             DispatchQueue.main.async {
                 self.collectionView?.reloadData()
-                self.collectionView?.scrollToItem(at: IndexPath(item:self.messages.count-1, section: 0), at: .bottom, animated: true)
+                let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
+                let lastItemIndex = IndexPath(item: item, section: 0)
+                self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
             }
         }
-        
-        
+
         
         
     }
@@ -241,27 +226,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     @objc func handleSend() {
-//        let ref = Database.database().reference().child("messages")
-//        let childRef = ref.childByAutoId()
-//        let toId = user?.uid
-//        let fromId = Auth.auth().currentUser?.uid
-//        let values = ["text": inputTextField.text!, "toId": toId!, "fromId": fromId as Any, "timestamp": timestamp] as [String : Any]
-//        childRef.updateChildValues(values)
-//        childRef.updateChildValues(values) { (error, ref) in
-//            if error != nil {
-//                print(error!)
-//                return
-//            }
-//            self.inputTextField.text = nil
-//
-//            let userMessagesRef = Database.database().reference().child("user-messages").child(fromId!).child(toId!)
-//            let messageId = childRef.key
-//            userMessagesRef.updateChildValues([messageId: 1])
-//
-//            let recipientUserMessagesRef = Database.database().reference().child("user-messages").child(toId!).child(fromId!)
-//            recipientUserMessagesRef.updateChildValues([messageId: 1])
-//        }
-        
+
         let messagesRef = Database.database().reference().child("group-messages").child(groupKey!).childByAutoId()
         let timestamp: Double = NSDate().timeIntervalSince1970
         let messageValue = ["fromId" : Auth.auth().currentUser?.uid as Any ,"message": inputTextField.text!, "timestamp": timestamp] as [String: Any]
@@ -273,6 +238,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 
         self.inputTextField.text = nil
 
+        let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
+//        let lastItemIndex = IndexPath(item: item, section: 0)
+//        self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
         
         
     }

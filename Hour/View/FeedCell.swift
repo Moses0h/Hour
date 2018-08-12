@@ -12,23 +12,15 @@ import Firebase
 
 class FeedCell: UICollectionViewCell {
     
-    var post: Post? {
-        didSet{
-//            if let name = post?.activity, let time = post?.time{
-//
-//                let attributedText = NSMutableAttributedString(string: name, attributes: [NSAttributedStringKey.font: UIFont.boldSystemFont(ofSize: 14)])
-//
-//                attributedText.append(NSAttributedString(string: "\n" + time, attributes: [NSAttributedStringKey.font: UIFont.systemFont(ofSize: 12), NSAttributedStringKey.foregroundColor: UIColor(red: 155/255, green: 161/255, blue: 171/255, alpha: 1)]))
-//
-//                let paragraphStyle = NSMutableParagraphStyle()
-//                paragraphStyle.lineSpacing = 4
-//
-//                attributedText.addAttribute(NSAttributedStringKey.paragraphStyle, value: paragraphStyle, range: NSMakeRange(0, attributedText.string.count))
-//
-//                nameLabel.attributedText = attributedText
-//            }
-        }
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        self.setupViews()
     }
+    
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     var key: String?
     {
         didSet{
@@ -49,13 +41,6 @@ class FeedCell: UICollectionViewCell {
             descriptionText.text = descriptionString
         }
     }
-    
-//    var desc: String? {
-//        didSet{
-//            let a = statusTextView.text
-//            statusTextView.text = a! + ", description: " + desc!
-//        }
-//    }
     
     var usersUid: [String: Int]? {
         didSet{
@@ -79,26 +64,55 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    override init(frame: CGRect) {
-        super.init(frame: frame)
-        self.setupViews()
+    var location: String? {
+        didSet{
+            
+        }
     }
     
-    required init?(coder aDecoder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+    var time: String? {
+        didSet{
+            
+        }
     }
+    
+    var groupCount: Int? {
+        didSet{
+            filtersLabel.text = filtersLabel.text! + "\(String(groupCount!)) people * "
+        }
+    }
+    
+    var category: String? {
+        didSet{
+            filtersLabel.text = filtersLabel.text! + "\(category!) * "
+        }
+    }
+
+    let filtersLabel: UILabel = {
+        let a = UILabel()
+        a.font = UIFont.init(name: "Helvetica Neue", size: 15)
+        a.textColor = UIColor.gray
+        a.font = UIFont.boldSystemFont(ofSize: 15)
+        a.numberOfLines = 1
+        a.text = ""
+        a.translatesAutoresizingMaskIntoConstraints = false
+        return a
+    }()
     
     let activityLabel: UILabel = {
         let a = UILabel()
-        a.font = UIFont.init(name: "Helvetica Neue", size: 18)
-        a.textColor = UIColor.darkText
+        a.font = UIFont.init(name: "Helvetica Neue", size: 20)
+        a.textColor = UIColor.darkGray
+        a.font = UIFont.boldSystemFont(ofSize: 20)
         a.numberOfLines = 2
         a.translatesAutoresizingMaskIntoConstraints = false
         return a
     }()
     
     let profileImageView: UIImageView = {
-        let imageView = UIImageView(image: #imageLiteral(resourceName: "food"))
+        let imageView = UIImageView()
+        imageView.layer.borderWidth = 1
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
@@ -121,21 +135,45 @@ class FeedCell: UICollectionViewCell {
     }()
     
     func setupViews() {
-        backgroundColor = UIColor.white
-        addSubview(activityLabel)
-        addSubview(profileImageView)
-        addSubview(descriptionText)
-        addSubview(joinButton)
+        layer.cornerRadius = 8
+        layer.masksToBounds = true
         
-        addConstraintsWithFormat(format: "H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, activityLabel)
-        addConstraintsWithFormat(format: "H:|-4-[v0]-4-|", views: descriptionText)
-        addConstraintsWithFormat(format: "V:|-12-[v0]", views: activityLabel)
-        addConstraintsWithFormat(format: "V:|-12-[v0(44)]-4-[v1]", views: profileImageView, descriptionText)
+        self.layer.shadowColor = UIColor.lightGray.cgColor
+        self.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        self.layer.shadowRadius = 2.0
+        self.layer.shadowOpacity = 0.5
+        self.layer.masksToBounds = false
+        self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.contentView.layer.cornerRadius).cgPath
+        
+        backgroundColor = UIColor.white
+        
+        addSubview(profileImageView)
+        profileImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
+        profileImageView.topAnchor.constraint(equalTo: topAnchor, constant:10).isActive = true
+        profileImageView.heightAnchor.constraint(equalToConstant: 120).isActive = true
+        profileImageView.widthAnchor.constraint(equalToConstant: 120).isActive = true
 
-        joinButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        joinButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        joinButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/3).isActive = true
-        print("feed setup")
+        addSubview(filtersLabel)
+        filtersLabel.topAnchor.constraint(equalTo: topAnchor, constant:10).isActive = true
+        filtersLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 10).isActive = true
+        filtersLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: 10).isActive = true
+        
+        addSubview(activityLabel)
+        activityLabel.topAnchor.constraint(equalTo: filtersLabel.bottomAnchor, constant:10).isActive = true
+        activityLabel.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 10).isActive = true
+        activityLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: 10).isActive = true
+        
+        //        addSubview(descriptionText)
+//        addSubview(joinButton)
+        
+//        addConstraintsWithFormat(format: "H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, activityLabel)
+//        addConstraintsWithFormat(format: "H:|-4-[v0]-4-|", views: descriptionText)
+//        addConstraintsWithFormat(format: "V:|-12-[v0]", views: activityLabel)
+//        addConstraintsWithFormat(format: "V:|-12-[v0(44)]-4-[v1]", views: profileImageView, descriptionText)
+
+//        joinButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+//        joinButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
+//        joinButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/3).isActive = true
         
     }
 }

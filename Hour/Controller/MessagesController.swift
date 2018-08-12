@@ -14,6 +14,7 @@ class MessagesController: UITableViewController {
     var messages = [Message]()
     var messagesDictionary = [String: Message]()
     var groups = [Group]()
+    var groupsUid = [String]()
     
     let cellId = "cellId"
     
@@ -39,27 +40,45 @@ class MessagesController: UITableViewController {
     
     func observeUserMessages(){
         groups.removeAll()
-        
+        groupsUid.removeAll()
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
         
         let reff = Database.database().reference().child("users").child(uid).child("groups")
-        reff.observeSingleEvent(of: .value) { (snap) in
+        reff.observe(.value) { (snap) in
             let total = Int(snap.childrenCount)
             reff.observe(.childAdded) { (snapshot) in
                 let groupRef = Database.database().reference().child("groups").child(snapshot.key)
                 groupRef.observeSingleEvent(of: .value) { (_snapshot) in
                     if let dictionary = _snapshot.value as? [String: AnyObject] {
                         self.groups.append(Group(uid: snapshot.key, groupName: dictionary["name"] as? String, lastMessage: dictionary["last message"] as? String, timestamp: dictionary["timestamp"] as? Double))
+                        self.groupsUid.append(snapshot.key)
                         if(self.groups.count == total)
                         {
                             self.attemptReloadOfTable()
+                            for group in self.groups {
+                                let groupRef = Database.database().reference().child("groups").child(group.uid!)
+                                groupRef.observe(.childChanged, with: { (_snapshot) in
+                                    print("ChildChanged")
+                                    
+                                    if let dictionary = _snapshot.value as? [String: AnyObject] {
+                                        let index : Int = self.groupsUid.index(of: _snapshot.key)!
+                                        self.groups[index].groupName = dictionary["name"] as? String
+                                        self.groups[index].lastMessage = dictionary["last message"] as? String
+                                        self.groups[index].timestamp = dictionary["timestamp"] as? Double
+                                        print(dictionary["last message"] as? String)
+                                        self.tableView.reloadData()
+                                    }
+                                })
+                            }
                         }
                     }
                 }
             }
         }
+        
+        
     }
     
     private func attemptReloadOfTable() {
@@ -111,8 +130,6 @@ class MessagesController: UITableViewController {
         chatLogController.group = group
         chatLogController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(chatLogController, animated: true)
-
-        
     }
    
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

@@ -18,8 +18,11 @@ class PostController: UIViewController {
     
     var feedController: FeedController?
     var loginController: LoginController?
-    var childUpdates: [String: Any] = [:]
+    
     var numberOfPeople: Int = 0
+    var category: String = ""
+    
+    var categoryButtons : [CategoryButton] = [CategoryButton]()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -32,6 +35,7 @@ class PostController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         self.hideKeyboard()
+        scrollView = UIScrollView(frame: view.bounds)
         view.backgroundColor = UIColor(white: 0.95, alpha: 1)
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
@@ -44,6 +48,15 @@ class PostController: UIViewController {
         geoFire = GeoFire(firebaseRef: ref.child("posts_location"))
     
         setupViews()
+    }
+    
+    override func viewDidLayoutSubviews() {
+        var height:CGFloat = 0
+        for view in scrollView.subviews {
+            height += view.bounds.size.height
+        }
+        height += (self.navigationController?.navigationBar.frame.size.height)!
+        scrollView.contentSize = CGSize(width: self.view.frame.size.width, height: height)
     }
     
     let activityContainer: UIView = {
@@ -122,9 +135,6 @@ class PostController: UIViewController {
     }()
     
     //Category
-    
-    var listOfButtons = [UIButton]()
-    
     let categoryContainer: UIView = {
         let cc = UIView()
         cc.backgroundColor = UIColor.white
@@ -143,52 +153,69 @@ class PostController: UIViewController {
         return cl
     }()
     
+    @objc func categoryPressed(sender: CategoryButton!) {
+        category = (sender.titleLabel?.text)!
+        for button in categoryButtons {
+            if(button.titleLabel?.text != category)
+            {
+                button.activatedButton(bool: false)
+            }
+        }
+    }
+    
     let tripsButton: CategoryButton = {
         let tb = CategoryButton()
         tb.setTitle("Trips", for: .normal)
-//        tb.addTarget(self, action: pressed, for: UIControlEvents.allTouchEvents)
+        tb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return tb
     }()
 
     let natureButton: CategoryButton = {
         let nb = CategoryButton()
         nb.setTitle("Nature", for: .normal)
+        nb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return nb
     }()
     
     let foodDrinkButton: CategoryButton = {
         let fdb = CategoryButton()
         fdb.setTitle("Food & Drink", for: .normal)
+        fdb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return fdb
     }()
     
     let concertsButton: CategoryButton = {
         let cb = CategoryButton()
-        cb.setTitle(" Concerts", for: .normal)
+        cb.setTitle("Concerts", for: .normal)
+        cb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return cb
     }()
     
     let nightlifeButton: CategoryButton = {
         let nlb = CategoryButton()
-        nlb.setTitle(" Nightlife", for: .normal)
+        nlb.setTitle("Nightlife", for: .normal)
+        nlb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return nlb
     }()
     
     let carpoolButton: CategoryButton = {
         let cb = CategoryButton()
-        cb.setTitle(" Carpool", for: .normal)
+        cb.setTitle("Carpool", for: .normal)
+        cb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return cb
     }()
     
     let sportsButton: CategoryButton = {
         let sb = CategoryButton()
-        sb.setTitle(" Sports", for: .normal)
+        sb.setTitle("Sports", for: .normal)
+        sb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return sb
     }()
     
     let workButton: CategoryButton = {
         let wb = CategoryButton()
-        wb.setTitle(" Work", for: .normal)
+        wb.setTitle("Work", for: .normal)
+        wb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
         return wb
     }()
     
@@ -264,8 +291,6 @@ class PostController: UIViewController {
         let ac = UIView()
         ac.backgroundColor = UIColor.white
         ac.translatesAutoresizingMaskIntoConstraints = false
-        //        ac.layer.cornerRadius = 5
-        //        ac.layer.masksToBounds = true
         return ac
     }()
     
@@ -284,17 +309,15 @@ class PostController: UIViewController {
         
     }
     
+    var scrollView: UIScrollView!
+
     func setupViews() {
         
         /** ScrollView Setup **/
-        let scrollView = UIScrollView(frame: view.bounds)
         scrollView.isScrollEnabled = true
-        scrollView.contentSize = CGSize(width:self.view.frame.size.width, height: self.view.frame.size.height + 230)
+//        scrollView.contentSize = CGSize(width:self.view.frame.size.width, height: self.view.frame.size.height + 230)
         
         view.addSubview(scrollView)
-        scrollView.topAnchor.constraint(equalTo: view.topAnchor)
-        scrollView.heightAnchor.constraint(equalTo: view.heightAnchor)
-        scrollView.systemLayoutSizeFitting(UILayoutFittingExpandedSize)
         
         /** Activity Setup **/
         scrollView.addSubview(activityContainer)
@@ -366,25 +389,20 @@ class PostController: UIViewController {
         nightlifeButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         nightlifeButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
 
-        categoryContainer.addSubview(carpoolButton)
-        carpoolButton.topAnchor.constraint(equalTo: concertsButton.bottomAnchor, constant: 20).isActive = true
-        carpoolButton.leftAnchor.constraint(equalTo: nightlifeButton.rightAnchor, constant: 40).isActive = true
-        carpoolButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        carpoolButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
-
         categoryContainer.addSubview(sportsButton)
-        sportsButton.topAnchor.constraint(equalTo: nightlifeButton.bottomAnchor, constant:20).isActive = true
-        sportsButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
+        sportsButton.topAnchor.constraint(equalTo: concertsButton.bottomAnchor, constant: 20).isActive = true
+        sportsButton.leftAnchor.constraint(equalTo: nightlifeButton.rightAnchor, constant: 40).isActive = true
         sportsButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
         sportsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
-
-        categoryContainer.addSubview(workButton)
-        workButton.topAnchor.constraint(equalTo: carpoolButton.bottomAnchor, constant:20).isActive = true
-        workButton.leftAnchor.constraint(equalTo: sportsButton.rightAnchor, constant: 40).isActive = true
-        workButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        workButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
         
-        categoryContainer.bottomAnchor.constraint(equalTo: workButton.bottomAnchor, constant: 20).isActive = true
+        categoryContainer.bottomAnchor.constraint(equalTo: sportsButton.bottomAnchor, constant: 20).isActive = true
+
+        categoryButtons.append(tripsButton)
+        categoryButtons.append(natureButton)
+        categoryButtons.append(foodDrinkButton)
+        categoryButtons.append(concertsButton)
+        categoryButtons.append(nightlifeButton)
+        categoryButtons.append(sportsButton)
 
         /** Number of People Setup **/
         scrollView.addSubview(numberOfPeopleContainer)
@@ -440,11 +458,12 @@ class PostController: UIViewController {
     var enableChatTitleTextHeightAnchor: NSLayoutConstraint?
     var enableChatContainerHeightAnchor: NSLayoutConstraint?
     
-    //UI Functions
-    
-    @objc func addOnePerson(sender: UIButton!) {
-        numberOfPeople += 1
-        number.text = "\(numberOfPeople)"
+    @objc func addOnePerson() {
+        if(numberOfPeople < 10)
+        {
+            numberOfPeople += 1
+            number.text = "\(numberOfPeople)"
+        }
     }
     
     @objc func deleteOnePerson() {
@@ -456,7 +475,6 @@ class PostController: UIViewController {
     }
     
     @objc func handleDateAndTimeView() {
-        print(childUpdates)
         let dateAndTimeController = DateAndTimeController()
         let navController = UINavigationController(rootViewController: dateAndTimeController)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
@@ -477,8 +495,6 @@ class PostController: UIViewController {
     @objc func handleCancel(){
         dismiss(animated: true, completion: nil)
     }
-    
-    //Database Functions
     
     @objc func handlePost(){
         if activityTextField.text != ""
@@ -501,7 +517,8 @@ class PostController: UIViewController {
                                 "time": ServerValue.timestamp(),
                                 "location": self.locationLabel.title(for: .normal)!,
                                 "groupCount": self.numberOfPeople,
-                                "usersUid": usersUid] as [String : Any]
+                                "usersUid": usersUid,
+                                "category": self.category] as [String : Any]
                     let child = ["/posts/\(key)": post]
                     let userPosts = [key: true]
                     

@@ -15,9 +15,9 @@ class CategoryButton: UIButton {
     var childUpdates : [String: Any] = [:]
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
-        self.transform = CGAffineTransform(scaleX: 1.1, y:1.1)
+        self.transform = CGAffineTransform(scaleX: 1.01, y:1.01)
         
-        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 3, options: .allowUserInteraction, animations: {
+        UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 1, options: .allowUserInteraction, animations: {
             self.transform = CGAffineTransform.identity
         }, completion: nil)
         super.touchesBegan(touches, with: event)
@@ -52,12 +52,6 @@ class CategoryButton: UIButton {
         isOn = bool
         let background = bool ? UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1) : UIColor(white: 0.95, alpha: 1)
         let text = bool ? UIColor.white : UIColor.gray
-        if(bool){
-            PostController(nibName: nil, bundle: nil).childUpdates.updateValue(true, forKey: (titleLabel?.text)!)
-        }
-        else{
-            PostController(nibName: nil, bundle: nil).childUpdates.removeValue(forKey: (titleLabel?.text)!)
-        }
         backgroundColor = background
         setTitleColor(text, for: .normal)
     }
