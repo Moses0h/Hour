@@ -50,7 +50,7 @@ class FilterButton: UIButton {
     
     func activatedButton(bool: Bool) {
         isOn = bool
-        let background = bool ? UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1) : UIColor.white
+        let background = bool ? AppDelegate.THEME : UIColor.white
         let text = bool ? UIColor.white : UIColor.gray
         backgroundColor = background
         setTitleColor(text, for: .normal)

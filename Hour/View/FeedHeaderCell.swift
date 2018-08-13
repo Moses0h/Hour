@@ -70,25 +70,26 @@ class FeedHeaderCell: UICollectionViewCell{
     func setupViews() {
         backgroundColor = UIColor(white: 0.95, alpha: 1)
         
-        addSubview(FeedController.feed!.filterContainer)
-        FeedController.feed!.filterContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        FeedController.feed!.filterContainer.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
-        FeedController.feed!.filterContainer.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        FeedController.feed!.filterContainer.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
-        print(FeedController.feed!.filterContainer.frame.height)
+        let feedController: FeedController = FeedController.controller!
+        addSubview(feedController.filterContainer)
+        feedController.filterContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        feedController.filterContainer.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
+        feedController.filterContainer.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        feedController.filterContainer.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
+        print(feedController.filterContainer.frame.height)
         
         
-        var buttons: [FilterButton] = (FeedController.feed?.categoryButtons)!
+        var buttons: [FilterButton] = (feedController.categoryButtons)
         for button in buttons{
             let index: Int = buttons.index(of: button)!
             
-            FeedController.feed!.filterContainer.addSubview(button)
-            button.centerYAnchor.constraint(equalTo: FeedController.feed!.filterContainer.centerYAnchor).isActive = true
-            button.heightAnchor.constraint(equalTo: FeedController.feed!.filterContainer.heightAnchor, constant: -3).isActive = true
+            feedController.filterContainer.addSubview(button)
+            button.centerYAnchor.constraint(equalTo: feedController.filterContainer.centerYAnchor).isActive = true
+            button.heightAnchor.constraint(equalTo: feedController.filterContainer.heightAnchor, constant: -3).isActive = true
             
             if(index == 0)
             {
-                button.leftAnchor.constraint(equalTo: FeedController.feed!.filterContainer.leftAnchor, constant: 5).isActive = true
+                button.leftAnchor.constraint(equalTo: feedController.filterContainer.leftAnchor, constant: 5).isActive = true
             }
             else
             {
@@ -99,7 +100,7 @@ class FeedHeaderCell: UICollectionViewCell{
         
         addSubview(postActivityContainer)
         postActivityContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        postActivityContainer.topAnchor.constraint(equalTo: FeedController.feed!.filterContainer.bottomAnchor, constant: 5).isActive = true
+        postActivityContainer.topAnchor.constraint(equalTo: feedController.filterContainer.bottomAnchor, constant: 5).isActive = true
         postActivityContainer.widthAnchor.constraint(equalTo: widthAnchor, constant: -10).isActive = true
         postActivityContainer.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
 

@@ -38,6 +38,9 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        postController = PostController.controller
+        feedController = FeedController.controller
+        
         mapView = MKMapView(frame: view.bounds)
         mapView.mapType = MKMapType.standard
         mapView.isZoomEnabled = true

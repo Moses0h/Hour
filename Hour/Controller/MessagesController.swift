@@ -67,7 +67,6 @@ class MessagesController: UITableViewController {
                                         self.groups[index].groupName = dictionary["name"] as? String
                                         self.groups[index].lastMessage = dictionary["last message"] as? String
                                         self.groups[index].timestamp = dictionary["timestamp"] as? Double
-                                        print(dictionary["last message"] as? String)
                                         self.tableView.reloadData()
                                     }
                                 })

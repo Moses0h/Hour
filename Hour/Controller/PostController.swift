@@ -12,7 +12,8 @@ import Firebase
 import GeoFire
 
 class PostController: UIViewController {
-
+    static var controller: PostController?
+    
     var geoFire: GeoFire!
     var ref: DatabaseReference!
     
@@ -21,7 +22,10 @@ class PostController: UIViewController {
     
     var numberOfPeople: Int = 0
     var category: String = ""
-    
+    var date: Date?
+    var startTime: String = ""
+    var endTime: String = ""
+
     var categoryButtons : [CategoryButton] = [CategoryButton]()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
@@ -34,6 +38,9 @@ class PostController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        PostController.controller = self
+        feedController = FeedController.controller
+        
         self.hideKeyboard()
         scrollView = UIScrollView(frame: view.bounds)
         view.backgroundColor = UIColor(white: 0.95, alpha: 1)
@@ -50,7 +57,7 @@ class PostController: UIViewController {
         setupViews()
     }
     
-    override func viewDidLayoutSubviews() {
+    override func viewDidAppear(_ animated: Bool) {
         var height:CGFloat = 0
         for view in scrollView.subviews {
             height += view.bounds.size.height
@@ -58,7 +65,6 @@ class PostController: UIViewController {
         height += (self.navigationController?.navigationBar.frame.size.height)!
         scrollView.contentSize = CGSize(width: self.view.frame.size.width, height: height)
     }
-    
     let activityContainer: UIView = {
         let ac = UIView()
         ac.backgroundColor = UIColor.white
@@ -273,7 +279,7 @@ class PostController: UIViewController {
     
     let enableChatLabel: UILabel = {
         let ecl = UILabel()
-        ecl.text = "Enable Group Chat"
+        ecl.text = " Enable Group Chat"
         ecl.textColor = UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1)
         ecl.font = UIFont.init(name: "Helvetica Neue", size: 18)
         ecl.translatesAutoresizingMaskIntoConstraints = false
@@ -284,6 +290,7 @@ class PostController: UIViewController {
         let ecs = UISwitch()
         ecs.addTarget(self, action: #selector(enableGroupChat), for: .valueChanged)
         ecs.translatesAutoresizingMaskIntoConstraints = false
+        ecs.onTintColor = AppDelegate.THEME
         return ecs
     }()
     
@@ -315,8 +322,6 @@ class PostController: UIViewController {
         
         /** ScrollView Setup **/
         scrollView.isScrollEnabled = true
-//        scrollView.contentSize = CGSize(width:self.view.frame.size.width, height: self.view.frame.size.height + 230)
-        
         view.addSubview(scrollView)
         
         /** Activity Setup **/
@@ -363,37 +368,37 @@ class PostController: UIViewController {
         tripsButton.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 20).isActive = true
         tripsButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
         tripsButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        tripsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
+        tripsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/6).isActive = true
 
         categoryContainer.addSubview(natureButton)
         natureButton.topAnchor.constraint(equalTo: categoryLabel.bottomAnchor, constant: 20).isActive = true
         natureButton.leftAnchor.constraint(equalTo: tripsButton.rightAnchor, constant: 40).isActive = true
         natureButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        natureButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
+        natureButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/6).isActive = true
 
         categoryContainer.addSubview(foodDrinkButton)
         foodDrinkButton.topAnchor.constraint(equalTo: tripsButton.bottomAnchor, constant: 20).isActive = true
         foodDrinkButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
         foodDrinkButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        foodDrinkButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
+        foodDrinkButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/6).isActive = true
 
         categoryContainer.addSubview(concertsButton)
         concertsButton.topAnchor.constraint(equalTo: natureButton.bottomAnchor, constant: 20).isActive = true
         concertsButton.leftAnchor.constraint(equalTo: foodDrinkButton.rightAnchor, constant: 40).isActive = true
         concertsButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        concertsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
+        concertsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/6).isActive = true
 
         categoryContainer.addSubview(nightlifeButton)
         nightlifeButton.topAnchor.constraint(equalTo: foodDrinkButton.bottomAnchor, constant:20).isActive = true
         nightlifeButton.leftAnchor.constraint(equalTo: categoryContainer.leftAnchor, constant: 40).isActive = true
         nightlifeButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        nightlifeButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
+        nightlifeButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/6).isActive = true
 
         categoryContainer.addSubview(sportsButton)
         sportsButton.topAnchor.constraint(equalTo: concertsButton.bottomAnchor, constant: 20).isActive = true
         sportsButton.leftAnchor.constraint(equalTo: nightlifeButton.rightAnchor, constant: 40).isActive = true
         sportsButton.widthAnchor.constraint(equalTo: categoryContainer.widthAnchor, multiplier: 1/3).isActive = true
-        sportsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/7).isActive = true
+        sportsButton.heightAnchor.constraint(equalTo: categoryContainer.heightAnchor, multiplier: 1/6).isActive = true
         
         categoryContainer.bottomAnchor.constraint(equalTo: sportsButton.bottomAnchor, constant: 20).isActive = true
 
@@ -406,24 +411,23 @@ class PostController: UIViewController {
 
         /** Number of People Setup **/
         scrollView.addSubview(numberOfPeopleContainer)
-        numberOfPeopleContainer.SetContainer(otherContainer: categoryContainer, top: 5, height: 120)
+        numberOfPeopleContainer.SetContainer(otherContainer: categoryContainer, top: 5, height: 60)
         numberOfPeopleContainer.addSubview(numberOfPeopleLabel)
         numberOfPeopleLabel.topAnchor.constraint(equalTo: numberOfPeopleContainer.topAnchor, constant: 10).isActive = true
         numberOfPeopleLabel.leftAnchor.constraint(equalTo: numberOfPeopleContainer.leftAnchor, constant: 10).isActive = true
 
-        numberOfPeopleContainer.addSubview(number)
-        number.topAnchor.constraint(equalTo: numberOfPeopleLabel.topAnchor, constant: 20).isActive = true
-        number.centerXAnchor.constraint(equalTo: numberOfPeopleContainer.centerXAnchor).isActive = true
-        number.centerYAnchor.constraint(equalTo: numberOfPeopleContainer.centerYAnchor).isActive = true
-        
-        numberOfPeopleContainer.addSubview(addButton)
-        addButton.centerXAnchor.constraint(equalTo: numberOfPeopleContainer.centerXAnchor, constant: 70).isActive = true
-        addButton.centerYAnchor.constraint(equalTo: numberOfPeopleContainer.centerYAnchor).isActive = true
-        
         numberOfPeopleContainer.addSubview(deleteButton)
-        deleteButton.centerXAnchor.constraint(equalTo: numberOfPeopleContainer.centerXAnchor, constant: -70).isActive = true
-        deleteButton.centerYAnchor.constraint(equalTo: numberOfPeopleContainer.centerYAnchor).isActive = true
+        deleteButton.topAnchor.constraint(equalTo: numberOfPeopleLabel.topAnchor, constant: 5).isActive = true
+        deleteButton.leftAnchor.constraint(equalTo: numberOfPeopleLabel.rightAnchor, constant: 60).isActive = true
         
+        numberOfPeopleContainer.addSubview(number)
+        number.topAnchor.constraint(equalTo: numberOfPeopleLabel.topAnchor, constant: 10).isActive = true
+        number.leftAnchor.constraint(equalTo: deleteButton.rightAnchor, constant: 20).isActive = true
+
+        numberOfPeopleContainer.addSubview(addButton)
+        addButton.topAnchor.constraint(equalTo: numberOfPeopleLabel.topAnchor, constant: 5).isActive = true
+        addButton.leftAnchor.constraint(equalTo: number.rightAnchor, constant: 20).isActive = true
+
         /** Enable Chat Setup **/
         scrollView.addSubview(enableChatContainer)
         enableChatContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
@@ -484,8 +488,6 @@ class PostController: UIViewController {
     
     @objc func handleLocationView() {
         let locationController = LocationController()
-        locationController.postController = self
-        locationController.feedController = self.feedController
         let navController = UINavigationController(rootViewController: locationController)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) {
             self.present(navController, animated: true, completion: nil)
@@ -496,8 +498,42 @@ class PostController: UIViewController {
         dismiss(animated: true, completion: nil)
     }
     
+    func checkIfNil() -> Bool {
+        if(activityTextField.text == "")
+        {
+            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            return false
+        }
+        else
+        {
+            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray])
+        }
+        
+        if(date == nil)
+        {
+            dateAndTimeLabel.setTitleColor(UIColor.red, for: .normal)
+            return false
+        }
+        else
+        {
+            dateAndTimeLabel.setTitleColor(UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1), for: .normal)
+        }
+        
+        if(locationLabel.titleLabel?.text == "")
+        {
+            locationLabel.setTitleColor(UIColor.red, for: .normal)
+            return false
+        }
+        else
+        {
+            locationLabel.setTitleColor(UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1), for: .normal)
+        }
+        
+        return true
+    }
+    
     @objc func handlePost(){
-        if activityTextField.text != ""
+        if(checkIfNil())
         {
             let key = ref.child("posts").childByAutoId().key
             let userID = Auth.auth().currentUser?.uid
@@ -518,7 +554,10 @@ class PostController: UIViewController {
                                 "location": self.locationLabel.title(for: .normal)!,
                                 "groupCount": self.numberOfPeople,
                                 "usersUid": usersUid,
-                                "category": self.category] as [String : Any]
+                                "category": self.category,
+                                "date": self.date!.dayOfWeek()!,
+                                "startTime": self.startTime,
+                                "endTime": self.endTime] as [String : Any]
                     let child = ["/posts/\(key)": post]
                     let userPosts = [key: true]
                     
@@ -555,6 +594,7 @@ class PostController: UIViewController {
                         }
                         self.geoFire.setLocation(location, forKey: "\(key)")
                     }
+                    
                 }
             }
             print("posted")

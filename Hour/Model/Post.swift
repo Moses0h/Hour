@@ -17,7 +17,9 @@ struct Post {
     var activity: String!
     var description: String!
     var location: String!
-    var time: String!
+    var date: String!
+    var startTime: String!
+    var endTime: String!
     var groupCount: Int!
     var distance: Double!
     var category: String!
@@ -36,7 +38,9 @@ struct Post {
             activity = dictionary["activity"] as? String
             description = dictionary["description"] as? String
             location = dictionary["location"] as? String
-            time = dictionary["time"] as? String
+            date = dictionary["date"] as? String
+            startTime = dictionary["startTime"] as? String
+            endTime = dictionary["endTime"] as? String
             groupCount = dictionary["groupCount"] as? Int
             category = dictionary["category"] as? String
         }

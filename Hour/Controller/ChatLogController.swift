@@ -138,12 +138,13 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let keyboardFame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber)
         containerViewBottomAnchor?.constant = -keyboardFame.height
+        print("whut asdf ")
         UIView.animate(withDuration: TimeInterval(truncating: keyboardDuration)) {
             self.view.layoutIfNeeded()
             let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
             let lastItemIndex = IndexPath(item: item, section: 0)
             self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
-            
+
 
         }
 
@@ -164,17 +165,27 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     func observeMessages() {
         
         let messagesRef = Database.database().reference().child("group-messages").child(groupKey!)
-        messagesRef.observe(.childAdded) { (snapshot) in
-            self.messages.append(Message(snapshot: snapshot))
-            print(snapshot.key)
-            DispatchQueue.main.async {
-                self.collectionView?.reloadData()
-                let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
-                let lastItemIndex = IndexPath(item: item, section: 0)
-                self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
+        messagesRef.observeSingleEvent(of: .value) { (snap) in
+            let count = snap.childrenCount
+            messagesRef.observe(.childAdded) { (snapshot) in
+                self.messages.append(Message(snapshot: snapshot))
+                if(count == self.messages.count)
+                {
+                    self.collectionView?.reloadData()
+                    self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionViewScrollPosition.top, animated: false)
+
+                }
+                else if(self.messages.count > count)
+                {
+                    DispatchQueue.main.async {
+                        self.collectionView?.reloadData()
+                        self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionViewScrollPosition.top, animated: true)
+                    }
+                }
             }
         }
-
+        
+        
         
         
     }
@@ -226,23 +237,19 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     @objc func handleSend() {
-
-        let messagesRef = Database.database().reference().child("group-messages").child(groupKey!).childByAutoId()
-        let timestamp: Double = NSDate().timeIntervalSince1970
-        let messageValue = ["fromId" : Auth.auth().currentUser?.uid as Any ,"message": inputTextField.text!, "timestamp": timestamp] as [String: Any]
-        
-        messagesRef.updateChildValues(messageValue)
-        
-        // update last message
-        Database.database().reference().child("groups").child(groupKey!).updateChildValues(["last message" : messagesRef.key, "timestamp" : timestamp])
-
-        self.inputTextField.text = nil
-
-        let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
-//        let lastItemIndex = IndexPath(item: item, section: 0)
-//        self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
-        
-        
+        if(inputTextField.text! != "")
+        {
+            let messagesRef = Database.database().reference().child("group-messages").child(groupKey!).childByAutoId()
+            let timestamp: Double = NSDate().timeIntervalSince1970
+            let messageValue = ["fromId" : Auth.auth().currentUser?.uid as Any ,"message": inputTextField.text!, "timestamp": timestamp] as [String: Any]
+            
+            messagesRef.updateChildValues(messageValue)
+            
+            // update last message
+            Database.database().reference().child("groups").child(groupKey!).updateChildValues(["last message" : messagesRef.key, "timestamp" : timestamp])
+            
+            self.inputTextField.text = nil
+        }
     }
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {

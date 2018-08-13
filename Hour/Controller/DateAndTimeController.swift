@@ -87,7 +87,7 @@ class DateAndTimeController: UIViewController {
         let leftBarBtn = UIBarButtonItem(title: "Back", style: .plain, target: self, action: #selector(handleCancel))
         leftBarBtn.tintColor = UIColor.white
         
-        let rightBarBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleCancel))
+        let rightBarBtn = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(handleSave))
         rightBarBtn.tintColor = UIColor.white
         
         self.navigationItem.leftBarButtonItem = leftBarBtn
@@ -101,8 +101,10 @@ class DateAndTimeController: UIViewController {
     
     func setupViews(){
         view.addSubview(calendarContainer)
+        let height = (self.navigationController?.navigationBar.frame.size.height)!
+
         calendarContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        calendarContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: 75).isActive=true
+        calendarContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: height + 30).isActive=true
         calendarContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
         calendarContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/2).isActive = true
         
@@ -116,7 +118,7 @@ class DateAndTimeController: UIViewController {
         startTimeContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         startTimeContainer.topAnchor.constraint(equalTo: calendarContainer.bottomAnchor, constant: 10).isActive = true
         startTimeContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-        startTimeContainer.heightAnchor.constraint(equalTo: calendarContainer.heightAnchor, multiplier: 1/4).isActive = true
+        startTimeContainer.heightAnchor.constraint(equalTo: calendarContainer.heightAnchor, multiplier: 1/3.5).isActive = true
 
         startTimeContainer.addSubview(startTimeLabel)
         startTimeLabel.centerYAnchor.constraint(equalTo: startTimeContainer.centerYAnchor).isActive = true
@@ -131,7 +133,7 @@ class DateAndTimeController: UIViewController {
         endTimeContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
         endTimeContainer.topAnchor.constraint(equalTo: startTimeContainer.bottomAnchor, constant: 10).isActive = true
         endTimeContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-        endTimeContainer.heightAnchor.constraint(equalTo: calendarContainer.heightAnchor, multiplier: 1/4).isActive = true
+        endTimeContainer.heightAnchor.constraint(equalTo: calendarContainer.heightAnchor, multiplier: 1/3.5).isActive = true
         
         endTimeContainer.addSubview(endTimeLabel)
         endTimeLabel.centerYAnchor.constraint(equalTo: endTimeContainer.centerYAnchor).isActive = true
@@ -149,22 +151,22 @@ class DateAndTimeController: UIViewController {
     }
     
     @objc func handleSave(){
-        dismiss(animated: true, completion: nil)
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "h:mm a"
+        dateFormatter.timeZone = TimeZone.current
         
+        let postController = PostController.controller!
+        
+        let startTime = dateFormatter.string(from: startTimePicker.date)
+        let endTime = dateFormatter.string(from: endTimePicker.date)
+        postController.date = makeDate(year: calenderView.currentYear, month: calenderView.currentMonthIndex, day: calenderView.currentDay, hr: 0, min: 0, sec: 0)
+        postController.startTime = startTime
+        postController.endTime = endTime
+        
+        postController.dateAndTimeLabel.setTitle("\(postController.date!.dayOfWeek()!)   \(startTime)-\(endTime)", for: .normal)
+        postController.dateAndTimeLabel.setTitleColor(UIColor.gray, for: .normal)
+        dismiss(animated: true, completion: nil)
     }
-//    @objc func rightBarBtnAction(sender: UIBarButtonItem) {
-//        if theme == .dark {
-//            sender.title = "Dark"
-//            theme = .light
-//            Style.themeLight()
-//        } else {
-//            sender.title = "Light"
-//            theme = .dark
-//            Style.themeDark()
-//        }
-//        self.view.backgroundColor=Style.bgColor
-//        calenderView.changeTheme()
-//    }
     
     let calenderView: CalenderView = {
         let v = CalenderView(theme: MyTheme.light)
@@ -172,6 +174,13 @@ class DateAndTimeController: UIViewController {
         v.translatesAutoresizingMaskIntoConstraints=false
         return v
     }()
+    
+    func makeDate(year: Int, month: Int, day: Int, hr: Int, min: Int, sec: Int) -> Date {
+        let calendar = Calendar(identifier: .gregorian)
+        // calendar.timeZone = TimeZone(secondsFromGMT: 0)!
+        let components = DateComponents(year: year, month: month, day: day, hour: hr, minute: min, second: sec)
+        return calendar.date(from: components)!
+    }
     
 }
 

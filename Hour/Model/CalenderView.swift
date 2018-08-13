@@ -52,7 +52,7 @@ class CalenderView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
     var presentYear = 0
     var todaysDate = 0
     var firstWeekDayOfMonth = 0   //(Sunday-Saturday 1-7)
-    var currentDay: String = "0"
+    var currentDay: Int = 0
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -146,7 +146,7 @@ class CalenderView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
             cell?.backgroundColor=Colors.darkRed
             let lbl = cell?.subviews[1] as! UILabel
             lbl.textColor=UIColor.white
-            currentDay = lbl.text!
+            currentDay = Int(lbl.text!)!
         }
     }
     
@@ -303,6 +303,16 @@ extension String {
         return String.dateFormatter.date(from: self)
     }
 }
+
+extension Date {
+    func dayOfWeek() -> String? {
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "EEEE, MMM d"
+        return dateFormatter.string(from: self).capitalized
+        // or use capitalized(with: locale) if you want
+    }
+}
+
 
 
 

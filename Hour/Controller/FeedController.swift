@@ -12,7 +12,8 @@ import GeoFire
 import CoreLocation
 
 class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLayout, CLLocationManagerDelegate, UISearchBarDelegate, UISearchResultsUpdating, UITabBarControllerDelegate{
-    
+    static var controller: FeedController?
+
     var headerId = "header"
     var ref: DatabaseReference!
     var geoFire: GeoFire!
@@ -30,7 +31,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     let cellId = "cellId"
     let searchController = UISearchController(searchResultsController: nil)
     
-    static var feed: FeedController?
     
     var categoryButtons = [FilterButton]()
     var categorySelected = [String]()
@@ -48,6 +48,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         scrollView.isScrollEnabled = true
         scrollView.showsHorizontalScrollIndicator = false
         scrollView.showsVerticalScrollIndicator = false
+        scrollView.backgroundColor = UIColor(white: 0.95, alpha: 0.5)
         return scrollView
     }()
     
@@ -86,7 +87,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        FeedController.feed = self
+        FeedController.controller = self
         
         for _ in 0...5{
             let butt = FilterButton()
@@ -94,8 +95,13 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             butt.backgroundColor = UIColor.white
             butt.contentEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 7);
             butt.addTarget(self, action: #selector(categoryButtonPressed), for: .touchUpInside)
-            butt.layer.cornerRadius = 8
-            butt.layer.masksToBounds = true
+            
+            butt.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
+            butt.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
+            butt.layer.shadowOpacity = 1.0
+            butt.layer.shadowRadius = 0.0
+            butt.layer.masksToBounds = false
+            butt.layer.cornerRadius = 4.0
             
         }
         
@@ -267,7 +273,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     @objc func handleNewPost(sender: BounceButton!){
         let newPostController = PostController(nibName: nil, bundle: nil)
-        newPostController.feedController = self
         let navController = UINavigationController(rootViewController: newPostController)
         present(navController, animated: true, completion: nil)
     }
@@ -296,7 +301,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.activity = post.activity
         feedCell.descriptionString = post.description
         feedCell.location = post.location
-        feedCell.time = post.time
+        feedCell.date = post.date
+        feedCell.startTime = post.startTime
+        feedCell.endTime = post.endTime
         feedCell.category = post.category
         feedCell.groupCount = post.groupCount
         
@@ -307,7 +314,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return UIEdgeInsetsMake(5, 5, 0, 5);
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 10, height: 300)
+        return CGSize(width: view.frame.width - 10, height: 220)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
