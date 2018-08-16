@@ -52,14 +52,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return scrollView
     }()
     
-    func tabBarController(_ tabBarController: UITabBarController, didSelect viewController: UIViewController) {
-        let tabBarIndex = tabBarController.selectedIndex
-        
-        if tabBarIndex == 0 {
-            let cv_attribute = collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
-            collectionView?.scrollRectToVisible((cv_attribute?.frame)!, animated: true)
-            
-        }
+    func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        print("Test")
     }
     
     @objc func categoryButtonPressed(sender: FilterButton!) {
@@ -97,8 +91,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             butt.addTarget(self, action: #selector(categoryButtonPressed), for: .touchUpInside)
             
             butt.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
-            butt.layer.shadowOffset = CGSize(width: 0.0, height: 2.0)
-            butt.layer.shadowOpacity = 1.0
+            butt.layer.shadowOffset = CGSize(width: 0.0, height: 1.0)
+            butt.layer.shadowOpacity = 0.5
             butt.layer.shadowRadius = 0.0
             butt.layer.masksToBounds = false
             butt.layer.cornerRadius = 4.0
@@ -182,11 +176,11 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func checkIfUserIsLoggedIn() {
         let postController = PostController(nibName: nil, bundle: nil)
         postController.feedController = self
+
         if (Auth.auth().currentUser == nil) {
             perform(#selector(handleLogout), with: nil, afterDelay: 0)
         }
         else{
-            print("checking")
             self.determineMyCurrentLocation()
         }
     }

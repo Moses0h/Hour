@@ -8,10 +8,14 @@
 import UIKit
 import Foundation
 
-class CustomTabBarController: UITabBarController {
+class CustomTabBarController: UITabBarController{
+    static var controller: CustomTabBarController?
+    
+    var pastIndex: Int = 0
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        CustomTabBarController.controller = self
         
         let feedController = FeedController(collectionViewLayout: UICollectionViewFlowLayout())
         let feedNavigationController = UINavigationController(rootViewController: feedController)
@@ -28,12 +32,12 @@ class CustomTabBarController: UITabBarController {
         notificationNavigationController.title = "Notification"
         notificationNavigationController.tabBarItem.image = #imageLiteral(resourceName: "notification")
         
-        let settingController = SettingController()
-        let settingNavigationController = UINavigationController(rootViewController: settingController)
-        settingNavigationController.title = "Profile"
-        settingNavigationController.tabBarItem.image = #imageLiteral(resourceName: "profile")
+        let profileController = ProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+        let profileNavigationController = UINavigationController(rootViewController: profileController)
+        profileNavigationController.title = "Profile"
+        profileNavigationController.tabBarItem.image = #imageLiteral(resourceName: "profile")
         
-        viewControllers = [feedNavigationController, messagesNavigationController, notificationNavigationController, settingNavigationController]
+        viewControllers = [feedNavigationController, messagesNavigationController, notificationNavigationController, profileNavigationController]
         tabBar.isTranslucent = false
         let topBorder = CALayer()
         topBorder.frame = CGRect(x: 0, y: 0, width: 1000, height: 0.5)
@@ -42,4 +46,38 @@ class CustomTabBarController: UITabBarController {
         tabBar.clipsToBounds = true
     }
     
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        let index = tabBar.items?.index(of: item)        
+        switch index {
+        case 0:
+            if(index == pastIndex)
+            {
+                let cv_attribute = FeedController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
+                if(cv_attribute != nil)
+                {
+                    FeedController.controller?.collectionView?.scrollRectToVisible((cv_attribute?.frame)!, animated: true)
+                }
+            }
+        case 1:
+            break
+        case 2:
+            break
+        case 3:
+            if(index == pastIndex)
+            {
+                let cv_attribute = ProfileController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
+                if(cv_attribute != nil)
+                {
+                    ProfileController.controller?.collectionView?.scrollRectToVisible((cv_attribute?.frame)!, animated: true)
+                }
+            }
+        default:
+            break
+            
+        }
+        pastIndex = index!
+
+    }
+    
 }
+

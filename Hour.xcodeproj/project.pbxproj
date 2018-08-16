@@ -7,14 +7,15 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		7B017EF42123F4D800FAD3A9 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B017EF32123F4D800FAD3A9 /* ProfileController.swift */; };
 		7B0F6BE8205FADFE001F394F /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BE7205FADFE001F394F /* FeedCell.swift */; };
 		7B0F6BEA206046D1001F394F /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BE9206046D1001F394F /* NewMessageController.swift */; };
 		7B0F6BEC20604923001F394F /* HUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BEB20604923001F394F /* HUser.swift */; };
 		7B0F6BEE206058EA001F394F /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BED206058EA001F394F /* Message.swift */; };
 		7B0F6BF120605F65001F394F /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BF020605F65001F394F /* UserCell.swift */; };
+		7B177E7A21252A9200A80519 /* ProfileHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B177E7921252A9200A80519 /* ProfileHeaderCell.swift */; };
 		7B17D75620470A3500C69A9E /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B17D75520470A3500C69A9E /* MessagesController.swift */; };
 		7B17D75820470BE800C69A9E /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B17D75720470BE800C69A9E /* NotificationController.swift */; };
-		7B17D75A20470D5200C69A9E /* SettingController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B17D75920470D5200C69A9E /* SettingController.swift */; };
 		7B2377DB203B7F1100BF41BE /* Post.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B2377DA203B7F1100BF41BE /* Post.swift */; };
 		7B3A991121095B3B00FF8959 /* CoreLocation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 7B3A991021095B3A00FF8959 /* CoreLocation.framework */; };
 		7B4015752053AF09008D2865 /* LocationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B4015742053AF09008D2865 /* LocationController.swift */; };
@@ -48,14 +49,15 @@
 /* Begin PBXFileReference section */
 		44ADCE65B926A864ABE4599B /* Pods-Hour.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hour.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Hour/Pods-Hour.debug.xcconfig"; sourceTree = "<group>"; };
 		78AF423D0C0E33D9C9FC9DBE /* Pods_Hour.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Hour.framework; path = "../../../../Hour-gsmqhhxksixhevchjnxfjoelzyrm/Build/Products/Debug-iphoneos/Pods_Hour.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
+		7B017EF32123F4D800FAD3A9 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		7B0F6BE7205FADFE001F394F /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		7B0F6BE9206046D1001F394F /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		7B0F6BEB20604923001F394F /* HUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUser.swift; sourceTree = "<group>"; };
 		7B0F6BED206058EA001F394F /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
 		7B0F6BF020605F65001F394F /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		7B177E7921252A9200A80519 /* ProfileHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderCell.swift; sourceTree = "<group>"; };
 		7B17D75520470A3500C69A9E /* MessagesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
 		7B17D75720470BE800C69A9E /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
-		7B17D75920470D5200C69A9E /* SettingController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingController.swift; sourceTree = "<group>"; };
 		7B2377DA203B7F1100BF41BE /* Post.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Post.swift; sourceTree = "<group>"; };
 		7B3A991021095B3A00FF8959 /* CoreLocation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreLocation.framework; path = System/Library/Frameworks/CoreLocation.framework; sourceTree = SDKROOT; };
 		7B4015742053AF09008D2865 /* LocationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationController.swift; sourceTree = "<group>"; };
@@ -118,6 +120,7 @@
 				7B0F6BE7205FADFE001F394F /* FeedCell.swift */,
 				7BFF98652061934F0062B159 /* ChatMessageCell.swift */,
 				7B72DBAB211A5C3C00065E53 /* FeedHeaderCell.swift */,
+				7B177E7921252A9200A80519 /* ProfileHeaderCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -153,9 +156,9 @@
 				7B0F6BE9206046D1001F394F /* NewMessageController.swift */,
 				7B9A8870204B735D00FEDAC3 /* ChatLogController.swift */,
 				7B17D75720470BE800C69A9E /* NotificationController.swift */,
-				7B17D75920470D5200C69A9E /* SettingController.swift */,
 				7B9A8876204C5C8600FEDAC3 /* DateAndTimeController.swift */,
 				7B4015742053AF09008D2865 /* LocationController.swift */,
+				7B017EF32123F4D800FAD3A9 /* ProfileController.swift */,
 			);
 			path = Controller;
 			sourceTree = "<group>";
@@ -349,15 +352,16 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7B17D75A20470D5200C69A9E /* SettingController.swift in Sources */,
 				7B0F6BE8205FADFE001F394F /* FeedCell.swift in Sources */,
 				7B9A8875204BFC3400FEDAC3 /* TextView.swift in Sources */,
 				7B4EDA5B203B48D100EA540E /* PostController.swift in Sources */,
 				7BB10E5A205280CB001AC82D /* BounceButton.swift in Sources */,
+				7B017EF42123F4D800FAD3A9 /* ProfileController.swift in Sources */,
 				7B4EDA592037E8CD00EA540E /* LoginController.swift in Sources */,
 				7B4D622F210C11030099C146 /* JoinButton.swift in Sources */,
 				7B6A08942050ED1A003178E6 /* CalenderView.swift in Sources */,
 				7B9A8871204B735D00FEDAC3 /* ChatLogController.swift in Sources */,
+				7B177E7A21252A9200A80519 /* ProfileHeaderCell.swift in Sources */,
 				7B0F6BF120605F65001F394F /* UserCell.swift in Sources */,
 				7BF4A2C92109A16B0060EDA3 /* FeedController.swift in Sources */,
 				7B17D75820470BE800C69A9E /* NotificationController.swift in Sources */,

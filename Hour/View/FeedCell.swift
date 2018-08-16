@@ -84,19 +84,28 @@ class FeedCell: UICollectionViewCell {
     
     var endTime: String? {
         didSet{
-            timeLabel.text = timeLabel.text! + " - \(endTime!)"
+            if(endTime != nil)
+            {
+                timeLabel.text = timeLabel.text! + " - \(endTime!)"
+            }
         }
     }
     
     var groupCount: Int? {
         didSet{
-            filtersLabel.text = filtersLabel.text! + "\(String(groupCount!)) people • $"
+            if(groupCount != nil)
+            {
+                filtersLabel.text = filtersLabel.text! + "\(String(groupCount!)) people • $"
+            }
         }
     }
     
     var category: String? {
         didSet{
-            filtersLabel.text = "\(category!) • "
+            if(category != nil)
+            {
+                filtersLabel.text = "\(category!) • "
+            }
         }
     }
 

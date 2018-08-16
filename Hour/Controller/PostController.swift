@@ -57,13 +57,18 @@ class PostController: UIViewController {
         setupViews()
     }
     
+    var didAppear = true
     override func viewDidAppear(_ animated: Bool) {
-        var height:CGFloat = 0
-        for view in scrollView.subviews {
-            height += view.bounds.size.height
+        if(didAppear)
+        {
+            var height:CGFloat = 0
+            for view in scrollView.subviews {
+                height += view.bounds.size.height
+            }
+            height += (self.navigationController?.navigationBar.frame.size.height)!
+            scrollView.contentSize = CGSize(width: self.view.frame.size.width, height: height)
+            didAppear = false
         }
-        height += (self.navigationController?.navigationBar.frame.size.height)!
-        scrollView.contentSize = CGSize(width: self.view.frame.size.width, height: height)
     }
     let activityContainer: UIView = {
         let ac = UIView()

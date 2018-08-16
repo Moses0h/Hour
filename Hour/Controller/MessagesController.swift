@@ -30,8 +30,8 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(handleNewMessage))
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(handleNewMessage))
+//        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
         observeUserMessages()
