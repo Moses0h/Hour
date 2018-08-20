@@ -21,6 +21,13 @@ class FeedCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    var index: Int?
+    {
+        didSet{
+            joinButton.index = index
+        }
+    }
+    
     var key: String?
     {
         didSet{
@@ -254,10 +261,17 @@ class FeedCell: UICollectionViewCell {
         locationLabel.rightAnchor.constraint(equalTo: rightAnchor, constant: 10).isActive = true
         
         addSubview(lineView)
-        lineView.topAnchor.constraint(equalTo: locationLabel.bottomAnchor, constant: 50).isActive = true
+        lineView.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -50).isActive = true
         lineView.widthAnchor.constraint(equalTo: widthAnchor, constant: -8).isActive = true
         lineView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         lineView.heightAnchor.constraint(equalToConstant: 4).isActive = true
+        
+        addSubview(joinButton)
+        joinButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        joinButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
+        joinButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/3).isActive = true
+//        joinButton.topAnchor.constraint(equalTo: lineView.bottomAnchor, constant: 10).isActive = true
+//        joinButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         
         //        addSubview(descriptionText)
 //        addSubview(joinButton)
@@ -267,9 +281,7 @@ class FeedCell: UICollectionViewCell {
 //        addConstraintsWithFormat(format: "V:|-12-[v0]", views: activityLabel)
 //        addConstraintsWithFormat(format: "V:|-12-[v0(44)]-4-[v1]", views: profileImageView, descriptionText)
 
-//        joinButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-//        joinButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-//        joinButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/3).isActive = true
+        
         
     }
 }

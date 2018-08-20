@@ -15,10 +15,9 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     static var controller: ProfileController?
     
     var headerId = "header"
-    var ref: DatabaseReference!
-    var geoFire: GeoFire!
-    var circleQuery: GFCircleQuery!
+    
     var posts = [Post]()
+    var postKeys = [String]()
 
     var keyArray: [String] = []
     var doFetch: Bool = false
@@ -48,16 +47,11 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         self.refreshView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.refreshPostArray()
-            self.refresher.endRefreshing()
         }
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        ProfileController.controller = self
-        
-        ref = Database.database().reference()
-        geoFire = GeoFire(firebaseRef: ref.child("posts_location"))
         
         refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
@@ -77,29 +71,40 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         
         collectionView?.dataSource = self
         
-        refreshPostArray()
     }
 
     func refreshPostArray() {
         self.posts.removeAll()
+        self.postKeys.removeAll()
         
         let uid = Auth.auth().currentUser!.uid
-        let reff = Database.database().reference().child("users").child(uid).child("posts")
-        var postKeys = [String]()
-        reff.observeSingleEvent(of: .value, with: { (snap) in
-            let total = Int(snap.childrenCount)
+        let users_uid_posts = Database.database().reference().child("users").child(uid).child("posts")
+
+        users_uid_posts.observeSingleEvent(of: .value, with: { (snap) in
             if let dictionary = snap.value as? [String: AnyObject]
             {
-                postKeys = Array(dictionary.keys)
-                for key in postKeys {
-                    Database.database().reference().child("posts").child(key).observeSingleEvent(of: .value, with: { (snapshot) in
-                        let post = Post(snapshot: snapshot)
-                        self.posts.append(post)
-                        if(total == self.posts.count)
-                        {
-                            self.collectionView?.reloadData()
-                        }
-                    })
+                self.postKeys = Array(dictionary.keys)
+                self.postKeys = self.postKeys.filter({ (key) -> Bool in
+                    return dictionary[key] as! Int == 1
+                })
+                if(self.postKeys.count != 0)
+                {
+                    for key in self.postKeys {
+                        Database.database().reference().child("posts").child(key).observeSingleEvent(of: .value, with: { (snapshot) in
+                            let post = Post(snapshot: snapshot)
+                            self.posts.append(post)
+                            if(self.postKeys.count == self.posts.count)
+                            {
+                                self.refresher.endRefreshing()
+                                self.collectionView?.reloadData()
+                            }
+                        })
+                    }
+                }
+                else
+                {
+                    self.refresher.endRefreshing()
+                    self.collectionView?.reloadData()
                 }
             }
         })
@@ -111,19 +116,23 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        let post : Post
-        post = posts[indexPath.row]
-        feedCell.key = post.key
-        feedCell.usersUid = post.usersUid as? [String : Int]
-        feedCell.name = post.name
-        feedCell.activity = post.activity
-        feedCell.descriptionString = post.description
-        feedCell.location = post.location
-        feedCell.date = post.date
-        feedCell.startTime = post.startTime
-        feedCell.endTime = post.endTime
-        feedCell.category = post.category
-        feedCell.groupCount = post.groupCount
+        if(indexPath.row < posts.count)
+        {
+            let post : Post
+            post = posts[indexPath.row]
+            feedCell.key = post.key
+            feedCell.usersUid = post.usersUid as? [String : Int]
+            feedCell.name = post.name
+            feedCell.activity = post.activity
+            feedCell.descriptionString = post.description
+            feedCell.location = post.location
+            feedCell.date = post.date
+            feedCell.startTime = post.startTime
+            feedCell.endTime = post.endTime
+            feedCell.category = post.category
+            feedCell.groupCount = post.groupCount
+            return feedCell
+        }
         return feedCell
     }
     

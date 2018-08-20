@@ -22,7 +22,7 @@ class NewMessageController: UITableViewController {
         super.viewDidLoad()
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(handleCreate))
+//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(handleCreate))
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
         fetchUser()
     }
@@ -40,12 +40,6 @@ class NewMessageController: UITableViewController {
     
     @objc func handleCancel() {
         dismiss(animated: true, completion: nil)
-    }
-    
-    @objc func handleCreate() {
-        dismiss(animated: true) {
-            self.messagesController?.createChat(self.selectedUsers, name: "")
-        }
     }
     
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {

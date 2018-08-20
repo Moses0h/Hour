@@ -28,6 +28,8 @@ class PostController: UIViewController {
 
     var categoryButtons : [CategoryButton] = [CategoryButton]()
     
+    var scrollView: UIScrollView!
+
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
     }
@@ -321,8 +323,6 @@ class PostController: UIViewController {
         
     }
     
-    var scrollView: UIScrollView!
-
     func setupViews() {
         
         /** ScrollView Setup **/
@@ -542,11 +542,28 @@ class PostController: UIViewController {
         {
             let key = ref.child("posts").childByAutoId().key
             let userID = Auth.auth().currentUser?.uid
+            var enabledChat = 0
             ref.child("users").child(userID!).observeSingleEvent(of: .value) { (snapshot) in
                 if(self.enableChatSwitch.isOn)
                 {
-                    MessagesController(nibName: nil, bundle: nil).createChat([HUser(snapshot: snapshot)], name: self.activityTextField.text!)
+                    enabledChat = 1
+                    MessagesController.controller?.createChat(uid: userID!, name: self.activityTextField.text!, key: key)
                 }
+                
+                //convert string address to CLLocation and set GeoFire location
+                let address = self.locationLabel.title(for: .normal)
+                let geoCoder = CLGeocoder()
+                geoCoder.geocodeAddressString(address!) { (placemarks, error) in
+                    guard
+                        let placemarks = placemarks,
+                        let location = placemarks.first?.location
+                        else {
+                            // handle no location found
+                            return
+                    }
+                    self.geoFire.setLocation(location, forKey: "\(key)")
+                }
+                
                 if let dictionary = snapshot.value as? [String: AnyObject] {
                     let dateFormatter:DateFormatter = DateFormatter()
                     dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
@@ -562,9 +579,10 @@ class PostController: UIViewController {
                                 "category": self.category,
                                 "date": self.date!.dayOfWeek()!,
                                 "startTime": self.startTime,
-                                "endTime": self.endTime] as [String : Any]
+                                "endTime": self.endTime,
+                                "enabledChat": enabledChat] as [String : Any]
                     let child = ["/posts/\(key)": post]
-                    let userPosts = [key: true]
+                    let userPosts = [key: -1]
                     
                     //update FireBase posts
                     let ref = Database.database().reference().child("users").child(userID!).child("posts")
@@ -586,19 +604,7 @@ class PostController: UIViewController {
                         }
                     }
                     
-                    //convert string address to CLLocation and set GeoFire location
-                    let address = self.locationLabel.title(for: .normal)
-                    let geoCoder = CLGeocoder()
-                    geoCoder.geocodeAddressString(address!) { (placemarks, error) in
-                        guard
-                            let placemarks = placemarks,
-                            let location = placemarks.first?.location
-                            else {
-                                // handle no location found
-                                return
-                        }
-                        self.geoFire.setLocation(location, forKey: "\(key)")
-                    }
+                   
                     
                 }
             }

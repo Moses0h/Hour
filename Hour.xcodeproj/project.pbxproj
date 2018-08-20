@@ -8,6 +8,9 @@
 
 /* Begin PBXBuildFile section */
 		7B017EF42123F4D800FAD3A9 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B017EF32123F4D800FAD3A9 /* ProfileController.swift */; };
+		7B0DE8A2212604520058DE6D /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A1212604520058DE6D /* Notification.swift */; };
+		7B0DE8A42126045C0058DE6D /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A32126045C0058DE6D /* NotificationCell.swift */; };
+		7B0DE8A6212632BC0058DE6D /* DetailedPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A5212632BC0058DE6D /* DetailedPostController.swift */; };
 		7B0F6BE8205FADFE001F394F /* FeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BE7205FADFE001F394F /* FeedCell.swift */; };
 		7B0F6BEA206046D1001F394F /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BE9206046D1001F394F /* NewMessageController.swift */; };
 		7B0F6BEC20604923001F394F /* HUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BEB20604923001F394F /* HUser.swift */; };
@@ -40,6 +43,7 @@
 		7BB10E5A205280CB001AC82D /* BounceButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB10E59205280CB001AC82D /* BounceButton.swift */; };
 		7BB10E5C20528EE8001AC82D /* CategoryButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BB10E5B20528EE8001AC82D /* CategoryButton.swift */; };
 		7BC9D87D2069AED400E45D2C /* Group.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BC9D87C2069AED400E45D2C /* Group.swift */; };
+		7BE39059212914A600199023 /* AcceptButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BE39058212914A600199023 /* AcceptButton.swift */; };
 		7BF4A2C92109A16B0060EDA3 /* FeedController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BF4A2C82109A16B0060EDA3 /* FeedController.swift */; };
 		7BFF1D35205F8A9600A5A4C4 /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7BFF1D34205F8A9600A5A4C4 /* GoogleService-Info.plist */; };
 		7BFF98662061934F0062B159 /* ChatMessageCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7BFF98652061934F0062B159 /* ChatMessageCell.swift */; };
@@ -50,6 +54,9 @@
 		44ADCE65B926A864ABE4599B /* Pods-Hour.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Hour.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Hour/Pods-Hour.debug.xcconfig"; sourceTree = "<group>"; };
 		78AF423D0C0E33D9C9FC9DBE /* Pods_Hour.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Hour.framework; path = "../../../../Hour-gsmqhhxksixhevchjnxfjoelzyrm/Build/Products/Debug-iphoneos/Pods_Hour.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B017EF32123F4D800FAD3A9 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
+		7B0DE8A1212604520058DE6D /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
+		7B0DE8A32126045C0058DE6D /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
+		7B0DE8A5212632BC0058DE6D /* DetailedPostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedPostController.swift; sourceTree = "<group>"; };
 		7B0F6BE7205FADFE001F394F /* FeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeedCell.swift; sourceTree = "<group>"; };
 		7B0F6BE9206046D1001F394F /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		7B0F6BEB20604923001F394F /* HUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUser.swift; sourceTree = "<group>"; };
@@ -84,6 +91,7 @@
 		7BB10E59205280CB001AC82D /* BounceButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BounceButton.swift; sourceTree = "<group>"; };
 		7BB10E5B20528EE8001AC82D /* CategoryButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryButton.swift; sourceTree = "<group>"; };
 		7BC9D87C2069AED400E45D2C /* Group.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Group.swift; sourceTree = "<group>"; };
+		7BE39058212914A600199023 /* AcceptButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AcceptButton.swift; sourceTree = "<group>"; };
 		7BF4A2C82109A16B0060EDA3 /* FeedController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FeedController.swift; sourceTree = "<group>"; };
 		7BFF1D34205F8A9600A5A4C4 /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = "GoogleService-Info.plist"; path = "../GoogleService-Info.plist"; sourceTree = "<group>"; };
 		7BFF98652061934F0062B159 /* ChatMessageCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatMessageCell.swift; sourceTree = "<group>"; };
@@ -121,6 +129,7 @@
 				7BFF98652061934F0062B159 /* ChatMessageCell.swift */,
 				7B72DBAB211A5C3C00065E53 /* FeedHeaderCell.swift */,
 				7B177E7921252A9200A80519 /* ProfileHeaderCell.swift */,
+				7B0DE8A32126045C0058DE6D /* NotificationCell.swift */,
 			);
 			path = View;
 			sourceTree = "<group>";
@@ -128,19 +137,14 @@
 		7B2377D9203B7ED900BF41BE /* Model */ = {
 			isa = PBXGroup;
 			children = (
-				7B6A08912050ED1A003178E6 /* CalenderView.swift */,
-				7B6A08922050ED1A003178E6 /* MonthView.swift */,
-				7B6A08932050ED1A003178E6 /* WeekdaysView.swift */,
+				7BE390572129145100199023 /* Calender */,
 				7B2377DA203B7F1100BF41BE /* Post.swift */,
 				7B9A8874204BFC3400FEDAC3 /* TextView.swift */,
-				7BB10E59205280CB001AC82D /* BounceButton.swift */,
-				7BB10E5B20528EE8001AC82D /* CategoryButton.swift */,
-				7BA7D960211F7696004B37CA /* FilterButton.swift */,
 				7B9E41DC2054FD75000468B6 /* LocationSearchTable.swift */,
 				7B0F6BEB20604923001F394F /* HUser.swift */,
 				7B0F6BED206058EA001F394F /* Message.swift */,
 				7BC9D87C2069AED400E45D2C /* Group.swift */,
-				7B4D622E210C11030099C146 /* JoinButton.swift */,
+				7B0DE8A1212604520058DE6D /* Notification.swift */,
 			);
 			path = Model;
 			sourceTree = "<group>";
@@ -152,6 +156,7 @@
 				7BF4A2C82109A16B0060EDA3 /* FeedController.swift */,
 				7B4EDA582037E8CD00EA540E /* LoginController.swift */,
 				7B4EDA5A203B48D100EA540E /* PostController.swift */,
+				7B0DE8A5212632BC0058DE6D /* DetailedPostController.swift */,
 				7B17D75520470A3500C69A9E /* MessagesController.swift */,
 				7B0F6BE9206046D1001F394F /* NewMessageController.swift */,
 				7B9A8870204B735D00FEDAC3 /* ChatLogController.swift */,
@@ -186,6 +191,7 @@
 			children = (
 				7B0F6BEF20605E89001F394F /* View */,
 				7B2377D9203B7ED900BF41BE /* Model */,
+				7BE390562129142000199023 /* Buttons */,
 				7B4EDA572037E89E00EA540E /* Controller */,
 				7B88F8BD20376C78005D204C /* AppDelegate.swift */,
 				7B88F8C120376C78005D204C /* Main.storyboard */,
@@ -195,6 +201,28 @@
 				7B88F8C920376C78005D204C /* Info.plist */,
 			);
 			path = Hour;
+			sourceTree = "<group>";
+		};
+		7BE390562129142000199023 /* Buttons */ = {
+			isa = PBXGroup;
+			children = (
+				7BB10E59205280CB001AC82D /* BounceButton.swift */,
+				7BB10E5B20528EE8001AC82D /* CategoryButton.swift */,
+				7BA7D960211F7696004B37CA /* FilterButton.swift */,
+				7B4D622E210C11030099C146 /* JoinButton.swift */,
+				7BE39058212914A600199023 /* AcceptButton.swift */,
+			);
+			path = Buttons;
+			sourceTree = "<group>";
+		};
+		7BE390572129145100199023 /* Calender */ = {
+			isa = PBXGroup;
+			children = (
+				7B6A08912050ED1A003178E6 /* CalenderView.swift */,
+				7B6A08922050ED1A003178E6 /* MonthView.swift */,
+				7B6A08932050ED1A003178E6 /* WeekdaysView.swift */,
+			);
+			path = Calender;
 			sourceTree = "<group>";
 		};
 		8FC314FEDD9FC039C0DB5078 /* Frameworks */ = {
@@ -237,7 +265,7 @@
 			isa = PBXProject;
 			attributes = {
 				LastSwiftUpdateCheck = 0920;
-				LastUpgradeCheck = 0920;
+				LastUpgradeCheck = 0940;
 				ORGANIZATIONNAME = "Moses Oh";
 				TargetAttributes = {
 					7B88F8B920376C77005D204C = {
@@ -357,6 +385,7 @@
 				7B4EDA5B203B48D100EA540E /* PostController.swift in Sources */,
 				7BB10E5A205280CB001AC82D /* BounceButton.swift in Sources */,
 				7B017EF42123F4D800FAD3A9 /* ProfileController.swift in Sources */,
+				7B0DE8A42126045C0058DE6D /* NotificationCell.swift in Sources */,
 				7B4EDA592037E8CD00EA540E /* LoginController.swift in Sources */,
 				7B4D622F210C11030099C146 /* JoinButton.swift in Sources */,
 				7B6A08942050ED1A003178E6 /* CalenderView.swift in Sources */,
@@ -370,6 +399,7 @@
 				7B0F6BEC20604923001F394F /* HUser.swift in Sources */,
 				7B17D75620470A3500C69A9E /* MessagesController.swift in Sources */,
 				7B72DBAC211A5C3C00065E53 /* FeedHeaderCell.swift in Sources */,
+				7BE39059212914A600199023 /* AcceptButton.swift in Sources */,
 				7B0F6BEA206046D1001F394F /* NewMessageController.swift in Sources */,
 				7B51D65F2042D03D006B24C9 /* CustomTabBarController.swift in Sources */,
 				7B9E41DD2054FD75000468B6 /* LocationSearchTable.swift in Sources */,
@@ -381,6 +411,8 @@
 				7B88F8BE20376C78005D204C /* AppDelegate.swift in Sources */,
 				7B6A08962050ED1A003178E6 /* WeekdaysView.swift in Sources */,
 				7B4015752053AF09008D2865 /* LocationController.swift in Sources */,
+				7B0DE8A6212632BC0058DE6D /* DetailedPostController.swift in Sources */,
+				7B0DE8A2212604520058DE6D /* Notification.swift in Sources */,
 				7B6A08952050ED1A003178E6 /* MonthView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -421,6 +453,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -428,6 +461,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
@@ -478,6 +512,7 @@
 				CLANG_WARN_BOOL_CONVERSION = YES;
 				CLANG_WARN_COMMA = YES;
 				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
 				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
 				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
 				CLANG_WARN_EMPTY_BODY = YES;
@@ -485,6 +520,7 @@
 				CLANG_WARN_INFINITE_RECURSION = YES;
 				CLANG_WARN_INT_CONVERSION = YES;
 				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
 				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
 				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
 				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;

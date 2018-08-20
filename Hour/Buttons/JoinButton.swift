@@ -21,12 +21,14 @@ class JoinButton: UIButton {
     }
     
     var postKey: String?
+    var index: Int?
+    
     var currentStatus: status = status.unknown
     var ref = Database.database().reference()
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.transform = CGAffineTransform(scaleX: 1.1, y:1.1)
-        
+        backgroundColor = UIColor.purple
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 3, options: .allowUserInteraction, animations: {
             self.transform = CGAffineTransform.identity
         }, completion: nil)
@@ -62,18 +64,28 @@ class JoinButton: UIButton {
         case .join:
             setUserStatus(stat: .requested)
             let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid")
+            let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts")
             let value = [(Auth.auth().currentUser?.uid)!: 0] as [String: Any]
+            let userValue = [postKey!: 0] as [String: Any]
+            FeedController.controller?.posts[index!].usersUid[(Auth.auth().currentUser?.uid)!] = 0
             ref.updateChildValues(value)
+            userRef.updateChildValues(userValue)
             break
         case .joined:
             setUserStatus(stat: .join)
             let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
+            let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts").child(postKey!)
+            FeedController.controller?.posts[index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
             ref.removeValue()
+            userRef.removeValue()
             break
         case .requested:
             setUserStatus(stat: .join)
             let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
+            let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts").child(postKey!)
+            FeedController.controller?.posts[index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
             ref.removeValue()
+            userRef.removeValue()
             break
         case .unknown:
             break

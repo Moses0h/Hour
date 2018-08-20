@@ -81,7 +81,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        FeedController.controller = self
         
         for _ in 0...5{
             let butt = FilterButton()
@@ -146,6 +145,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         locationManager.requestAlwaysAuthorization()
         
         checkIfUserIsLoggedIn()
+        setupOtherObservers()
+    }
+    
+    func setupOtherObservers(){
     }
     
     func updateSearchResults(for searchController: UISearchController) {
@@ -176,6 +179,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     func checkIfUserIsLoggedIn() {
         let postController = PostController(nibName: nil, bundle: nil)
         postController.feedController = self
+//        perform(#selector(handleLogout), with: nil, afterDelay: 0)
 
         if (Auth.auth().currentUser == nil) {
             perform(#selector(handleLogout), with: nil, afterDelay: 0)
@@ -244,6 +248,10 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                     })
                 }
             }
+            else
+            {
+                self.dispatchGroup.leave()
+            }
         }
         
         dispatchGroup.notify(queue: .main) {
@@ -288,7 +296,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         {
             post = posts[indexPath.row]
         }
-        
+        feedCell.index = indexPath.row
         feedCell.key = post.key
         feedCell.usersUid = post.usersUid as? [String : Int]
         feedCell.name = post.name
@@ -300,7 +308,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.endTime = post.endTime
         feedCell.category = post.category
         feedCell.groupCount = post.groupCount
-        
+    
         return feedCell
     }
     
@@ -324,7 +332,25 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return CGSize(width: view.frame.width, height: 120)
     }
     
-
+//    override func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+//        let detailedPostController = DetailedPostController()
+//        detailedPostController.feed = collectionView.cellForItem(at: indexPath) as! FeedCell
+//        detailedPostController.hidesBottomBarWhenPushed = true
+//        navigationController?.pushViewController(detailedPostController, animated: true)
+//        
+//    }
+    
+//    override func collectionView(_ collectionView: UICollectionView, didHighlightItemAt indexPath: IndexPath) {
+//        let cell = collectionView.cellForItem(at: indexPath) as! FeedCell
+//        cell.backgroundColor = UIColor.lightGray
+//        cell.lineView.backgroundColor = UIColor.gray
+//    }
+//
+//    override func collectionView(_ collectionView: UICollectionView, didUnhighlightItemAt indexPath: IndexPath) {
+//        let cell = collectionView.cellForItem(at: indexPath) as! FeedCell
+//        cell.backgroundColor = UIColor.white
+//        cell.lineView.backgroundColor = UIColor(white: 0.95, alpha: 1)
+//    }
 }
 
 

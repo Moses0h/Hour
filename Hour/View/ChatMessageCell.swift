@@ -50,6 +50,7 @@ class ChatMessageCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
+        
         addSubview(bubbleView)
         addSubview(textView)
         addSubview(profileImageView)

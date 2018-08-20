@@ -10,6 +10,7 @@ import UIKit
 import Firebase
 
 class MessagesController: UITableViewController {
+    static var controller: MessagesController?
     
     var messages = [Message]()
     var messagesDictionary = [String: Message]()
@@ -30,54 +31,38 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
-//        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "New", style: .plain, target: self, action: #selector(handleNewMessage))
-//        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-        
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
-        observeUserMessages()
     }
+    
     var timer: Timer?
     
     func observeUserMessages(){
+        
         groups.removeAll()
         groupsUid.removeAll()
         guard let uid = Auth.auth().currentUser?.uid else{
             return
         }
-        
-        let reff = Database.database().reference().child("users").child(uid).child("groups")
-        reff.observe(.value) { (snap) in
-            let total = Int(snap.childrenCount)
-            reff.observe(.childAdded) { (snapshot) in
-                let groupRef = Database.database().reference().child("groups").child(snapshot.key)
-                groupRef.observeSingleEvent(of: .value) { (_snapshot) in
-                    if let dictionary = _snapshot.value as? [String: AnyObject] {
-                        self.groups.append(Group(uid: snapshot.key, groupName: dictionary["name"] as? String, lastMessage: dictionary["last message"] as? String, timestamp: dictionary["timestamp"] as? Double))
-                        self.groupsUid.append(snapshot.key)
-                        if(self.groups.count == total)
-                        {
-                            self.attemptReloadOfTable()
-                            for group in self.groups {
-                                let groupRef = Database.database().reference().child("groups").child(group.uid!)
-                                groupRef.observe(.childChanged, with: { (_snapshot) in
-                                    print("ChildChanged")
-                                    
-                                    if let dictionary = _snapshot.value as? [String: AnyObject] {
-                                        let index : Int = self.groupsUid.index(of: _snapshot.key)!
-                                        self.groups[index].groupName = dictionary["name"] as? String
-                                        self.groups[index].lastMessage = dictionary["last message"] as? String
-                                        self.groups[index].timestamp = dictionary["timestamp"] as? Double
-                                        self.tableView.reloadData()
-                                    }
-                                })
-                            }
-                        }
+        let user_uid_groups = Database.database().reference().child("users").child(uid).child("groups")
+        user_uid_groups.observe(.childAdded) { (groupUid) in
+            print(groupUid)
+            let groups_uid = Database.database().reference().child("groups").child(groupUid.key)
+            groups_uid.observe(.value, with: { (groupData) in
+                if let dictionary = groupData.value as? [String: AnyObject] {
+                    let group = Group(uid: groupData.key, groupName: dictionary["name"] as? String, lastMessage: dictionary["last message"] as? String, timestamp: dictionary["timestamp"] as? Double)
+                    if(self.groupsUid.contains(group.uid!))
+                    {
+                        self.groups[self.groupsUid.index(of: group.uid!)!] = group
                     }
+                    else
+                    {
+                        self.groups.append(group)
+                        self.groupsUid.append(group.uid!)
+                    }
+                    self.tableView.reloadData()
                 }
-            }
+            })
         }
-        
-        
     }
     
     private func attemptReloadOfTable() {
@@ -96,31 +81,13 @@ class MessagesController: UITableViewController {
         present(navController, animated: true, completion: nil)
     }
     
-    func createChat(_ users: [HUser], name: String) {
-        print("creating chat")
-        let chatLogController = ChatLogController(collectionViewLayout: UICollectionViewFlowLayout())
-        
-        chatLogController.hidesBottomBarWhenPushed = true
-        
+    func createChat(uid: String, name: String, key: String) {
         let groupsRef = Database.database().reference().child("groups")
-        let groupKey = groupsRef.childByAutoId()
-        var groupUsers = [String: Any]()
-        for user in users {
-            groupUsers[user.uid!] = true
-        }
-        let groupsChildValues = ["name":name,"users": groupUsers] as [String : Any]
-        groupsRef.updateChildValues([groupKey.key : groupsChildValues])
+        let groupsChildValues = ["name":name,"users": [uid: -1]] as [String : Any]
+        groupsRef.updateChildValues([key : groupsChildValues])
         
-    Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("groups").updateChildValues([groupKey.key : true])
-        for user in users {
-            let userRef = Database.database().reference().child("users").child(user.uid!).child("groups")
-            userRef.updateChildValues([groupKey.key : true])
-        }
-        chatLogController.groupKey = groupKey.key
-        chatLogController.users = users
-        
-        navigationController?.pushViewController(chatLogController, animated: true)
-        
+        let userRef = Database.database().reference().child("users").child(uid).child("groups")
+        userRef.updateChildValues([key : -1])
     }
     
     func showChatControllerForUser(_ group: Group) {
@@ -149,17 +116,6 @@ class MessagesController: UITableViewController {
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         let group = groups[indexPath.row]
         showChatControllerForUser(group)
-//        guard let chatPartnerId = message.chatPartnerId() else {
-//            return
-//        }
-        
-//        let ref = Database.database().reference().child("users").child(chatPartnerId)
-//        ref.observeSingleEvent(of: .value) { (snapshot) in
-//            let user = HUser(snapshot: snapshot)
-//            user.uid = chatPartnerId
-//            self.showChatControllerForUser(users)
-//        }
-//        showChatControllerForUser(user: User)
     }
 }
 extension MessagesController {
