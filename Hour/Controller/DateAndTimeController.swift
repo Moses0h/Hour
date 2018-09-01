@@ -99,26 +99,36 @@ class DateAndTimeController: UIViewController {
         calenderView.myCollectionView.collectionViewLayout.invalidateLayout()
     }
     
+    let mainView: UIView = {
+        let mv = UIView()
+        mv.translatesAutoresizingMaskIntoConstraints = false
+        return mv
+    }()
+    
     func setupViews(){
-        view.addSubview(calendarContainer)
-        let height = (self.navigationController?.navigationBar.frame.size.height)!
+        view.addSubview(mainView)
+        mainView.heightAnchor.constraint(equalTo: view.heightAnchor).isActive = true
+        mainView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        mainView.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        mainView.centerYAnchor.constraint(equalTo: view.centerYAnchor).isActive = true
 
-        calendarContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
-        calendarContainer.topAnchor.constraint(equalTo: view.topAnchor, constant: height + 30).isActive=true
-        calendarContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-        calendarContainer.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1/2).isActive = true
+        mainView.addSubview(calendarContainer)
+        calendarContainer.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
+        calendarContainer.topAnchor.constraint(equalTo: mainView.safeAreaLayoutGuide.topAnchor, constant: 10).isActive=true
+        calendarContainer.widthAnchor.constraint(equalTo: mainView.widthAnchor, constant: -20).isActive = true
+        calendarContainer.heightAnchor.constraint(equalTo: mainView.heightAnchor, multiplier: 1/1.88).isActive = true
         
         calendarContainer.addSubview(calenderView)
-        calenderView.topAnchor.constraint(equalTo: calendarContainer.topAnchor, constant: 10).isActive = true
+        calenderView.topAnchor.constraint(equalTo: calendarContainer.topAnchor, constant: 5).isActive = true
         calenderView.centerXAnchor.constraint(equalTo: calendarContainer.centerXAnchor).isActive = true
         calenderView.widthAnchor.constraint(equalTo: calendarContainer.widthAnchor, constant: -10).isActive = true
         calenderView.heightAnchor.constraint(equalTo: calendarContainer.heightAnchor).isActive = true
         
-        view.addSubview(startTimeContainer)
-        startTimeContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        mainView.addSubview(startTimeContainer)
+        startTimeContainer.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
         startTimeContainer.topAnchor.constraint(equalTo: calendarContainer.bottomAnchor, constant: 10).isActive = true
-        startTimeContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-        startTimeContainer.heightAnchor.constraint(equalTo: calendarContainer.heightAnchor, multiplier: 1/3.5).isActive = true
+        startTimeContainer.widthAnchor.constraint(equalTo: mainView.widthAnchor, constant: -20).isActive = true
+        startTimeContainer.heightAnchor.constraint(equalToConstant: 100).isActive = true
 
         startTimeContainer.addSubview(startTimeLabel)
         startTimeLabel.centerYAnchor.constraint(equalTo: startTimeContainer.centerYAnchor).isActive = true
@@ -129,11 +139,11 @@ class DateAndTimeController: UIViewController {
         startTimePicker.centerYAnchor.constraint(equalTo: startTimeContainer.centerYAnchor).isActive = true
         startTimePicker.widthAnchor.constraint(equalTo: startTimeContainer.widthAnchor, multiplier: 1/2).isActive = true
         
-        view.addSubview(endTimeContainer)
-        endTimeContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        mainView.addSubview(endTimeContainer)
+        endTimeContainer.centerXAnchor.constraint(equalTo: mainView.centerXAnchor).isActive = true
         endTimeContainer.topAnchor.constraint(equalTo: startTimeContainer.bottomAnchor, constant: 10).isActive = true
-        endTimeContainer.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -20).isActive = true
-        endTimeContainer.heightAnchor.constraint(equalTo: calendarContainer.heightAnchor, multiplier: 1/3.5).isActive = true
+        endTimeContainer.widthAnchor.constraint(equalTo: mainView.widthAnchor, constant: -20).isActive = true
+        endTimeContainer.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
         endTimeContainer.addSubview(endTimeLabel)
         endTimeLabel.centerYAnchor.constraint(equalTo: endTimeContainer.centerYAnchor).isActive = true

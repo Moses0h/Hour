@@ -23,38 +23,6 @@ class ProfileHeaderCell: UICollectionViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     
-    let activityLabel: UILabel = {
-        let a = UILabel()
-        a.font = UIFont.init(name: "Helvetica Neue", size: 18)
-        a.textColor = UIColor.darkText
-        a.numberOfLines = 2
-        a.translatesAutoresizingMaskIntoConstraints = false
-        return a
-    }()
-    
-    let postActivityImage: UIImageView = {
-        let imageView = UIImageView(image: #imageLiteral(resourceName: "write"))
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        return imageView
-        
-    }()
-    
-    let postActivityContainer: BounceButton = {
-        let pac = BounceButton()
-        pac.backgroundColor = UIColor.white
-        pac.translatesAutoresizingMaskIntoConstraints = false
-        pac.layer.cornerRadius = 5
-        pac.layer.masksToBounds = true
-        pac.isUserInteractionEnabled = true
-        
-        pac.addTarget(self, action: #selector(FeedController.handleNewPost), for: .touchUpInside)
-        pac.isUserInteractionEnabled = true
-        
-        
-        return pac
-    }()
-    
     let label: UILabel = {
         let a = UILabel()
         a.font = UIFont.init(name: "Helvetica Neue", size: 18)
@@ -64,53 +32,31 @@ class ProfileHeaderCell: UICollectionViewCell{
         return a
     }()
     
+    var eventImageView: UIImageView = {
+        let imageView = UIImageView()
+        imageView.backgroundColor = UIColor.lightGray
+        imageView.layer.borderWidth = 1
+        //        imageView.layer.borderColor = UIColor.lightGray.cgColor
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 50
+        imageView.layer.masksToBounds = true
+        imageView.isUserInteractionEnabled = true
+        
     
+        return imageView
+    }()
     
     
     func setupViews() {
-        backgroundColor = UIColor(white: 0.95, alpha: 1)
+        backgroundColor = UIColor.cyan
+        addSubview(eventImageView)
+        eventImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
+        eventImageView.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
+        eventImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        eventImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
-        let feedController: FeedController = FeedController.controller!
-        addSubview(feedController.filterContainer)
-        feedController.filterContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        feedController.filterContainer.topAnchor.constraint(equalTo: topAnchor, constant: 5).isActive = true
-        feedController.filterContainer.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-        feedController.filterContainer.heightAnchor.constraint(equalTo: heightAnchor, multiplier: 1/3).isActive = true
-        print(feedController.filterContainer.frame.height)
-        
-        
-        var buttons: [FilterButton] = (feedController.categoryButtons)
-        for button in buttons{
-            let index: Int = buttons.index(of: button)!
-            
-            feedController.filterContainer.addSubview(button)
-            button.centerYAnchor.constraint(equalTo: feedController.filterContainer.centerYAnchor).isActive = true
-            button.heightAnchor.constraint(equalTo: feedController.filterContainer.heightAnchor, constant: -3).isActive = true
-            
-            if(index == 0)
-            {
-                button.leftAnchor.constraint(equalTo: feedController.filterContainer.leftAnchor, constant: 5).isActive = true
-            }
-            else
-            {
-                button.leftAnchor.constraint(equalTo: buttons[index - 1].rightAnchor, constant: 6).isActive = true
-            }
-            
-        }
-        
-        addSubview(postActivityContainer)
-        postActivityContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        postActivityContainer.topAnchor.constraint(equalTo: feedController.filterContainer.bottomAnchor, constant: 5).isActive = true
-        postActivityContainer.widthAnchor.constraint(equalTo: widthAnchor, constant: -10).isActive = true
-        postActivityContainer.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
-        
-        postActivityContainer.addSubview(postActivityImage)
-        postActivityImage.leftAnchor.constraint(equalTo: postActivityContainer.leftAnchor, constant: 15).isActive = true
-        postActivityImage.centerYAnchor.constraint(equalTo: postActivityContainer.centerYAnchor).isActive = true
-        
-        postActivityContainer.addSubview(label)
-        label.leftAnchor.constraint(equalTo: postActivityImage.rightAnchor, constant: 10).isActive = true
-        label.centerYAnchor.constraint(equalTo: postActivityContainer.centerYAnchor).isActive = true
+       
     }
     
 }

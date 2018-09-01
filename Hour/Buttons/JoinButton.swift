@@ -28,7 +28,6 @@ class JoinButton: UIButton {
     
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         self.transform = CGAffineTransform(scaleX: 1.1, y:1.1)
-        backgroundColor = UIColor.purple
         UIView.animate(withDuration: 1, delay: 0, usingSpringWithDamping: 0.5, initialSpringVelocity: 3, options: .allowUserInteraction, animations: {
             self.transform = CGAffineTransform.identity
         }, completion: nil)
@@ -50,9 +49,10 @@ class JoinButton: UIButton {
 //        setTitleColor(UIColor.gray, for: .normal)
 //        backgroundColor = UIColor(white: 0.95, alpha: 1)
         titleLabel?.font = UIFont.init(name: "Helvetica Neue", size: 18)!
+        titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        layer.cornerRadius = 5
-        layer.masksToBounds = true
+//        layer.cornerRadius = 5
+//        layer.masksToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -75,17 +75,28 @@ class JoinButton: UIButton {
             setUserStatus(stat: .join)
             let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
             let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts").child(postKey!)
-            FeedController.controller?.posts[index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
+            
+            let groupRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("groups").child(postKey!)
+            
             ref.removeValue()
             userRef.removeValue()
+            groupRef.removeValue { (err, ref) in
+                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
+            }
+            
             break
         case .requested:
             setUserStatus(stat: .join)
             let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
             let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts").child(postKey!)
-            FeedController.controller?.posts[index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
+            
+            let groupRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("groups").child(postKey!)
+
             ref.removeValue()
             userRef.removeValue()
+            groupRef.removeValue { (err, ref) in
+                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
+            }
             break
         case .unknown:
             break
@@ -114,29 +125,29 @@ class JoinButton: UIButton {
     func setUserStatus(stat: status) {
         switch stat {
         case .host:
-            setTitleColor(UIColor.gray, for: .normal)
-            backgroundColor = UIColor(white: 0.95, alpha: 1)
+            setTitleColor(UIColor.lightGray, for: .normal)
+//            backgroundColor = UIColor(white: 0.95, alpha: 1)
             setTitle("Owner", for: .normal)
             isUserInteractionEnabled = false
             currentStatus = .host
             break
         case .join:
-            setTitleColor(UIColor.white, for: .normal)
-            backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
+            setTitleColor(UIColor.darkGray, for: .normal)
+//            backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
             setTitle("Join", for: .normal)
             currentStatus = .join
             isUserInteractionEnabled = true
             break
         case .joined:
-            setTitleColor(UIColor.gray, for: .normal)
-            backgroundColor = UIColor(white: 0.95, alpha: 1)
+            setTitleColor(UIColor.darkGray, for: .normal)
+//            backgroundColor = UIColor(white: 0.95, alpha: 1)
             setTitle("Joined", for: .normal)
             currentStatus = .joined
             isUserInteractionEnabled = true
             break
         case .requested:
-            setTitleColor(UIColor.gray, for: .normal)
-            backgroundColor = UIColor(white: 0.95, alpha: 1)
+            setTitleColor(UIColor.darkGray, for: .normal)
+//            backgroundColor = UIColor(white: 0.95, alpha: 1)
             setTitle("Requested", for: .normal)
             currentStatus = .requested
             isUserInteractionEnabled = true

@@ -63,6 +63,11 @@ class MessagesController: UITableViewController {
                 }
             })
         }
+        user_uid_groups.observe(.childRemoved) { (groupUid) in
+            self.groups.remove(at: self.groupsUid.index(of: groupUid.key)!)
+            self.groupsUid.remove(at: self.groupsUid.index(of: groupUid.key)!)
+            self.tableView.reloadData()
+        }
     }
     
     private func attemptReloadOfTable() {

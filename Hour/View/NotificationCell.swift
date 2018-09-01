@@ -56,7 +56,10 @@ class NotificationCell: UITableViewCell
     func userRequested() {
         acceptButton.userUid = notification?.userUid
         acceptButton.postUid = notification?.postUid
+        declineButton.userUid = notification?.userUid
+        declineButton.postUid = notification?.postUid
         acceptButton.index = index
+        declineButton.index = index
         let users_uid = Database.database().reference().child("users").child(acceptButton.userUid!)
         users_uid.observeSingleEvent(of: .value) { (user) in
             if let dictionary = user.value as? [String: AnyObject]
@@ -77,9 +80,13 @@ class NotificationCell: UITableViewCell
             }
         }
         
+        addSubview(declineButton)
+        declineButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
+        declineButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -15).isActive = true
+        
         addSubview(acceptButton)
         acceptButton.centerYAnchor.constraint(equalTo: centerYAnchor).isActive = true
-        acceptButton.rightAnchor.constraint(equalTo: rightAnchor, constant: -50).isActive = true
+        acceptButton.rightAnchor.constraint(equalTo: declineButton.leftAnchor, constant: -5).isActive = true
     }
     
     let textView: UILabel = {
@@ -94,10 +101,15 @@ class NotificationCell: UITableViewCell
     
     let acceptButton: AcceptButton = {
         let ab = AcceptButton()
-        ab.setImage(#imageLiteral(resourceName: "checked"), for: .normal)
+        ab.setImage(#imageLiteral(resourceName: "accept"), for: .normal)
         return ab
     }()
     
+    let declineButton: DeclineButton = {
+        let db = DeclineButton()
+        db.setImage(#imageLiteral(resourceName: "decline"), for: .normal)
+        return db
+    }()
     
     func setupViews() {
         backgroundColor = UIColor.white

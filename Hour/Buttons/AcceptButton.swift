@@ -46,25 +46,36 @@ class AcceptButton: UIButton {
     
     @objc func handleAccept() {
         let users_uid_posts = Database.database().reference().child("users").child(userUid!).child("posts")
-        let postValue = [postUid!: 1]
-        users_uid_posts.updateChildValues(postValue) { (err, ref) in
-            NotificationController.controller?.notifications.remove(at: self.index!)
-            NotificationController.controller?.tableView.reloadData()
-        }
-        let posts_uid_usersUid = Database.database().reference().child("posts").child(postUid!).child("usersUid")
-        let userValue = [userUid! : 1]
-        posts_uid_usersUid.updateChildValues(userValue)
         
-        if(enabledChat)!
-        {
-            let users_uid_group = Database.database().reference().child("users").child(userUid!).child("groups")
-            let groupValue = [postUid!: 1]
-            users_uid_group.updateChildValues(groupValue)
-            
-            let groups_uid_users = Database.database().reference().child("groups").child(postUid!).child("users")
-            let usersValue = [userUid!: 1]
-            groups_uid_users.updateChildValues(usersValue)
+        //make sure the other user is still in request state
+        users_uid_posts.observeSingleEvent(of: .value) { (snapshot) in
+            if(snapshot.hasChild(self.postUid!))
+            {
+                let postValue = [self.postUid!: 1]
+                users_uid_posts.updateChildValues(postValue) { (err, ref) in
+                    NotificationController.controller?.notifications.remove(at: self.index!)
+                    NotificationController.controller?.tableView.reloadData()
+                }
+                let posts_uid_usersUid = Database.database().reference().child("posts").child(self.postUid!).child("usersUid")
+                let userValue = [self.userUid! : 1]
+                posts_uid_usersUid.updateChildValues(userValue)
+                
+                if(self.enabledChat)!
+                {
+                    let users_uid_group = Database.database().reference().child("users").child(self.userUid!).child("groups")
+                    let groupValue = [self.postUid!: 1]
+                    users_uid_group.updateChildValues(groupValue)
+                    
+                    let groups_uid_users = Database.database().reference().child("groups").child(self.postUid!).child("users")
+                    let usersValue = [self.userUid!: 1]
+                    groups_uid_users.updateChildValues(usersValue)
+                }
+            }
+            else
+            {
+                NotificationController.controller?.notifications.remove(at: self.index!)
+                NotificationController.controller?.tableView.reloadData()
+            }
         }
-        
     }
 }

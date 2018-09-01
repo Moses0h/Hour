@@ -11,7 +11,8 @@ import Firebase
 import GeoFire
 import CoreLocation
 
-class ProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout{
+class ProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
+    
     static var controller: ProfileController?
     
     var headerId = "header"
@@ -66,12 +67,35 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.register(UICollectionViewCell.self, forSupplementaryViewOfKind:
+        collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
             UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
         
         collectionView?.dataSource = self
         
     }
+    
+    @objc func handleSelectProfileImageView() {
+        let picker = UIImagePickerController()
+        picker.delegate = self
+        picker.allowsEditing = true
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
+            selectedImageFromPicker = editedImage
+        }
+        else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
+            selectedImageFromPicker = originalImage
+        }
+        
+        header?.eventImageView.image = selectedImageFromPicker
+        dismiss(animated: true, completion: nil)
+    }
+    
 
     func refreshPostArray() {
         self.posts.removeAll()
@@ -85,7 +109,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
             {
                 self.postKeys = Array(dictionary.keys)
                 self.postKeys = self.postKeys.filter({ (key) -> Bool in
-                    return dictionary[key] as! Int == 1
+                    return dictionary[key] as! Int != 0
                 })
                 if(self.postKeys.count != 0)
                 {
@@ -121,6 +145,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
             let post : Post
             post = posts[indexPath.row]
             feedCell.key = post.key
+            feedCell.index = indexPath.row
             feedCell.usersUid = post.usersUid as? [String : Int]
             feedCell.name = post.name
             feedCell.activity = post.activity
@@ -147,10 +172,12 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         return 5
     }
     
+    var header: ProfileHeaderCell?
+    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath)
-        header.backgroundColor = UIColor.lightGray
-        return header
+        header = (collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! ProfileHeaderCell)
+        header?.eventImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.handleSelectProfileImageView)))
+        return header!
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

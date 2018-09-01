@@ -119,10 +119,17 @@ class CalenderView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
             let calcDate = indexPath.row-firstWeekDayOfMonth+2
             cell.isHidden=false
             cell.lbl.text="\(calcDate)"
-            if calcDate < todaysDate && currentYear == presentYear && currentMonthIndex == presentMonthIndex {
+        
+            if(calcDate == todaysDate && monthView.currentMonthIndex == presentMonthIndex-1 && monthView.currentYear == presentYear)
+            {
+                cell.lbl.textColor = UIColor.red
+                cell.isUserInteractionEnabled=true
+            }
+            else if calcDate < todaysDate && currentYear == presentYear && currentMonthIndex == presentMonthIndex {
                 cell.isUserInteractionEnabled=false
                 cell.lbl.textColor = UIColor.lightGray
-            } else {
+            }
+            else {
                 cell.isUserInteractionEnabled=true
                 cell.lbl.textColor = Style.activeCellLblColor
             }
@@ -133,13 +140,21 @@ class CalenderView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         print("selected \(indexPath)")
         let cell=collectionView.cellForItem(at: indexPath)
+        let calcDate = indexPath.row-firstWeekDayOfMonth+2
+        
         if(cell?.backgroundColor == Colors.darkRed)
         {
-            print("unselected this shit")
             cell?.isSelected = false
             cell?.backgroundColor=UIColor.clear
             let lbl = cell?.subviews[1] as! UILabel
-            lbl.textColor = Style.activeCellLblColor
+            if(calcDate == todaysDate && monthView.currentMonthIndex == presentMonthIndex-1 && monthView.currentYear == presentYear)
+            {
+                lbl.textColor = UIColor.red
+            }
+            else
+            {
+                lbl.textColor = Style.activeCellLblColor
+            }
         }
         else
         {
@@ -152,9 +167,19 @@ class CalenderView: UIView, UICollectionViewDelegate, UICollectionViewDataSource
     
     func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
         let cell=collectionView.cellForItem(at: indexPath)
+        let calcDate = indexPath.row-firstWeekDayOfMonth+2
+
         cell?.backgroundColor=UIColor.clear
         let lbl = cell?.subviews[1] as! UILabel
-        lbl.textColor = Style.activeCellLblColor
+        
+        if(calcDate == todaysDate && monthView.currentMonthIndex == presentMonthIndex-1 && monthView.currentYear == presentYear)
+        {
+            lbl.textColor = UIColor.red
+        }
+        else
+        {
+            lbl.textColor = Style.activeCellLblColor
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {

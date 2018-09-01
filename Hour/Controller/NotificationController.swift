@@ -58,6 +58,7 @@ class NotificationController: UITableViewController {
         
     }
     
+  
     func observeNotifications() {
         let uid = Auth.auth().currentUser?.uid
         let user_post = Database.database().reference().child("users").child(uid!).child("posts")
@@ -75,6 +76,7 @@ class NotificationController: UITableViewController {
             }
         }
         user_post.observe(.childAdded) { (posts) in
+            print("new ")
             /* if current user is owner of the post, observe the users in that post */
             if(posts.value as? Int == -1)
             {

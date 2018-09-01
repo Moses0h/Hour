@@ -180,12 +180,28 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         let postController = PostController(nibName: nil, bundle: nil)
         postController.feedController = self
 //        perform(#selector(handleLogout), with: nil, afterDelay: 0)
-
-        if (Auth.auth().currentUser == nil) {
-            perform(#selector(handleLogout), with: nil, afterDelay: 0)
+        let users = Database.database().reference().child("users")
+        if(Auth.auth().currentUser != nil)
+        {
+            users.observeSingleEvent(of: .value) { (users) in
+                if(users.hasChild(Auth.auth().currentUser!.uid))
+                {
+                    print("passed")
+                    self.determineMyCurrentLocation()
+                    MessagesController.controller?.observeUserMessages()
+                    NotificationController.controller?.observeNotifications()
+                    ProfileController.controller?.viewDidLoad()
+                    ProfileController.controller?.refreshPostArray()
+                }
+                else
+                {
+                    self.perform(#selector(self.handleLogout), with: nil, afterDelay: 0)
+                }
+            }
         }
-        else{
-            self.determineMyCurrentLocation()
+        else
+        {
+            self.perform(#selector(self.handleLogout), with: nil, afterDelay: 0)
         }
     }
     
@@ -279,6 +295,12 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         present(navController, animated: true, completion: nil)
     }
     
+    @objc func handleFullView() {
+        let fullPostController = FullPostController(nibName: nil, bundle: nil)
+        fullPostController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(fullPostController, animated: true)
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if ((searchController.isActive && searchController.searchBar.text != "") || categorySelected.count != 0){
             return filteredPosts.count
@@ -308,7 +330,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.endTime = post.endTime
         feedCell.category = post.category
         feedCell.groupCount = post.groupCount
-    
+        feedCell.time = post.time
+        
         return feedCell
     }
     
@@ -316,7 +339,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         return UIEdgeInsetsMake(5, 5, 0, 5);
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 10, height: 220)
+        return CGSize(width: view.frame.width - 10, height: 230)
     }
 
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {

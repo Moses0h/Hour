@@ -25,22 +25,18 @@ class CustomTabBarController: UITabBarController{
         
         let messagesController = MessagesController(nibName: nil, bundle: nil)
         MessagesController.controller = messagesController
-        MessagesController.controller?.observeUserMessages()
         let messagesNavigationController = UINavigationController(rootViewController: messagesController)
         messagesNavigationController.title = "Messages"
         messagesNavigationController.tabBarItem.image = #imageLiteral(resourceName: "messages")
         
         let notificationController = NotificationController(nibName: nil, bundle: nil)
         NotificationController.controller = notificationController
-        NotificationController.controller?.observeNotifications()
         let notificationNavigationController = UINavigationController(rootViewController: notificationController)
         notificationNavigationController.title = "Notification"
         notificationNavigationController.tabBarItem.image = #imageLiteral(resourceName: "notification")
         
         let profileController = ProfileController(collectionViewLayout: UICollectionViewFlowLayout())
         ProfileController.controller = profileController
-        ProfileController.controller?.viewDidLoad()
-        ProfileController.controller?.refreshPostArray()
         let profileNavigationController = UINavigationController(rootViewController: profileController)
         profileNavigationController.title = "Profile"
         profileNavigationController.tabBarItem.image = #imageLiteral(resourceName: "profile")

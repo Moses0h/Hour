@@ -11,7 +11,7 @@ import CoreLocation
 import Firebase
 import GeoFire
 
-class PostController: UIViewController {
+class PostController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     static var controller: PostController?
     
     var geoFire: GeoFire!
@@ -36,6 +36,35 @@ class PostController: UIViewController {
     
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    @objc func handleSelectProfileImageView() {
+        let picker = UIImagePickerController()
+        picker.navigationBar.tintColor = UIColor.white
+        picker.delegate = self
+        picker.allowsEditing = true
+        present(picker, animated: true, completion: nil)
+    }
+    
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+        
+        var selectedImageFromPicker: UIImage?
+        
+        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
+            selectedImageFromPicker = editedImage
+        }
+        else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
+            selectedImageFromPicker = originalImage
+        }
+        
+        let scaledImage = selectedImageFromPicker?.resize(targetSize: CGSize(width: 100, height: 100))
+        let decompressedImage = UIImage(data: (scaledImage?.jpeg(.low))!)
+        let descaledImage = UIImage(data: (decompressedImage?.jpeg(.low))!)
+        postImageView.setImage(descaledImage, for: .normal)
+        postImageView.imageView?.contentMode = .scaleAspectFit
+        postImageView.layer.borderColor = UIColor.clear.cgColor
+        postImageContainer.image = decompressedImage
+        dismiss(animated: true, completion: nil)
     }
     
     override func viewDidLoad() {
@@ -72,6 +101,39 @@ class PostController: UIViewController {
             didAppear = false
         }
     }
+    
+    let postImageContainer: UIImageView = {
+        let ac = UIImageView()
+        ac.contentMode = .scaleAspectFill
+        ac.layer.masksToBounds = true
+        ac.translatesAutoresizingMaskIntoConstraints = false
+        return ac
+    }()
+    
+    let postImageEffect: UIVisualEffectView = {
+        let blurr = UIBlurEffect(style: UIBlurEffectStyle.light)
+        let ev = UIVisualEffectView(effect: blurr)
+        ev.layer.masksToBounds = true
+        ev.translatesAutoresizingMaskIntoConstraints = false
+        return ev
+    }()
+    
+    let postImageView: UIButton = {
+        let imageView = UIButton()
+        imageView.imageView?.contentMode = .scaleAspectFit
+        imageView.setImage(#imageLiteral(resourceName: "addPhoto"), for: .normal)
+        imageView.backgroundColor = UIColor.clear
+        imageView.imageView?.contentMode = .center
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 8
+        imageView.layer.masksToBounds = true
+        imageView.isUserInteractionEnabled = true
+        imageView.layer.borderWidth = 3
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
+        imageView.addTarget(self, action: #selector(handleSelectProfileImageView), for: .touchUpInside)
+        return imageView
+    }()
+    
     let activityContainer: UIView = {
         let ac = UIView()
         ac.backgroundColor = UIColor.white
@@ -168,6 +230,42 @@ class PostController: UIViewController {
     
     @objc func categoryPressed(sender: CategoryButton!) {
         category = (sender.titleLabel?.text)!
+        if(category == "Nature")
+        {
+//            postImageView.image = #imageLiteral(resourceName: "nature")
+            postImageView.backgroundColor = UIColor.green
+            postImageView.contentMode = .scaleAspectFit
+        }
+        if(category == "Trips")
+        {
+//            postImageView.image = #imageLiteral(resourceName: "trips")
+            postImageView.backgroundColor = UIColor.yellow
+            postImageView.contentMode = .scaleAspectFit
+        }
+        if(category == "Nightlife")
+        {
+//            postImageView.image = #imageLiteral(resourceName: "nightlife")
+            postImageView.backgroundColor = UIColor.purple
+            postImageView.contentMode = .scaleAspectFit
+        }
+        if(category == "Sports")
+        {
+//            postImageView.image = #imageLiteral(resourceName: "sports")
+            postImageView.backgroundColor = UIColor.brown
+            postImageView.contentMode = .scaleAspectFit
+        }
+        if(category == "Food & Drink")
+        {
+//            postImageView.image = #imageLiteral(resourceName: "food&drink")
+            postImageView.backgroundColor = UIColor.red
+            postImageView.contentMode = .scaleAspectFit
+        }
+        if(category == "Concerts")
+        {
+//            postImageView.image = #imageLiteral(resourceName: "concerts")
+            postImageView.backgroundColor = UIColor.blue
+            postImageView.contentMode = .scaleAspectFit
+        }
         for button in categoryButtons {
             if(button.titleLabel?.text != category)
             {
@@ -329,9 +427,25 @@ class PostController: UIViewController {
         scrollView.isScrollEnabled = true
         view.addSubview(scrollView)
         
+        
+        /** Activity Image Setup **/
+        scrollView.addSubview(postImageContainer)
+        postImageContainer.SetContainer(otherContainer: scrollView, top: 0, height: 150)
+
+        postImageContainer.addSubview(postImageEffect)
+        postImageEffect.widthAnchor.constraint(equalTo: postImageContainer.widthAnchor).isActive = true
+        postImageEffect.heightAnchor.constraint(equalTo: postImageContainer.heightAnchor).isActive = true
+        postImageEffect.topAnchor.constraint(equalTo: postImageContainer.topAnchor).isActive = true
+
+        scrollView.addSubview(postImageView)
+        postImageView.centerXAnchor.constraint(equalTo: postImageContainer.centerXAnchor).isActive  = true
+        postImageView.centerYAnchor.constraint(equalTo: postImageContainer.centerYAnchor).isActive  = true
+        postImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        postImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        
         /** Activity Setup **/
         scrollView.addSubview(activityContainer)
-        activityContainer.SetContainer(otherContainer: scrollView, top: 10, height: 50)
+        activityContainer.SetContainer(otherContainer: postImageContainer, top: 5, height: 50)
         activityContainer.addSubview(activityTextField)
         activityTextField.centerYAnchor.constraint(equalTo: activityContainer.centerYAnchor).isActive = true
         activityTextField.leftAnchor.constraint(equalTo: activityContainer.leftAnchor, constant: 10).isActive = true
@@ -616,70 +730,7 @@ class PostController: UIViewController {
     
     
     
-//    func timeAgoSinceDate(_ date:Date, numericDates:Bool = false) -> String {
-//        
-//        let calendar = NSCalendar.current
-//        let unitFlags: Set<Calendar.Component> = [.minute, .hour, .day, .weekOfYear, .month, .year, .second]
-//        let now = Date()
-//        let earliest = now < date ? now : date
-//        let latest = (earliest == now) ? date : now
-//        let components = calendar.dateComponents(unitFlags, from: earliest,  to: latest)
-//        
-//        if (components.year! >= 2) {
-//            return "\(components.year!) years ago"
-//        } else if (components.year! >= 1){
-//            if (numericDates){
-//                return "1 year ago"
-//            } else {
-//                return "Last year"
-//            }
-//        } else if (components.month! >= 2) {
-//            return "\(components.month!) months ago"
-//        } else if (components.month! >= 1){
-//            if (numericDates){
-//                return "1 month ago"
-//            } else {
-//                return "Last month"
-//            }
-//        } else if (components.weekOfYear! >= 2) {
-//            return "\(components.weekOfYear!) weeks ago"
-//        } else if (components.weekOfYear! >= 1){
-//            if (numericDates){
-//                return "1 week ago"
-//            } else {
-//                return "Last week"
-//            }
-//        } else if (components.day! >= 2) {
-//            return "\(components.day!) days ago"
-//        } else if (components.day! >= 1){
-//            if (numericDates){
-//                return "1 day ago"
-//            } else {
-//                return "Yesterday"
-//            }
-//        } else if (components.hour! >= 2) {
-//            return "\(components.hour!) hours ago"
-//        } else if (components.hour! >= 1){
-//            if (numericDates){
-//                return "1 hour ago"
-//            } else {
-//                return "An hour ago"
-//            }
-//        } else if (components.minute! >= 2) {
-//            return "\(components.minute!) minutes ago"
-//        } else if (components.minute! >= 1){
-//            if (numericDates){
-//                return "1 minute ago"
-//            } else {
-//                return "A minute ago"
-//            }
-//        } else if (components.second! >= 3) {
-//            return "\(components.second!) seconds ago"
-//        } else {
-//            return "Just now"
-//        }
-//        
-//    }
+
 
 }
 
@@ -700,6 +751,30 @@ extension UIView {
     }
     
 }
+
+extension UIImage {
+    enum JPEGQuality: CGFloat {
+        case lowest  = 0
+        case low     = 0.25
+        case medium  = 0.5
+        case high    = 0.75
+        case highest = 1
+    }
+    
+    /// Returns the data for the specified image in JPEG format.
+    /// If the image object’s underlying image data has been purged, calling this function forces that data to be reloaded into memory.
+    /// - returns: A data object containing the JPEG data, or nil if there was a problem generating the data. This function may return nil if the image has no data or if the underlying CGImageRef contains data in an unsupported bitmap format.
+    func jpeg(_ quality: JPEGQuality) -> Data? {
+        return UIImageJPEGRepresentation(self, quality.rawValue)
+    }
+    
+    func resize(targetSize: CGSize) -> UIImage {
+        return UIGraphicsImageRenderer(size:targetSize).image { _ in
+            self.draw(in: CGRect(origin: .zero, size: targetSize))
+        }
+    }
+}
+
 
 extension PostController
 {

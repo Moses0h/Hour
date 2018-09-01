@@ -23,6 +23,7 @@ struct Post {
     var groupCount: Int!
     var distance: Double!
     var category: String!
+    var time: Double!
     
     init(snapshot: DataSnapshot){
         
@@ -43,6 +44,8 @@ struct Post {
             endTime = dictionary["endTime"] as? String
             groupCount = dictionary["groupCount"] as? Int
             category = dictionary["category"] as? String
+            time = dictionary["time"] as? Double
+            
         }
     }
     
