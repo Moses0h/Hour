@@ -12,7 +12,6 @@ class CustomTabBarController: UITabBarController{
     static var controller: CustomTabBarController?
     
     var pastIndex: Int = 0
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         CustomTabBarController.controller = self
@@ -28,19 +27,19 @@ class CustomTabBarController: UITabBarController{
         let messagesNavigationController = UINavigationController(rootViewController: messagesController)
         messagesNavigationController.title = "Messages"
         messagesNavigationController.tabBarItem.image = #imageLiteral(resourceName: "messages")
-        
+
         let notificationController = NotificationController(nibName: nil, bundle: nil)
         NotificationController.controller = notificationController
         let notificationNavigationController = UINavigationController(rootViewController: notificationController)
         notificationNavigationController.title = "Notification"
         notificationNavigationController.tabBarItem.image = #imageLiteral(resourceName: "notification")
-        
+
         let profileController = ProfileController(collectionViewLayout: UICollectionViewFlowLayout())
         ProfileController.controller = profileController
         let profileNavigationController = UINavigationController(rootViewController: profileController)
         profileNavigationController.title = "Profile"
         profileNavigationController.tabBarItem.image = #imageLiteral(resourceName: "profile")
-        
+
         viewControllers = [feedNavigationController, messagesNavigationController, notificationNavigationController, profileNavigationController]
         tabBar.isTranslucent = false
         let topBorder = CALayer()
@@ -49,6 +48,7 @@ class CustomTabBarController: UITabBarController{
         tabBar.layer.addSublayer(topBorder)
         tabBar.clipsToBounds = true
     }
+    
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
         let index = tabBar.items?.index(of: item)        

@@ -32,6 +32,7 @@ class MessagesController: UITableViewController {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
         tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
+        observeUserMessages()
     }
     
     var timer: Timer?

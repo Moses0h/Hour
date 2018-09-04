@@ -17,14 +17,95 @@ class FeedCell: UICollectionViewCell {
         self.setupViews()
     }
     
+    override func awakeFromNib() {
+        super.awakeFromNib()
+    }
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
-    var time: Double?
+    var otherUsersViews = [UIButton]()
+
+    var post: Post?
     {
         didSet{
-            timeSince.text = timeAgoSinceDate(Date(timeIntervalSince1970: time!/1000))
+            for user in otherUsersViews {
+                user.removeFromSuperview()
+            }
+            otherUsersViews.removeAll()
+            activityLabel.text = post?.activity
+            profileName.text = post?.name
+            timeSince.text = timeAgoSinceDate(Date(timeIntervalSince1970: (post?.time)!/1000))
+            locationLabel.text = post?.location
+            dateLabel.text = post?.date
+            timeLabel.text = post?.startTime
+            timeLabel.text = timeLabel.text! + " - \(post?.endTime ?? "")"
+            filtersLabel.text = "\(post?.category! ?? "") • "
+            if let groupCount = post!.groupCount
+            {
+                filtersLabel.text = filtersLabel.text! + "\(groupCount) people • $"
+            }
+            if(post?.imageUrl! != "")
+            {
+                self.eventImageView.loadImageUsingCache(urlString: (post?.imageUrl!)!)
+            }
+            let usersUid = post?.usersUid
+            let uid : String! = Auth.auth().currentUser?.uid
+            if(usersUid![uid] != nil)
+            {
+                if(usersUid![uid]!["status"] as! Int == -1)
+                {
+                    joinButton.setUserStatus(stat: JoinButton.status.host)
+                }
+                else if(usersUid![uid]!["status"] as! Int == 1)
+                {
+                    joinButton.setUserStatus(stat: JoinButton.status.joined)
+                }
+                else if(usersUid![uid]!["status"] as! Int == 0)
+                {
+                    joinButton.setUserStatus(stat: JoinButton.status.requested)
+                }
+            }
+            else
+            {
+                joinButton.setUserStatus(stat: JoinButton.status.join)
+            }
+        
+         
+            for(_, element) in (usersUid?.enumerated())! {
+                if let dictionary = element.value as? [String: AnyObject]
+                {
+                    if(dictionary["status"] as! Int == -1)
+                    {
+                        profileImageView.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (post?.key)!)
+                    }
+                    else if(dictionary["status"] as! Int == 1)
+                    {
+                        let view = getOtherUserView()
+                        view.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (post?.key)!)
+                        otherUsersViews.append(view)
+                    }
+                }
+            }
+            for(index, element) in (otherUsersViews.enumerated()) {
+                if(index == 0)
+                {
+                    addSubview(element)
+                    element.rightAnchor.constraint(equalTo: rightAnchor, constant: -20).isActive = true
+                    element.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                    element.heightAnchor.constraint(equalToConstant: 30).isActive = true
+                    element.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                }
+                else
+                {
+                    insertSubview(element, belowSubview: otherUsersViews[index-1])
+                    element.rightAnchor.constraint(equalTo: otherUsersViews[index-1].leftAnchor, constant: 10).isActive = true
+                    element.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                    element.heightAnchor.constraint(equalToConstant: 30).isActive = true
+                    element.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                }
+            }
+            
         }
     }
     
@@ -42,93 +123,18 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    var name: String?
-    {
-        didSet{
-            profileName.text = name
-        }
+    func getOtherUserView() -> UIButton{
+        let imageView = UIButton()
+        imageView.layer.borderWidth = 0.5
+        imageView.backgroundColor = UIColor.white
+        imageView.layer.borderColor = UIColor.black.cgColor
+        imageView.contentMode = .scaleAspectFit
+        imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.layer.cornerRadius = 15
+        imageView.layer.masksToBounds = true
+        return imageView
     }
     
-    var activity: String? {
-        didSet {
-            activityLabel.text = activity
-        }
-    }
-    
-    var descriptionString: String? {
-        didSet {
-            descriptionText.text = descriptionString
-        }
-    }
-    
-    var usersUid: [String: Int]? {
-        didSet{
-            let uid : String! = Auth.auth().currentUser?.uid
-
-            if(usersUid![uid] == -1)
-            {
-                joinButton.setUserStatus(stat: JoinButton.status.host)
-            }
-            else if(usersUid![uid] == 1)
-            {
-                joinButton.setUserStatus(stat: JoinButton.status.joined)
-            }
-            else if(usersUid![uid] == 0)
-            {
-                joinButton.setUserStatus(stat: JoinButton.status.requested)
-            }
-            else
-            {
-                joinButton.setUserStatus(stat: JoinButton.status.join)
-            }
-        }
-    }
-    
-    var location: String? {
-        didSet{
-            locationLabel.text = location
-        }
-    }
-    
-    var date: String? {
-        didSet{
-            dateLabel.text = date
-        }
-    }
-    
-    var startTime: String? {
-        didSet{
-            timeLabel.text = startTime
-        }
-    }
-    
-    var endTime: String? {
-        didSet{
-            if(endTime != nil)
-            {
-                timeLabel.text = timeLabel.text! + " - \(endTime!)"
-            }
-        }
-    }
-    
-    var groupCount: Int? {
-        didSet{
-            if(groupCount != nil)
-            {
-                filtersLabel.text = filtersLabel.text! + "\(String(groupCount!)) people • $"
-            }
-        }
-    }
-    
-    var category: String? {
-        didSet{
-            if(category != nil)
-            {
-                filtersLabel.text = "\(category!) • "
-            }
-        }
-    }
-
     let filtersLabel: UILabel = {
         let a = UILabel()
         a.font = UIFont.init(name: "Helvetica Neue", size: 12)
@@ -196,9 +202,9 @@ class FeedCell: UICollectionViewCell {
     
     let eventImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.backgroundColor = UIColor.lightGray
-        imageView.layer.borderWidth = 1
-//        imageView.layer.borderColor = UIColor.lightGray.cgColor
+        imageView.backgroundColor = UIColor.white
+        imageView.layer.borderWidth = 0.5
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 8
@@ -225,11 +231,11 @@ class FeedCell: UICollectionViewCell {
         return d
     }()
     
-    let profileImageView: UIImageView = {
-        let imageView = UIImageView()
+    let profileImageView: UIButton = {
+        let imageView = UIButton()
         imageView.backgroundColor = UIColor.lightGray
-        imageView.layer.borderWidth = 1
-//        imageView.layer.borderColor = UIColor.lightGray.cgColor
+        imageView.layer.borderWidth = 0.5
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 20
@@ -389,30 +395,6 @@ class FeedCell: UICollectionViewCell {
         profileImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
         profileImageView.widthAnchor.constraint(equalToConstant: 40).isActive = true
         profileImageView.heightAnchor.constraint(equalToConstant: 40).isActive = true
-
-        addSubview(userImageView1)
-        userImageView1.rightAnchor.constraint(equalTo: rightAnchor, constant: -20).isActive = true
-        userImageView1.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView1.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView1.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-        
-        addSubview(userImageView2)
-        userImageView2.rightAnchor.constraint(equalTo: userImageView1.leftAnchor, constant: 10).isActive = true
-        userImageView2.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView2.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView2.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-        
-        addSubview(userImageView3)
-        userImageView3.rightAnchor.constraint(equalTo: userImageView2.leftAnchor, constant: 10).isActive = true
-        userImageView3.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView3.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView3.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
-        
-        addSubview(userImageView4)
-        userImageView4.rightAnchor.constraint(equalTo: userImageView3.leftAnchor, constant: 10).isActive = true
-        userImageView4.widthAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView4.heightAnchor.constraint(equalToConstant: 30).isActive = true
-        userImageView4.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
         
         addSubview(profileName)
         profileName.topAnchor.constraint(equalTo: profileImageView.topAnchor, constant: 6).isActive = true
@@ -423,9 +405,8 @@ class FeedCell: UICollectionViewCell {
         timeSince.leftAnchor.constraint(equalTo: profileImageView.rightAnchor, constant: 5).isActive = true
         
         addSubview(joinButton)
-        joinButton.rightAnchor.constraint(equalTo: rightAnchor, constant: 10).isActive = true
+        joinButton.rightAnchor.constraint(equalTo: lineView.rightAnchor, constant: -10).isActive = true
         joinButton.bottomAnchor.constraint(equalTo: bottomAnchor, constant: -10).isActive = true
-        joinButton.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 1/3).isActive = true
         
         addSubview(heartButton)
         heartButton.leftAnchor.constraint(equalTo: leftAnchor, constant: 15).isActive = true
@@ -439,16 +420,7 @@ class FeedCell: UICollectionViewCell {
         clickableView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         clickableView.bottomAnchor.constraint(equalTo: lineView.topAnchor).isActive = true
         clickableView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
-//        joinButton.topAnchor.constraint(equalTo: lineView.bottomAnchor, constant: 10).isActive = true
-//        joinButton.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
-        
-        //        addSubview(descriptionText)
-//        addSubview(joinButton)
-        
-//        addConstraintsWithFormat(format: "H:|-8-[v0(44)]-8-[v1]|", views: profileImageView, activityLabel)
-//        addConstraintsWithFormat(format: "H:|-4-[v0]-4-|", views: descriptionText)
-//        addConstraintsWithFormat(format: "V:|-12-[v0]", views: activityLabel)
-//        addConstraintsWithFormat(format: "V:|-12-[v0(44)]-4-[v1]", views: profileImageView, descriptionText)
+    
     }
     
         func timeAgoSinceDate(_ date:Date, numericDates:Bool = false) -> String {

@@ -11,7 +11,7 @@ import Firebase
 
 class AcceptButton: UIButton {
     
-    var enabledChat: Bool?
+    var enabledChat = false
     var userUid: String?
     var postUid: String?
     var index: Int?
@@ -56,11 +56,11 @@ class AcceptButton: UIButton {
                     NotificationController.controller?.notifications.remove(at: self.index!)
                     NotificationController.controller?.tableView.reloadData()
                 }
-                let posts_uid_usersUid = Database.database().reference().child("posts").child(self.postUid!).child("usersUid")
-                let userValue = [self.userUid! : 1]
+                let posts_uid_usersUid = Database.database().reference().child("posts").child(self.postUid!).child("usersUid").child(self.userUid!)
+                let userValue = ["status" : 1]
                 posts_uid_usersUid.updateChildValues(userValue)
                 
-                if(self.enabledChat)!
+                if(self.enabledChat)
                 {
                     let users_uid_group = Database.database().reference().child("users").child(self.userUid!).child("groups")
                     let groupValue = [self.postUid!: 1]

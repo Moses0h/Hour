@@ -58,44 +58,53 @@ class JoinButton: UIButton {
     
     @objc func buttonPressed() {
         print("pressed")
+        let uid = (Auth.auth().currentUser?.uid)!
         switch currentStatus {
         case .host:
             break
         case .join:
             setUserStatus(stat: .requested)
-            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid")
-            let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts")
-            let value = [(Auth.auth().currentUser?.uid)!: 0] as [String: Any]
+            var imageUrl = ""
+            
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child(uid)
+            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]
+                {
+                    imageUrl = dictionary["imageUrl"] as! String
+                    let value = ["status": 0, "imageUrl": imageUrl] as [String: Any]
+                    ref.updateChildValues(value)
+                    FeedController.controller?.posts[self.index!].usersUid[uid] = value as AnyObject
+                }
+            }
+            let userRef = Database.database().reference().child("users").child(uid).child("posts")
             let userValue = [postKey!: 0] as [String: Any]
-            FeedController.controller?.posts[index!].usersUid[(Auth.auth().currentUser?.uid)!] = 0
-            ref.updateChildValues(value)
             userRef.updateChildValues(userValue)
             break
         case .joined:
             setUserStatus(stat: .join)
-            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
-            let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts").child(postKey!)
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child(uid)
+            let userRef = Database.database().reference().child("users").child(uid).child("posts").child(postKey!)
             
-            let groupRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("groups").child(postKey!)
+            let groupRef = Database.database().reference().child("users").child(uid).child("groups").child(postKey!)
             
             ref.removeValue()
             userRef.removeValue()
             groupRef.removeValue { (err, ref) in
-                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
+                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
             }
             
             break
         case .requested:
             setUserStatus(stat: .join)
-            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child((Auth.auth().currentUser?.uid)!)
-            let userRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("posts").child(postKey!)
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child(uid)
+            let userRef = Database.database().reference().child("users").child(uid).child("posts").child(postKey!)
             
-            let groupRef = Database.database().reference().child("users").child((Auth.auth().currentUser?.uid)!).child("groups").child(postKey!)
+            let groupRef = Database.database().reference().child("users").child(uid).child("groups").child(postKey!)
 
             ref.removeValue()
             userRef.removeValue()
             groupRef.removeValue { (err, ref) in
-                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: (Auth.auth().currentUser?.uid)!)
+                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
             }
             break
         case .unknown:

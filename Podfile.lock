@@ -13,6 +13,9 @@ PODS:
   - Firebase/Messaging (5.4.1):
     - Firebase/CoreOnly
     - FirebaseMessaging (= 3.0.3)
+  - Firebase/Storage (5.4.1):
+    - Firebase/CoreOnly
+    - FirebaseStorage (= 3.0.0)
   - FirebaseAnalytics (5.0.1):
     - FirebaseCore (~> 5.0)
     - FirebaseInstanceID (~> 3.0)
@@ -33,6 +36,9 @@ PODS:
     - FirebaseInstanceID (~> 3.0)
     - GoogleToolboxForMac/Logger (~> 2.1)
     - Protobuf (~> 3.1)
+  - FirebaseStorage (3.0.0):
+    - FirebaseCore (~> 5.0)
+    - GTMSessionFetcher/Core (~> 1.1)
   - GeoFire (3.0.0):
     - Firebase/Database (~> 5.0)
   - GoogleToolboxForMac/Defines (2.1.4)
@@ -54,6 +60,7 @@ DEPENDENCIES:
   - Firebase/Core
   - Firebase/Database
   - Firebase/Messaging
+  - Firebase/Storage
   - GeoFire (from `https://github.com/firebase/geofire-objc.git`)
 
 EXTERNAL SOURCES:
@@ -73,6 +80,7 @@ SPEC CHECKSUMS:
   FirebaseDatabase: 27be5ac5bc75e0b17537b2bbfada8258addcc8cd
   FirebaseInstanceID: f3f0657372592ecdfdfe2cac604a5a75758376a6
   FirebaseMessaging: f43eb0c0e1da096e659de6f713038e74862a62cd
+  FirebaseStorage: 7ca4bb7b58a25fa647b04f524033fc7cb7eb272b
   GeoFire: e3ae6f4be3f2466c3467ef6c1c203db3af935c59
   GoogleToolboxForMac: 91c824d21e85b31c2aae9bb011c5027c9b4e738f
   GTMSessionFetcher: 5fa5b80fd20e439ef5f545fb2cb3ca6c6714caa2
@@ -80,6 +88,6 @@ SPEC CHECKSUMS:
   nanopb: 5601e6bca2dbf1ed831b519092ec110f66982ca3
   Protobuf: 0fc0ad8bec688b2a3017a139953e01374fedbd5f
 
-PODFILE CHECKSUM: 72465ca8acddbb10456d30f6384c47dc403cf955
+PODFILE CHECKSUM: 56dddacf42f12d065ff75c3a47d4f768ba6c2491
 
 COCOAPODS: 1.4.0

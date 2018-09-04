@@ -134,7 +134,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.alwaysBounceVertical = true
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.register(FeedHeaderCell.self, forSupplementaryViewOfKind:
-            UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
+        UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
     
         collectionView?.dataSource = self
         tabBarController?.delegate = self
@@ -188,10 +188,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
                 {
                     print("passed")
                     self.determineMyCurrentLocation()
-                    MessagesController.controller?.observeUserMessages()
-                    NotificationController.controller?.observeNotifications()
-                    ProfileController.controller?.viewDidLoad()
-                    ProfileController.controller?.refreshPostArray()
                 }
                 else
                 {
@@ -236,6 +232,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func refreshPostArray() {
+        imageCache.removeAllObjects()
         self.posts.removeAll()
         self.keyArray.removeAll()
         circleQuery = geoFire.query(at: currLocation, withRadius: 100)
@@ -275,7 +272,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             self.collectionView?.reloadData()
             self.currLocation = nil
         }
-        
     }
     
     @objc func handleLogout() {
@@ -318,20 +314,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         {
             post = posts[indexPath.row]
         }
+        feedCell.post = post
         feedCell.index = indexPath.row
         feedCell.key = post.key
-        feedCell.usersUid = post.usersUid as? [String : Int]
-        feedCell.name = post.name
-        feedCell.activity = post.activity
-        feedCell.descriptionString = post.description
-        feedCell.location = post.location
-        feedCell.date = post.date
-        feedCell.startTime = post.startTime
-        feedCell.endTime = post.endTime
-        feedCell.category = post.category
-        feedCell.groupCount = post.groupCount
-        feedCell.time = post.time
-        
         return feedCell
     }
     

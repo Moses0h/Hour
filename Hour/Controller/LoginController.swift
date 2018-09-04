@@ -58,8 +58,7 @@ class LoginController: UIViewController {
                 print(error ?? "error")
                 return
             }
-            print("hello from login")
-            self.feedController?.determineMyCurrentLocation()
+            AppDelegate.refresh()
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.dismiss(animated: true, completion: nil)
             }

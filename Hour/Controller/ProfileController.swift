@@ -15,8 +15,9 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     
     static var controller: ProfileController?
     
+    var didLoad = false
     var headerId = "header"
-    
+    var uid = ""
     var posts = [Post]()
     var postKeys = [String]()
 
@@ -53,32 +54,49 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        refresher = UIRefreshControl()
-        refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
-        
-        collectionView?.addSubview(refreshView)
-        refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
-        refreshView.addSubview(refresher)
-        
-        let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
-        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
-        
-        collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
-        collectionView?.alwaysBounceVertical = true
-        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
-            UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
-        
-        collectionView?.dataSource = self
+        if(!didLoad)
+        {
+            uid = (Auth.auth().currentUser?.uid)!
+            print("uid =  \(uid)")
+            refresher = UIRefreshControl()
+            refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
+            
+            collectionView?.addSubview(refreshView)
+            refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
+            refreshView.addSubview(refresher)
+            let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+            UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
+            
+            collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
+            collectionView?.alwaysBounceVertical = true
+            collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
+            collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
+                UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
+            
+            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
+            navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+            collectionView?.dataSource = self
+            refreshPostArray()
+        }
         
     }
     
     @objc func handleSelectProfileImageView() {
         let picker = UIImagePickerController()
         picker.delegate = self
+        picker.navigationBar.tintColor = UIColor.white
         picker.allowsEditing = true
         present(picker, animated: true, completion: nil)
+    }
+    
+    @objc func handleLogout() {
+        do {
+            try Auth.auth().signOut()
+        } catch let logoutError {
+            print(logoutError)
+        }
+        let loginController = LoginController()
+        present(loginController, animated: true, completion: nil)
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
@@ -91,9 +109,43 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
             selectedImageFromPicker = originalImage
         }
+        let decompressedImage = selectedImageFromPicker?.jpeg(.lowest)
         
-        header?.eventImageView.image = selectedImageFromPicker
-        dismiss(animated: true, completion: nil)
+//        picker.dismissViewControllerAnimated(false, completion: { () -> Void in
+//
+//            var imageCropVC : RSKImageCropViewController!
+//
+//            imageCropVC = RSKImageCropViewController(image: image, cropMode: RSKImageCropMode.Circle)
+//
+//            imageCropVC.delegate = self
+//
+//            self.navigationController?.pushViewController(imageCropVC, animated: true)
+//
+//        })
+
+        let storageRef = Storage.storage().reference().child("users").child(uid)
+        if let uploadImg = decompressedImage
+        {
+            storageRef.putData(uploadImg, metadata: nil, completion: { (metadata, error) in
+                if error != nil {
+                    return
+                }
+                storageRef.downloadURL(completion: { (url, error) in
+                    if error != nil {
+                        return
+                    }
+                    let value = ["imageUrl" : url?.absoluteString] as! [String : String]
+                    
+                    let ref = Database.database().reference().child("users").child(self.uid)
+                    ref.updateChildValues(value as Any as! [AnyHashable : Any], withCompletionBlock: { (error, ref) in
+                        self.header?.profileImage.setImage(selectedImageFromPicker, for: .normal)
+                        self.dismiss(animated: true, completion: nil)
+                    })
+
+                })
+            })
+        }
+        
     }
     
 
@@ -101,7 +153,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         self.posts.removeAll()
         self.postKeys.removeAll()
         
-        let uid = Auth.auth().currentUser!.uid
+        uid = Auth.auth().currentUser!.uid
         let users_uid_posts = Database.database().reference().child("users").child(uid).child("posts")
 
         users_uid_posts.observeSingleEvent(of: .value, with: { (snap) in
@@ -131,6 +183,10 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
                     self.collectionView?.reloadData()
                 }
             }
+            else
+            {
+                self.refresher.endRefreshing()
+            }
         })
     }
     
@@ -144,18 +200,9 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         {
             let post : Post
             post = posts[indexPath.row]
+            feedCell.post = post
             feedCell.key = post.key
             feedCell.index = indexPath.row
-            feedCell.usersUid = post.usersUid as? [String : Int]
-            feedCell.name = post.name
-            feedCell.activity = post.activity
-            feedCell.descriptionString = post.description
-            feedCell.location = post.location
-            feedCell.date = post.date
-            feedCell.startTime = post.startTime
-            feedCell.endTime = post.endTime
-            feedCell.category = post.category
-            feedCell.groupCount = post.groupCount
             return feedCell
         }
         return feedCell
@@ -165,7 +212,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         return UIEdgeInsetsMake(5, 5, 0, 5);
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 10, height: 220)
+        return CGSize(width: view.frame.width - 10, height: 230)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
@@ -176,7 +223,8 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         header = (collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! ProfileHeaderCell)
-        header?.eventImageView.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.handleSelectProfileImageView)))
+        header?.profileImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.handleSelectProfileImageView)))
+        header?.uid = uid
         return header!
     }
     

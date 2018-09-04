@@ -23,20 +23,40 @@ class ProfileHeaderCell: UICollectionViewCell{
         fatalError("init(coder:) has not been implemented")
     }
     
-    let label: UILabel = {
+    var uid: String? {
+        didSet{
+            let profileRef = Database.database().reference().child("users").child(uid!)
+            profileRef.observeSingleEvent(of: .value) { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]
+                {
+                    
+                    /* setup profile image */
+                    if((dictionary["imageUrl"]) != nil)
+                    {
+                        self.profileImage.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: (ProfileController.controller?.uid)!)
+                    }
+                    
+                    self.nameLabel.text = dictionary["name"] as! String
+                }
+                
+            }
+        }
+    }
+    
+    let nameLabel: UILabel = {
         let a = UILabel()
-        a.font = UIFont.init(name: "Helvetica Neue", size: 18)
-        a.text = " Post an activity"
+        a.font = UIFont.init(name: "Helvetica Neue", size: 24)
+        a.text = ""
         a.textColor = UIColor.darkGray
         a.translatesAutoresizingMaskIntoConstraints = false
         return a
     }()
     
-    var eventImageView: UIImageView = {
-        let imageView = UIImageView()
-        imageView.backgroundColor = UIColor.lightGray
-        imageView.layer.borderWidth = 1
-        //        imageView.layer.borderColor = UIColor.lightGray.cgColor
+    let profileImage: UIButton = {
+        let imageView = UIButton()
+        imageView.backgroundColor = UIColor.white
+        imageView.layer.borderWidth = 0.5
+        imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 50
@@ -49,13 +69,16 @@ class ProfileHeaderCell: UICollectionViewCell{
     
     
     func setupViews() {
-        backgroundColor = UIColor.cyan
-        addSubview(eventImageView)
-        eventImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
-        eventImageView.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
-        eventImageView.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        eventImageView.heightAnchor.constraint(equalToConstant: 100).isActive = true
+        backgroundColor = UIColor.white
+        addSubview(profileImage)
+        profileImage.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
+        profileImage.topAnchor.constraint(equalTo: topAnchor, constant: 20).isActive = true
+        profileImage.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        profileImage.heightAnchor.constraint(equalToConstant: 100).isActive = true
         
+        addSubview(nameLabel)
+        nameLabel.centerYAnchor.constraint(equalTo: profileImage.centerYAnchor).isActive = true
+        nameLabel.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
        
     }
     

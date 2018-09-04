@@ -15,6 +15,13 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     static var THEME: UIColor = UIColor(r: 52, g: 73, b: 94)
 
+    static func refresh() {
+        FeedController.controller?.determineMyCurrentLocation()
+        ProfileController.controller?.viewDidLoad()
+        ProfileController.controller?.refreshPostArray()
+        ProfileController.controller?.didLoad = true
+    }
+    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
         // Override point for customization after application launch.
         FirebaseApp.configure()

@@ -12,7 +12,7 @@ import FirebaseDatabase
 struct Post {
     
     var key: String!
-    var usersUid = [String: Any]()
+    var usersUid = [String: AnyObject]()
     var name: String!
     var activity: String!
     var description: String!
@@ -24,6 +24,7 @@ struct Post {
     var distance: Double!
     var category: String!
     var time: Double!
+    var imageUrl: String!
     
     init(snapshot: DataSnapshot){
         
@@ -33,6 +34,7 @@ struct Post {
             if(snapshot.hasChild("usersUid"))
             {
                 usersUid = dictionary["usersUid"] as! [String: AnyObject]
+                print(usersUid)
             }
 
             name = dictionary["name"] as? String
@@ -45,7 +47,7 @@ struct Post {
             groupCount = dictionary["groupCount"] as? Int
             category = dictionary["category"] as? String
             time = dictionary["time"] as? Double
-            
+            imageUrl = dictionary["imageUrl"] as? String
         }
     }
     

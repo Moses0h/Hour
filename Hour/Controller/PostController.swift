@@ -25,10 +25,16 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var date: Date?
     var startTime: String = ""
     var endTime: String = ""
-
-    var categoryButtons : [CategoryButton] = [CategoryButton]()
+    var imgSelected: Bool = false
     
-    var scrollView: UIScrollView!
+    var categoryButtons : [CategoryButton] = [CategoryButton]()
+    var dispatchGroup = DispatchGroup()
+    
+    var scrollView: UIScrollView = {
+        let scroll = UIScrollView()
+        scroll.translatesAutoresizingMaskIntoConstraints = false
+        return scroll
+    }()
 
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         super.init(nibName: nibNameOrNil, bundle: nibBundleOrNil)
@@ -47,7 +53,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
-        
+
         var selectedImageFromPicker: UIImage?
         
         if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
@@ -64,6 +70,8 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         postImageView.imageView?.contentMode = .scaleAspectFit
         postImageView.layer.borderColor = UIColor.clear.cgColor
         postImageContainer.image = decompressedImage
+        
+        imgSelected = true
         dismiss(animated: true, completion: nil)
     }
     
@@ -92,11 +100,10 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     override func viewDidAppear(_ animated: Bool) {
         if(didAppear)
         {
-            var height:CGFloat = 0
+            var height: CGFloat = 0
             for view in scrollView.subviews {
-                height += view.bounds.size.height
+                height += view.frame.height
             }
-            height += (self.navigationController?.navigationBar.frame.size.height)!
             scrollView.contentSize = CGSize(width: self.view.frame.size.width, height: height)
             didAppear = false
         }
@@ -122,13 +129,13 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let imageView = UIButton()
         imageView.imageView?.contentMode = .scaleAspectFit
         imageView.setImage(#imageLiteral(resourceName: "addPhoto"), for: .normal)
-        imageView.backgroundColor = UIColor.clear
+        imageView.backgroundColor = UIColor.white
         imageView.imageView?.contentMode = .center
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 8
         imageView.layer.masksToBounds = true
         imageView.isUserInteractionEnabled = true
-        imageView.layer.borderWidth = 3
+        imageView.layer.borderWidth = 1
         imageView.layer.borderColor = UIColor.lightGray.cgColor
         imageView.addTarget(self, action: #selector(handleSelectProfileImageView), for: .touchUpInside)
         return imageView
@@ -427,7 +434,6 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         scrollView.isScrollEnabled = true
         view.addSubview(scrollView)
         
-        
         /** Activity Image Setup **/
         scrollView.addSubview(postImageContainer)
         postImageContainer.SetContainer(otherContainer: scrollView, top: 0, height: 150)
@@ -648,6 +654,11 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
             locationLabel.setTitleColor(UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1), for: .normal)
         }
         
+        if(dateAndTimeLabel.title(for: .normal) == "")
+        {
+            return false
+        }
+        
         return true
     }
     
@@ -678,56 +689,95 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
                     self.geoFire.setLocation(location, forKey: "\(key)")
                 }
                 
-                if let dictionary = snapshot.value as? [String: AnyObject] {
-                    let dateFormatter:DateFormatter = DateFormatter()
-                    dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
-                    let usersUid = [userID!: -1] as [String: Int]
-                    let post = ["name": dictionary["name"] ?? "noname",
-                                "uid": dictionary["uid"] ?? "nouid",
-                                "activity": self.activityTextField.text!,
-                                "description": self.descriptionTextField.text,
-                                "time": ServerValue.timestamp(),
-                                "location": self.locationLabel.title(for: .normal)!,
-                                "groupCount": self.numberOfPeople,
-                                "usersUid": usersUid,
-                                "category": self.category,
-                                "date": self.date!.dayOfWeek()!,
-                                "startTime": self.startTime,
-                                "endTime": self.endTime,
-                                "enabledChat": enabledChat] as [String : Any]
-                    let child = ["/posts/\(key)": post]
-                    let userPosts = [key: -1]
-                    
-                    //update FireBase posts
-                    let ref = Database.database().reference().child("users").child(userID!).child("posts")
-                    ref.updateChildValues(userPosts) {(err,ref) in
-                        if err != nil{
-                            print(err ?? "error")
-                            return
-                        }
+                //update Firebase storage
+                var imageUrl = ""
+                
+                if (self.imgSelected)
+                {
+                    let storageRef = Storage.storage().reference().child("posts").child(key)
+                    if let uploadImg = UIImagePNGRepresentation((self.postImageView.imageView?.image)!)
+                    {
+                        storageRef.putData(uploadImg, metadata: nil, completion: { (metadata, error) in
+                            if error != nil {
+                                return
+                            }
+                            storageRef.downloadURL(completion: { (url, error) in
+                                if error != nil {
+                                    return
+                                }
+                                imageUrl = (url?.absoluteString)!
+                                self.uploadPostData(snapshot: snapshot, userID: userID!, enabledChat: enabledChat, imageUrl: imageUrl, key: key)
+                            })
+
+                            
+                        })
                     }
-                    
-                    self.ref.updateChildValues(child) { (err, ref) in
-                        if err != nil{
-                            print(err ?? "error")
-                            return
-                        }
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            self.feedController?.determineMyCurrentLocation()
-                            self.dismiss(animated: true, completion: nil)
-                        }
-                    }
-                    
-                   
-                    
                 }
+                else
+                {
+                    self.uploadPostData(snapshot: snapshot, userID: userID!, enabledChat: enabledChat, imageUrl: "", key: key)
+                }
+               
             }
             print("posted")
         }
-        
     }
     
-    
+    func uploadPostData(snapshot: DataSnapshot, userID: String, enabledChat: Int, imageUrl: String, key: String) {
+        var profileImageUrl = ""
+        self.dispatchGroup.enter()
+        Database.database().reference().child("users").child(userID).observeSingleEvent(of: .value) { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject]
+            {
+                profileImageUrl = dictionary["imageUrl"] as! String
+                self.dispatchGroup.leave()
+            }
+        }
+        dispatchGroup.notify(queue: .main) {
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                let dateFormatter:DateFormatter = DateFormatter()
+                dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
+                let usersUid = [userID: ["status": -1, "imageUrl": profileImageUrl]]
+                let post = ["name": dictionary["name"] ?? "noname",
+                            "uid": dictionary["uid"] ?? "nouid",
+                            "imageUrl": imageUrl,
+                            "activity": self.activityTextField.text!,
+                            "description": self.descriptionTextField.text,
+                            "time": ServerValue.timestamp(),
+                            "location": self.locationLabel.title(for: .normal)!,
+                            "groupCount": self.numberOfPeople,
+                            "usersUid": usersUid,
+                            "category": self.category,
+                            "date": self.date!.dayOfWeek()!,
+                            "startTime": self.startTime,
+                            "endTime": self.endTime,
+                            "enabledChat": enabledChat] as [String : Any]
+                let child = ["/posts/\(key)": post]
+                let userPosts = [key: -1]
+                
+                //update FireBase posts
+                let ref = Database.database().reference().child("users").child(userID).child("posts")
+                ref.updateChildValues(userPosts) {(err,ref) in
+                    if err != nil{
+                        print(err ?? "error")
+                        return
+                    }
+                }
+                
+                self.ref.updateChildValues(child) { (err, ref) in
+                    if err != nil{
+                        print(err ?? "error")
+                        return
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                        self.feedController?.determineMyCurrentLocation()
+                        self.dismiss(animated: true, completion: nil)
+                    }
+                }
+            }
+        }
+        
+    }
     
     
 
@@ -754,7 +804,7 @@ extension UIView {
 
 extension UIImage {
     enum JPEGQuality: CGFloat {
-        case lowest  = 0
+        case lowest  = 0.1
         case low     = 0.25
         case medium  = 0.5
         case high    = 0.75

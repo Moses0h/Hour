@@ -13,7 +13,6 @@ class DetailedPostController: UIViewController {
     
     var feed: FeedCell? {
         didSet{
-            print(feed?.activity)
         }
     }
     

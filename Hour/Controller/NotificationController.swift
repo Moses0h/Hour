@@ -55,7 +55,7 @@ class NotificationController: UITableViewController {
         refreshView.addSubview(refresher)
         
         tableView.register(NotificationCell.self, forCellReuseIdentifier: cellId)
-        
+        observeNotifications()
     }
     
   
@@ -82,18 +82,22 @@ class NotificationController: UITableViewController {
             {
                 self.userPosts.append(posts.key)
                 let post_usersUid = Database.database().reference().child("posts").child(posts.key).child("usersUid")
-                post_usersUid.observe(.childAdded) {(uid) in
-                    if(uid.value as? Int == 0)
+                post_usersUid.observe(.childAdded) {(user) in
+                    if let dictionary = user.value as? [String: AnyObject]
                     {
-                        DispatchQueue.main.async {
-                            let notification = Notification()
-                            notification.userUid = uid.key
-                            notification.postUid = posts.key
-                            notification.state = uid.value as? Int
-                            self.notifications.append(notification)
-                            self.tableView.reloadData()
+                        if(dictionary["status"] as? Int == 0)
+                        {
+                            DispatchQueue.main.async {
+                                let notification = Notification()
+                                notification.userUid = user.key
+                                notification.postUid = posts.key
+                                notification.state = dictionary["status"] as? Int
+                                self.notifications.append(notification)
+                                self.tableView.reloadData()
+                            }
                         }
                     }
+                    
                 }
             }
         }
