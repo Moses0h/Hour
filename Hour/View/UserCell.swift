@@ -60,7 +60,7 @@ class UserCell: UITableViewCell {
         if let seconds = group?.timestamp {
             let timestampDate = NSDate(timeIntervalSince1970: TimeInterval(seconds))
             let dateFormatter = DateFormatter()
-            dateFormatter.dateFormat = "h:mm:ss a"
+            dateFormatter.dateFormat = "h:mm a"
             timeLabel.text = dateFormatter.string(from: timestampDate as Date)
         }
         

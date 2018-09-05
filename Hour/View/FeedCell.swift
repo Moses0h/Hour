@@ -264,54 +264,6 @@ class FeedCell: UICollectionViewCell {
         return label
     }()
     
-    let userImageView1: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.borderWidth = 1
-        imageView.backgroundColor = UIColor.blue
-//        imageView.layer.borderColor = UIColor.lightGray.cgColor
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 15
-        imageView.layer.masksToBounds = true
-        return imageView
-    }()
-    
-    let userImageView2: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.borderWidth = 1
-        imageView.backgroundColor = UIColor.green
-//        imageView.layer.borderColor = UIColor.lightGray.cgColor
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 15
-        imageView.layer.masksToBounds = true
-        return imageView
-    }()
-    
-    let userImageView3: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.borderWidth = 1
-        imageView.backgroundColor = UIColor.cyan
-//        imageView.layer.borderColor = UIColor.lightGray.cgColor
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 15
-        imageView.layer.masksToBounds = true
-        return imageView
-    }()
-    
-    let userImageView4: UIImageView = {
-        let imageView = UIImageView()
-        imageView.layer.borderWidth = 1
-        imageView.backgroundColor = UIColor.yellow
-//        imageView.layer.borderColor = UIColor.lightGray.cgColor
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 15
-        imageView.layer.masksToBounds = true
-        return imageView
-    }()
-    
     let joinButton: JoinButton = {
         let jb = JoinButton()
         return jb

@@ -58,7 +58,8 @@ class LoginController: UIViewController {
                 print(error ?? "error")
                 return
             }
-            AppDelegate.refresh()
+            let customTabBarController = CustomTabBarController()
+            AppDelegate.controller?.window?.rootViewController = customTabBarController
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 self.dismiss(animated: true, completion: nil)
             }
@@ -162,7 +163,7 @@ class LoginController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
+        view.backgroundColor = AppDelegate.THEME
         
         view.addSubview(inputsContainerView)
         view.addSubview(loginRegisterButton)

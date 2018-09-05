@@ -144,8 +144,8 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
         
-        checkIfUserIsLoggedIn()
         setupOtherObservers()
+        determineMyCurrentLocation()
     }
     
     func setupOtherObservers(){
@@ -177,9 +177,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func checkIfUserIsLoggedIn() {
-        let postController = PostController(nibName: nil, bundle: nil)
-        postController.feedController = self
-//        perform(#selector(handleLogout), with: nil, afterDelay: 0)
         let users = Database.database().reference().child("users")
         if(Auth.auth().currentUser != nil)
         {

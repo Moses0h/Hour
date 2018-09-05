@@ -15,7 +15,6 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     
     static var controller: ProfileController?
     
-    var didLoad = false
     var headerId = "header"
     var uid = ""
     var posts = [Post]()
@@ -54,30 +53,27 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        if(!didLoad)
-        {
-            uid = (Auth.auth().currentUser?.uid)!
-            print("uid =  \(uid)")
-            refresher = UIRefreshControl()
-            refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
-            
-            collectionView?.addSubview(refreshView)
-            refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
-            refreshView.addSubview(refresher)
-            let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
-            UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
-            
-            collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
-            collectionView?.alwaysBounceVertical = true
-            collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
-            collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
-                UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
-            
-            navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
-            navigationItem.rightBarButtonItem?.tintColor = UIColor.white
-            collectionView?.dataSource = self
-            refreshPostArray()
-        }
+        uid = (Auth.auth().currentUser?.uid)!
+        print("uid =  \(uid)")
+        refresher = UIRefreshControl()
+        refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
+        
+        collectionView?.addSubview(refreshView)
+        refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
+        refreshView.addSubview(refresher)
+        let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
+        
+        collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
+        collectionView?.alwaysBounceVertical = true
+        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
+            UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
+        
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
+        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        collectionView?.dataSource = self
+        refreshPostArray()
         
     }
     
@@ -186,6 +182,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
             else
             {
                 self.refresher.endRefreshing()
+                self.collectionView?.reloadData()
             }
         })
     }
