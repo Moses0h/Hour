@@ -25,7 +25,7 @@ class FeedCell: UICollectionViewCell {
     }
     
     var otherUsersViews = [UIButton]()
-
+    let dispatchGroup = DispatchGroup()
     var post: Post?
     {
         didSet{
@@ -33,6 +33,8 @@ class FeedCell: UICollectionViewCell {
                 user.removeFromSuperview()
             }
             otherUsersViews.removeAll()
+            joinButton.privateEnabled = post?.privateEnabled
+            joinButton.chatEnabled = post?.chatEnabled
             activityLabel.text = post?.activity
             profileName.text = post?.name
             timeSince.text = timeAgoSinceDate(Date(timeIntervalSince1970: (post?.time)!/1000))
@@ -51,61 +53,89 @@ class FeedCell: UICollectionViewCell {
             }
             let usersUid = post?.usersUid
             let uid : String! = Auth.auth().currentUser?.uid
-            if(usersUid![uid] != nil)
-            {
-                if(usersUid![uid]!["status"] as! Int == -1)
-                {
-                    joinButton.setUserStatus(stat: JoinButton.status.host)
-                }
-                else if(usersUid![uid]!["status"] as! Int == 1)
-                {
-                    joinButton.setUserStatus(stat: JoinButton.status.joined)
-                }
-                else if(usersUid![uid]!["status"] as! Int == 0)
-                {
-                    joinButton.setUserStatus(stat: JoinButton.status.requested)
-                }
+            var currentGroupCount = 0
+            dispatchGroup.enter()
+            Database.database().reference().child("posts").child((post?.key)!).child("usersUid").observeSingleEvent(of: .value) { (snapshot) in
+                currentGroupCount = Int(snapshot.childrenCount)
+                self.dispatchGroup.leave()
             }
-            else
-            {
-                joinButton.setUserStatus(stat: JoinButton.status.join)
-            }
-        
-         
-            for(_, element) in (usersUid?.enumerated())! {
-                if let dictionary = element.value as? [String: AnyObject]
+            
+            dispatchGroup.notify(queue: .main) {
+                if(usersUid![uid] != nil)
                 {
-                    if(dictionary["status"] as! Int == -1)
+                    if(usersUid![uid]!["status"] as! Int == -1)
                     {
-                        profileImageView.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (post?.key)!)
+                        self.joinButton.setUserStatus(stat: JoinButton.status.host)
                     }
-                    else if(dictionary["status"] as! Int == 1)
+                    else if(usersUid![uid]!["status"] as! Int == 1 && self.post?.privateEnabled == 1)
                     {
-                        let view = getOtherUserView()
-                        view.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (post?.key)!)
-                        otherUsersViews.append(view)
+                        self.joinButton.setUserStatus(stat: JoinButton.status.privateJoined)
                     }
-                }
-            }
-            for(index, element) in (otherUsersViews.enumerated()) {
-                if(index == 0)
-                {
-                    addSubview(element)
-                    element.rightAnchor.constraint(equalTo: rightAnchor, constant: -20).isActive = true
-                    element.widthAnchor.constraint(equalToConstant: 30).isActive = true
-                    element.heightAnchor.constraint(equalToConstant: 30).isActive = true
-                    element.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                    else if(usersUid![uid]!["status"] as! Int == 1 && self.post?.privateEnabled == 0)
+                    {
+                        self.joinButton.setUserStatus(stat: JoinButton.status.publicJoined)
+                    }
+                    else if(usersUid![uid]!["status"] as! Int == 0)
+                    {
+                        self.joinButton.setUserStatus(stat: JoinButton.status.requested)
+                    }
                 }
                 else
                 {
-                    insertSubview(element, belowSubview: otherUsersViews[index-1])
-                    element.rightAnchor.constraint(equalTo: otherUsersViews[index-1].leftAnchor, constant: 10).isActive = true
-                    element.widthAnchor.constraint(equalToConstant: 30).isActive = true
-                    element.heightAnchor.constraint(equalToConstant: 30).isActive = true
-                    element.centerYAnchor.constraint(equalTo: profileImageView.centerYAnchor).isActive = true
+                    if(currentGroupCount != self.post?.groupCount)
+                    {
+                        if(self.post?.privateEnabled == 1)
+                        {
+                            self.joinButton.setUserStatus(stat: JoinButton.status.privateJoin)
+                        }
+                        else if(self.post?.privateEnabled == 0)
+                        {
+                            self.joinButton.setUserStatus(stat: JoinButton.status.publicJoin)
+                        }
+                    }
+                    else
+                    {
+                        self.joinButton.setUserStatus(stat: JoinButton.status.full)
+                    }
+                }
+              
+                
+                
+                
+                for(_, element) in (usersUid?.enumerated())! {
+                    if let dictionary = element.value as? [String: AnyObject]
+                    {
+                        if(dictionary["status"] as! Int == -1)
+                        {
+                            self.profileImageView.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (self.post?.key)!)
+                        }
+                        else if(dictionary["status"] as! Int == 1)
+                        {
+                            let view = self.getOtherUserView()
+                            view.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (self.post?.key)!)
+                            self.otherUsersViews.append(view)
+                        }
+                    }
+                }
+                for(index, element) in (self.otherUsersViews.enumerated()) {
+                    if(index == 0)
+                    {
+                        self.self.addSubview(element)
+                        element.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -20).isActive = true
+                        element.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                        element.heightAnchor.constraint(equalToConstant: 30).isActive = true
+                        element.centerYAnchor.constraint(equalTo: self.profileImageView.centerYAnchor).isActive = true
+                    }
+                    else
+                    {
+                        self.self.insertSubview(element, belowSubview: self.otherUsersViews[index-1])
+                        element.rightAnchor.constraint(equalTo: self.otherUsersViews[index-1].leftAnchor, constant: 10).isActive = true
+                        element.widthAnchor.constraint(equalToConstant: 30).isActive = true
+                        element.heightAnchor.constraint(equalToConstant: 30).isActive = true
+                        element.centerYAnchor.constraint(equalTo: self.profileImageView.centerYAnchor).isActive = true
+                    }
                 }
             }
-            
         }
     }
     
@@ -195,7 +225,7 @@ class FeedCell: UICollectionViewCell {
     
     let clickableView: UIButton = {
         let button = UIButton()
-        button.addTarget(self, action: #selector(FeedController.controller?.handleFullView), for: .touchUpInside)
+        button.addTarget(self, action: #selector(CellFunctions.handleFullView), for: .touchUpInside)
         button.translatesAutoresizingMaskIntoConstraints = false
         return button
     }()
@@ -342,6 +372,11 @@ class FeedCell: UICollectionViewCell {
         lineView.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
         lineView.heightAnchor.constraint(equalToConstant: 4).isActive = true
         
+        addSubview(clickableView)
+        clickableView.topAnchor.constraint(equalTo: topAnchor).isActive = true
+        clickableView.bottomAnchor.constraint(equalTo: lineView.topAnchor).isActive = true
+        clickableView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        
         addSubview(profileImageView)
         profileImageView.bottomAnchor.constraint(equalTo: lineView.bottomAnchor, constant: -15).isActive = true
         profileImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 20).isActive = true
@@ -368,10 +403,7 @@ class FeedCell: UICollectionViewCell {
         commentButton.leftAnchor.constraint(equalTo: heartButton.rightAnchor, constant: 15).isActive = true
         commentButton.centerYAnchor.constraint(equalTo: joinButton.centerYAnchor).isActive = true
         
-        addSubview(clickableView)
-        clickableView.topAnchor.constraint(equalTo: topAnchor).isActive = true
-        clickableView.bottomAnchor.constraint(equalTo: lineView.topAnchor).isActive = true
-        clickableView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        
     
     }
     

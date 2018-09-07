@@ -13,16 +13,20 @@ import Firebase
 class JoinButton: UIButton {
     var isOn = false
     enum status {
-        case join
-        case joined
+        case privateJoin
+        case privateJoined
         case host
         case requested
+        case publicJoin
+        case publicJoined
+        case full
         case unknown
     }
     
     var postKey: String?
     var index: Int?
-    
+    var privateEnabled: Int?
+    var chatEnabled: Int?
     var currentStatus: status = status.unknown
     var ref = Database.database().reference()
     
@@ -62,7 +66,7 @@ class JoinButton: UIButton {
         switch currentStatus {
         case .host:
             break
-        case .join:
+        case .privateJoin:
             setUserStatus(stat: .requested)
             var imageUrl = ""
             
@@ -80,8 +84,8 @@ class JoinButton: UIButton {
             let userValue = [postKey!: 0] as [String: Any]
             userRef.updateChildValues(userValue)
             break
-        case .joined:
-            setUserStatus(stat: .join)
+        case .privateJoined:
+            setUserStatus(stat: .privateJoin)
             let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child(uid)
             let userRef = Database.database().reference().child("users").child(uid).child("posts").child(postKey!)
             
@@ -95,7 +99,7 @@ class JoinButton: UIButton {
             
             break
         case .requested:
-            setUserStatus(stat: .join)
+            setUserStatus(stat: .privateJoin)
             let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child(uid)
             let userRef = Database.database().reference().child("users").child(uid).child("posts").child(postKey!)
             
@@ -106,6 +110,47 @@ class JoinButton: UIButton {
             groupRef.removeValue { (err, ref) in
                 FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
             }
+            break
+        case .publicJoin:
+            setUserStatus(stat: .publicJoined)
+            var imageUrl = ""
+            
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child(uid)
+            Database.database().reference().child("users").child(uid).observeSingleEvent(of: .value) { (snapshot) in
+                if let dictionary = snapshot.value as? [String: AnyObject]
+                {
+                    imageUrl = dictionary["imageUrl"] as! String
+                    let value = ["status": 1, "imageUrl": imageUrl] as [String: Any]
+                    ref.updateChildValues(value)
+                    FeedController.controller?.posts[self.index!].usersUid[uid] = value as AnyObject
+                }
+            }
+            let users_uid_group = Database.database().reference().child("users").child(uid).child("groups")
+            let groupValue = [postKey!: 1]
+            users_uid_group.updateChildValues(groupValue)
+            
+            let groups_uid_users = Database.database().reference().child("groups").child(uid).child("users")
+            let usersValue = [postKey!: 1]
+            groups_uid_users.updateChildValues(usersValue)
+            
+            let userRef = Database.database().reference().child("users").child(uid).child("posts")
+            let userValue = [postKey!: 1] as [String: Any]
+            userRef.updateChildValues(userValue)
+        case .publicJoined:
+            setUserStatus(stat: .publicJoin)
+            let ref = Database.database().reference().child("posts").child(postKey!).child("usersUid").child(uid)
+            let userRef = Database.database().reference().child("users").child(uid).child("posts").child(postKey!)
+            
+            let groupRef = Database.database().reference().child("users").child(uid).child("groups").child(postKey!)
+            
+            ref.removeValue()
+            userRef.removeValue()
+            groupRef.removeValue { (err, ref) in
+                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+            }
+            
+            break
+        case .full:
             break
         case .unknown:
             break
@@ -140,18 +185,25 @@ class JoinButton: UIButton {
             isUserInteractionEnabled = false
             currentStatus = .host
             break
-        case .join:
+        case .full:
+            setTitleColor(UIColor.lightGray, for: .normal)
+            //            backgroundColor = UIColor(white: 0.95, alpha: 1)
+            setTitle("Full", for: .normal)
+            isUserInteractionEnabled = false
+            currentStatus = .full
+            break
+        case .privateJoin:
             setTitleColor(UIColor.darkGray, for: .normal)
 //            backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
             setTitle("Join", for: .normal)
-            currentStatus = .join
+            currentStatus = .privateJoin
             isUserInteractionEnabled = true
             break
-        case .joined:
+        case .privateJoined:
             setTitleColor(UIColor.darkGray, for: .normal)
 //            backgroundColor = UIColor(white: 0.95, alpha: 1)
             setTitle("Joined", for: .normal)
-            currentStatus = .joined
+            currentStatus = .privateJoined
             isUserInteractionEnabled = true
             break
         case .requested:
@@ -159,6 +211,20 @@ class JoinButton: UIButton {
 //            backgroundColor = UIColor(white: 0.95, alpha: 1)
             setTitle("Requested", for: .normal)
             currentStatus = .requested
+            isUserInteractionEnabled = true
+            break
+        case .publicJoin:
+            setTitleColor(UIColor.darkGray, for: .normal)
+            //            backgroundColor = UIColor(red: 51/255, green: 90/255, blue: 149/255, alpha: 1)
+            setTitle("Join", for: .normal)
+            currentStatus = .publicJoin
+            isUserInteractionEnabled = true
+            break
+        case .publicJoined:
+            setTitleColor(UIColor.darkGray, for: .normal)
+            //            backgroundColor = UIColor(white: 0.95, alpha: 1)
+            setTitle("Joined", for: .normal)
+            currentStatus = .publicJoined
             isUserInteractionEnabled = true
             break
         case .unknown:

@@ -25,7 +25,8 @@ struct Post {
     var category: String!
     var time: Double!
     var imageUrl: String!
-    
+    var privateEnabled: Int!
+    var chatEnabled: Int!
     init(snapshot: DataSnapshot){
         
         if let dictionary = snapshot.value as? [String: AnyObject] {
@@ -48,6 +49,8 @@ struct Post {
             category = dictionary["category"] as? String
             time = dictionary["time"] as? Double
             imageUrl = dictionary["imageUrl"] as? String
+            privateEnabled = dictionary["private"] as? Int
+            chatEnabled = dictionary["enabledChat"] as? Int
         }
     }
     

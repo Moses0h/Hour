@@ -25,6 +25,7 @@ class StartViewController: UIViewController {
         let users = Database.database().reference().child("users")
         if(Auth.auth().currentUser != nil)
         {
+            print(Auth.auth().currentUser?.uid)
             DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                 users.observeSingleEvent(of: .value) { (users) in
                     if(users.hasChild(Auth.auth().currentUser!.uid))

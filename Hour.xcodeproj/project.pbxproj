@@ -10,6 +10,7 @@
 		0B6CDACBDB017546ACEB41D2 /* Pods_Hour.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A697E94E3B5129CD1231E790 /* Pods_Hour.framework */; };
 		7B017EF42123F4D800FAD3A9 /* ProfileController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B017EF32123F4D800FAD3A9 /* ProfileController.swift */; };
 		7B0D090321407465000E4896 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0D090221407465000E4896 /* StartViewController.swift */; };
+		7B0D09052140A589000E4896 /* CellFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0D09042140A589000E4896 /* CellFunctions.swift */; };
 		7B0DE8A2212604520058DE6D /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A1212604520058DE6D /* Notification.swift */; };
 		7B0DE8A42126045C0058DE6D /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A32126045C0058DE6D /* NotificationCell.swift */; };
 		7B0DE8A6212632BC0058DE6D /* DetailedPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A5212632BC0058DE6D /* DetailedPostController.swift */; };
@@ -62,6 +63,7 @@
 		78AF423D0C0E33D9C9FC9DBE /* Pods_Hour.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; name = Pods_Hour.framework; path = "../../../../Hour-gsmqhhxksixhevchjnxfjoelzyrm/Build/Products/Debug-iphoneos/Pods_Hour.framework"; sourceTree = BUILT_PRODUCTS_DIR; };
 		7B017EF32123F4D800FAD3A9 /* ProfileController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileController.swift; sourceTree = "<group>"; };
 		7B0D090221407465000E4896 /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
+		7B0D09042140A589000E4896 /* CellFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellFunctions.swift; sourceTree = "<group>"; };
 		7B0DE8A1212604520058DE6D /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		7B0DE8A32126045C0058DE6D /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		7B0DE8A5212632BC0058DE6D /* DetailedPostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedPostController.swift; sourceTree = "<group>"; };
@@ -168,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				7B4273BB213D152C00D17DC4 /* Extensions.swift */,
+				7B0D09042140A589000E4896 /* CellFunctions.swift */,
 			);
 			path = Helpers;
 			sourceTree = "<group>";
@@ -436,6 +439,7 @@
 				7B0D090321407465000E4896 /* StartViewController.swift in Sources */,
 				7B9E41DD2054FD75000468B6 /* LocationSearchTable.swift in Sources */,
 				7B2377DB203B7F1100BF41BE /* Post.swift in Sources */,
+				7B0D09052140A589000E4896 /* CellFunctions.swift in Sources */,
 				7BA7D961211F7696004B37CA /* FilterButton.swift in Sources */,
 				7BC9D87D2069AED400E45D2C /* Group.swift in Sources */,
 				7B8A8D7D212F98E400083D7D /* CommentButton.swift in Sources */,

@@ -361,22 +361,28 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         let no = UILabel()
         no.text = "0"
         no.textColor = UIColor.gray
-        no.font = UIFont.init(name: "Helvetica Neue", size: 20)
+        no.font = UIFont.init(name: "Helvetica Neue", size: 25)
         no.translatesAutoresizingMaskIntoConstraints = false
         return no
     }()
     
-    let addButton: BounceButton = {
-        let ab = BounceButton()
+    let addButton: UIButton = {
+        let ab = UIButton()
         ab.setTitle("+", for: .normal)
+        ab.titleLabel?.font = UIFont.init(name: "Helvetica Neue", size: 30)
+        ab.setTitleColor(UIColor.gray, for: .normal)
         ab.addTarget(self, action: #selector(addOnePerson), for: .touchUpInside)
+        ab.translatesAutoresizingMaskIntoConstraints = false
         return ab
     }()
     
-    let deleteButton: BounceButton = {
-        let db = BounceButton()
+    let deleteButton: UIButton = {
+        let db = UIButton()
         db.setTitle("-", for: .normal)
+        db.titleLabel?.font = UIFont.init(name: "Helvetica Neue", size: 30)
+        db.setTitleColor(UIColor.gray, for: .normal)
         db.addTarget(self, action: #selector(deleteOnePerson), for: .touchUpInside)
+        db.translatesAutoresizingMaskIntoConstraints = false
         return db
     }()
     
@@ -391,7 +397,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     let enableChatLabel: UILabel = {
         let ecl = UILabel()
-        ecl.text = " Enable Group Chat"
+        ecl.text = " Group Chat"
         ecl.textColor = UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1)
         ecl.font = UIFont.init(name: "Helvetica Neue", size: 18)
         ecl.translatesAutoresizingMaskIntoConstraints = false
@@ -400,7 +406,31 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     let enableChatSwitch : UISwitch = {
         let ecs = UISwitch()
-        ecs.addTarget(self, action: #selector(enableGroupChat), for: .valueChanged)
+        ecs.translatesAutoresizingMaskIntoConstraints = false
+        ecs.onTintColor = AppDelegate.THEME
+        return ecs
+    }()
+    
+    let privateContainer: UIView = {
+        let nopc = UIView()
+        nopc.backgroundColor = UIColor.white
+        nopc.translatesAutoresizingMaskIntoConstraints = false
+        nopc.layer.cornerRadius = 5
+        nopc.layer.masksToBounds = true
+        return nopc
+    }()
+    
+    let privateLabel: UILabel = {
+        let ecl = UILabel()
+        ecl.text = " Private"
+        ecl.textColor = UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1)
+        ecl.font = UIFont.init(name: "Helvetica Neue", size: 18)
+        ecl.translatesAutoresizingMaskIntoConstraints = false
+        return ecl
+    }()
+    
+    let privateSwitch : UISwitch = {
+        let ecs = UISwitch()
         ecs.translatesAutoresizingMaskIntoConstraints = false
         ecs.onTintColor = AppDelegate.THEME
         return ecs
@@ -421,12 +451,6 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         atv.translatesAutoresizingMaskIntoConstraints = false
         return atv
     }()
-    
-    @objc func enableGroupChat() {
-//        enableChatTitleViewHeightAnchor?.constant = enableChatSwitch.isOn == true ? 50 : 0
-//        enableChatTitleTextHeightAnchor = enableChatTitleText.centerYAnchor.constraint(equalTo: enableChatTitleView.centerYAnchor)
-        
-    }
     
     func setupViews() {
         
@@ -538,20 +562,25 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         scrollView.addSubview(numberOfPeopleContainer)
         numberOfPeopleContainer.SetContainer(otherContainer: categoryContainer, top: 5, height: 60)
         numberOfPeopleContainer.addSubview(numberOfPeopleLabel)
-        numberOfPeopleLabel.topAnchor.constraint(equalTo: numberOfPeopleContainer.topAnchor, constant: 10).isActive = true
+        
+        numberOfPeopleLabel.centerYAnchor.constraint(equalTo: numberOfPeopleContainer.centerYAnchor).isActive = true
         numberOfPeopleLabel.leftAnchor.constraint(equalTo: numberOfPeopleContainer.leftAnchor, constant: 10).isActive = true
 
-        numberOfPeopleContainer.addSubview(deleteButton)
-        deleteButton.topAnchor.constraint(equalTo: numberOfPeopleLabel.topAnchor, constant: 5).isActive = true
-        deleteButton.leftAnchor.constraint(equalTo: numberOfPeopleLabel.rightAnchor, constant: 60).isActive = true
+        numberOfPeopleContainer.addSubview(addButton)
+        addButton.centerYAnchor.constraint(equalTo: numberOfPeopleLabel.centerYAnchor).isActive = true
+        addButton.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -20).isActive = true
         
         numberOfPeopleContainer.addSubview(number)
-        number.topAnchor.constraint(equalTo: numberOfPeopleLabel.topAnchor, constant: 10).isActive = true
-        number.leftAnchor.constraint(equalTo: deleteButton.rightAnchor, constant: 20).isActive = true
+        number.centerYAnchor.constraint(equalTo: numberOfPeopleLabel.centerYAnchor).isActive = true
+        number.rightAnchor.constraint(equalTo: view.rightAnchor, constant: -65).isActive = true
+        
+        numberOfPeopleContainer.addSubview(deleteButton)
+        deleteButton.centerYAnchor.constraint(equalTo: numberOfPeopleLabel.centerYAnchor).isActive = true
+        deleteButton.rightAnchor.constraint(equalTo: number.leftAnchor, constant: -20).isActive = true
+        
+       
 
-        numberOfPeopleContainer.addSubview(addButton)
-        addButton.topAnchor.constraint(equalTo: numberOfPeopleLabel.topAnchor, constant: 5).isActive = true
-        addButton.leftAnchor.constraint(equalTo: number.rightAnchor, constant: 20).isActive = true
+        
 
         /** Enable Chat Setup **/
         scrollView.addSubview(enableChatContainer)
@@ -567,13 +596,30 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         enableChatContainer.addSubview(enableChatSwitch)
         enableChatSwitch.topAnchor.constraint(equalTo: enableChatContainer.topAnchor, constant: 10).isActive = true
-        enableChatSwitch.rightAnchor.constraint(equalTo: enableChatContainer.rightAnchor, constant: -80).isActive = true
+        enableChatSwitch.rightAnchor.constraint(equalTo: enableChatContainer.rightAnchor, constant: -50).isActive = true
+        
+        /** Private Switch Setup **/
+        scrollView.addSubview(privateContainer)
+        privateContainer.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        privateContainer.topAnchor.constraint(equalTo: enableChatContainer.bottomAnchor, constant: 5).isActive = true
+        privateContainer.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
+        privateContainer.heightAnchor.constraint(equalToConstant: 50).isActive = true
+        
+        privateContainer.addSubview(privateLabel)
+        privateLabel.topAnchor.constraint(equalTo: privateContainer.topAnchor, constant: 10).isActive = true
+        privateLabel.leftAnchor.constraint(equalTo: privateContainer.leftAnchor, constant: 10).isActive = true
+        
+        privateContainer.addSubview(privateSwitch)
+        privateSwitch.topAnchor.constraint(equalTo: privateContainer.topAnchor, constant: 10).isActive = true
+        privateSwitch.rightAnchor.constraint(equalTo: privateContainer.rightAnchor, constant: -50).isActive = true
         
         scrollView.addSubview(enableChatTitleView)
         enableChatTitleView.topAnchor.constraint(equalTo: enableChatContainer.bottomAnchor, constant: 5).isActive = true
         enableChatTitleView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
         enableChatTitleViewHeightAnchor = enableChatTitleView.heightAnchor.constraint(equalToConstant: 0)
         enableChatTitleViewHeightAnchor?.isActive = true
+        
+        
         
 //        enableChatTitleView.addSubview(enableChatTitleText)
 //        enableChatTitleTextHeightAnchor = enableChatTitleText.centerYAnchor.constraint(equalTo: enableChatTitleView.centerYAnchor)
@@ -725,6 +771,11 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     func uploadPostData(snapshot: DataSnapshot, userID: String, enabledChat: Int, imageUrl: String, key: String) {
         var profileImageUrl = ""
+        var privateEnabled = 0
+        if(privateSwitch.isOn)
+        {
+            privateEnabled = 1
+        }
         self.dispatchGroup.enter()
         Database.database().reference().child("users").child(userID).observeSingleEvent(of: .value) { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject]
@@ -751,7 +802,8 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
                             "date": self.date!.dayOfWeek()!,
                             "startTime": self.startTime,
                             "endTime": self.endTime,
-                            "enabledChat": enabledChat] as [String : Any]
+                            "enabledChat": enabledChat,
+                            "private": privateEnabled] as [String : Any]
                 let child = ["/posts/\(key)": post]
                 let userPosts = [key: -1]
                 

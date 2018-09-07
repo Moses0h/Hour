@@ -288,12 +288,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         present(navController, animated: true, completion: nil)
     }
     
-    @objc func handleFullView() {
-        let fullPostController = FullPostController(nibName: nil, bundle: nil)
-        fullPostController.hidesBottomBarWhenPushed = true
-        navigationController?.pushViewController(fullPostController, animated: true)
-    }
-    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if ((searchController.isActive && searchController.searchBar.text != "") || categorySelected.count != 0){
             return filteredPosts.count
