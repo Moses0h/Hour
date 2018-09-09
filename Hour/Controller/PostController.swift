@@ -20,7 +20,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var feedController: FeedController?
     var loginController: LoginController?
     
-    var numberOfPeople: Int = 0
+    var numberOfPeople: Int = 1
     var category: String = ""
     var date: Date?
     var startTime: String = ""
@@ -153,6 +153,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     let activityTextField: UITextField = {
         let atv = UITextField()
         atv.placeholder = " Activity"
+        atv.text = ""
         atv.font = UIFont.init(name: "Helvetica Neue", size: 18)
         atv.textColor = UIColor.gray
         atv.translatesAutoresizingMaskIntoConstraints = false
@@ -171,6 +172,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     let descriptionTextField: UITextView = {
         let dtf = UITextView()
         dtf.font = UIFont.init(name: "Helvetica Neue", size: 18)
+        dtf.text = ""
         dtf.textColor = UIColor.gray
         dtf.placeholder = " Description"
         dtf.isScrollEnabled = true
@@ -359,7 +361,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     
     var number: UILabel = {
         let no = UILabel()
-        no.text = "0"
+        no.text = "1"
         no.textColor = UIColor.gray
         no.font = UIFont.init(name: "Helvetica Neue", size: 25)
         no.translatesAutoresizingMaskIntoConstraints = false
@@ -642,7 +644,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @objc func deleteOnePerson() {
-        if(numberOfPeople > 0)
+        if(numberOfPeople > 1)
         {
             numberOfPeople -= 1
         }
@@ -690,7 +692,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
             dateAndTimeLabel.setTitleColor(UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1), for: .normal)
         }
         
-        if(locationLabel.titleLabel?.text == "")
+        if(locationLabel.titleLabel?.text == " Location")
         {
             locationLabel.setTitleColor(UIColor.red, for: .normal)
             return false
@@ -700,9 +702,24 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
             locationLabel.setTitleColor(UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1), for: .normal)
         }
         
-        if(dateAndTimeLabel.title(for: .normal) == "")
+        if(dateAndTimeLabel.title(for: .normal) == " Date and Time")
         {
+            dateAndTimeLabel.setTitleColor(UIColor.red, for: .normal)
             return false
+        }
+        else
+        {
+            dateAndTimeLabel.setTitleColor(UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1), for: .normal)
+        }
+        
+        if(category == "")
+        {
+            categoryLabel.textColor = UIColor.red
+            return false
+        }
+        else
+        {
+            categoryLabel.textColor = UIColor(red: 199/255, green:199/255, blue: 205/255, alpha: 1)
         }
         
         return true
@@ -780,54 +797,69 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         Database.database().reference().child("users").child(userID).observeSingleEvent(of: .value) { (snapshot) in
             if let dictionary = snapshot.value as? [String: AnyObject]
             {
-                profileImageUrl = dictionary["imageUrl"] as! String
+                if let imageUrl = dictionary["imageUrl"] as? String
+                {
+                    profileImageUrl = imageUrl
+                }
+                else
+                {
+                    profileImageUrl = ""
+                }
                 self.dispatchGroup.leave()
             }
         }
-        dispatchGroup.notify(queue: .main) {
-            if let dictionary = snapshot.value as? [String: AnyObject] {
-                let dateFormatter:DateFormatter = DateFormatter()
-                dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
-                let usersUid = [userID: ["status": -1, "imageUrl": profileImageUrl]]
-                let post = ["name": dictionary["name"] ?? "noname",
-                            "uid": dictionary["uid"] ?? "nouid",
-                            "imageUrl": imageUrl,
-                            "activity": self.activityTextField.text!,
-                            "description": self.descriptionTextField.text,
-                            "time": ServerValue.timestamp(),
-                            "location": self.locationLabel.title(for: .normal)!,
-                            "groupCount": self.numberOfPeople,
-                            "usersUid": usersUid,
-                            "category": self.category,
-                            "date": self.date!.dayOfWeek()!,
-                            "startTime": self.startTime,
-                            "endTime": self.endTime,
-                            "enabledChat": enabledChat,
-                            "private": privateEnabled] as [String : Any]
-                let child = ["/posts/\(key)": post]
-                let userPosts = [key: -1]
-                
-                //update FireBase posts
-                let ref = Database.database().reference().child("users").child(userID).child("posts")
-                ref.updateChildValues(userPosts) {(err,ref) in
-                    if err != nil{
-                        print(err ?? "error")
-                        return
+        if let activity = self.activityTextField.text, let description = self.descriptionTextField.text, let location = self.locationLabel.title(for: .normal), let date = self.date!.dayOfWeek()
+        {
+            dispatchGroup.notify(queue: .main) {
+                if let dictionary = snapshot.value as? [String: AnyObject] {
+                    let dateFormatter:DateFormatter = DateFormatter()
+                    dateFormatter.dateFormat = "MM-dd-yyyy hh:mm a"
+                    let usersUid = [userID: ["status": -1, "imageUrl": profileImageUrl]]
+                    let post = ["name": dictionary["name"] ?? "noname",
+                                "uid": dictionary["uid"] ?? "nouid",
+                                "imageUrl": imageUrl,
+                                "activity": activity,
+                                "description": description,
+                                "time": ServerValue.timestamp(),
+                                "location": location,
+                                "groupCount": self.numberOfPeople,
+                                "usersUid": usersUid,
+                                "category": self.category,
+                                "date": date,
+                                "startTime": self.startTime,
+                                "endTime": self.endTime,
+                                "enabledChat": enabledChat,
+                                "private": privateEnabled] as [String : Any]
+                    let child = ["/posts/\(key)": post]
+                    let userPosts = [key: -1]
+                    
+                    //update FireBase posts
+                    let ref = Database.database().reference().child("users").child(userID).child("posts")
+                    ref.updateChildValues(userPosts) {(err,ref) in
+                        if err != nil{
+                            print(err ?? "error")
+                            return
+                        }
                     }
-                }
-                
-                self.ref.updateChildValues(child) { (err, ref) in
-                    if err != nil{
-                        print(err ?? "error")
-                        return
-                    }
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                        self.feedController?.determineMyCurrentLocation()
-                        self.dismiss(animated: true, completion: nil)
+                    
+                    self.ref.updateChildValues(child) { (err, ref) in
+                        if err != nil{
+                            print(err ?? "error")
+                            return
+                        }
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                            self.feedController?.determineMyCurrentLocation()
+                            self.dismiss(animated: true, completion: nil)
+                        }
                     }
                 }
             }
         }
+        else
+        {
+            print("NOPPPE")
+        }
+        
         
     }
     

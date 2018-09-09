@@ -54,7 +54,6 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     override func viewDidLoad() {
         super.viewDidLoad()
         uid = (Auth.auth().currentUser?.uid)!
-        print("uid =  \(uid)")
         refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
         
@@ -200,6 +199,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
             feedCell.post = post
             feedCell.key = post.key
             feedCell.index = indexPath.row
+            feedCell.inFeedView = false
             return feedCell
         }
         return feedCell

@@ -13,10 +13,5 @@ import CoreLocation
 
 class CellFunctions {
     
-    @objc static func handleFullView() {
-        let fullPostController = FullPostController(nibName: nil, bundle: nil)
-        fullPostController.hidesBottomBarWhenPushed = true
-        FeedController.controller?.navigationController?.pushViewController(fullPostController, animated: true)
-    }
-    
+        
 }

@@ -35,7 +35,6 @@ struct Post {
             if(snapshot.hasChild("usersUid"))
             {
                 usersUid = dictionary["usersUid"] as! [String: AnyObject]
-                print(usersUid)
             }
 
             name = dictionary["name"] as? String

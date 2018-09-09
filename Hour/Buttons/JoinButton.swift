@@ -23,6 +23,7 @@ class JoinButton: UIButton {
         case unknown
     }
     
+    var inFeedView: Bool?
     var postKey: String?
     var index: Int?
     var privateEnabled: Int?
@@ -50,13 +51,9 @@ class JoinButton: UIButton {
     }
     
     func initButton() {
-//        setTitleColor(UIColor.gray, for: .normal)
-//        backgroundColor = UIColor(white: 0.95, alpha: 1)
         titleLabel?.font = UIFont.init(name: "Helvetica Neue", size: 18)!
         titleLabel?.font = UIFont.boldSystemFont(ofSize: 18)
         addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-//        layer.cornerRadius = 5
-//        layer.masksToBounds = true
         translatesAutoresizingMaskIntoConstraints = false
     }
     
@@ -77,7 +74,14 @@ class JoinButton: UIButton {
                     imageUrl = dictionary["imageUrl"] as! String
                     let value = ["status": 0, "imageUrl": imageUrl] as [String: Any]
                     ref.updateChildValues(value)
-                    FeedController.controller?.posts[self.index!].usersUid[uid] = value as AnyObject
+                    if(self.inFeedView)!
+                    {
+                        FeedController.controller?.posts[self.index!].usersUid[uid] = value as AnyObject
+                    }
+                    else
+                    {
+                        ProfileController.controller?.posts[self.index!].usersUid[uid] = value as AnyObject
+                    }
                 }
             }
             let userRef = Database.database().reference().child("users").child(uid).child("posts")
@@ -94,7 +98,14 @@ class JoinButton: UIButton {
             ref.removeValue()
             userRef.removeValue()
             groupRef.removeValue { (err, ref) in
-                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                if(self.inFeedView)!
+                {
+                    FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                }
+                else
+                {
+                    ProfileController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                }
             }
             
             break
@@ -108,7 +119,14 @@ class JoinButton: UIButton {
             ref.removeValue()
             userRef.removeValue()
             groupRef.removeValue { (err, ref) in
-                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                if(self.inFeedView)!
+                {
+                    FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                }
+                else
+                {
+                    ProfileController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                }
             }
             break
         case .publicJoin:
@@ -122,7 +140,14 @@ class JoinButton: UIButton {
                     imageUrl = dictionary["imageUrl"] as! String
                     let value = ["status": 1, "imageUrl": imageUrl] as [String: Any]
                     ref.updateChildValues(value)
-                    FeedController.controller?.posts[self.index!].usersUid[uid] = value as AnyObject
+                    if(self.inFeedView)!
+                    {
+                        FeedController.controller?.posts[self.index!].usersUid[uid] = value as AnyObject
+                    }
+                    else
+                    {
+                        ProfileController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                    }
                 }
             }
             let users_uid_group = Database.database().reference().child("users").child(uid).child("groups")
@@ -146,7 +171,14 @@ class JoinButton: UIButton {
             ref.removeValue()
             userRef.removeValue()
             groupRef.removeValue { (err, ref) in
-                FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                if(self.inFeedView)!
+                {
+                    FeedController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                }
+                else
+                {
+                    ProfileController.controller?.posts[self.index!].usersUid.removeValue(forKey: uid)
+                }
             }
             
             break

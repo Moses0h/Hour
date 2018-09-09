@@ -135,7 +135,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.register(FeedHeaderCell.self, forSupplementaryViewOfKind:
         UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
-    
         collectionView?.dataSource = self
         tabBarController?.delegate = self
 
@@ -288,6 +287,24 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         present(navController, animated: true, completion: nil)
     }
     
+    @objc func handleFullView() {
+        let fullPostController = FullPostController(nibName: nil, bundle: nil)
+        fullPostController.hidesBottomBarWhenPushed = true
+        navigationController?.pushViewController(fullPostController, animated: true)
+    }
+    
+    @objc func handleDelete(sender: DeleteButton) {
+        let alert = UIAlertController(title: "Delete Post?", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { action in
+            print("canceled")
+        }))
+        alert.addAction(UIAlertAction(title: "Delete", style: .default, handler: { action in
+            print("deleted")
+            sender.handleDelete()
+        }))
+        self.present(alert, animated: true, completion: nil)
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         if ((searchController.isActive && searchController.searchBar.text != "") || categorySelected.count != 0){
             return filteredPosts.count
@@ -308,6 +325,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.post = post
         feedCell.index = indexPath.row
         feedCell.key = post.key
+        feedCell.inFeedView = true
         return feedCell
     }
     
