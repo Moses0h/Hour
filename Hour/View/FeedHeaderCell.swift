@@ -106,11 +106,11 @@ class FeedHeaderCell: UICollectionViewCell{
         postActivityContainer.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
 
         postActivityContainer.addSubview(postActivityImage)
-        postActivityImage.leftAnchor.constraint(equalTo: postActivityContainer.leftAnchor, constant: 10).isActive = true
+        postActivityImage.leftAnchor.constraint(equalTo: postActivityContainer.leftAnchor, constant: 15).isActive = true
         postActivityImage.centerYAnchor.constraint(equalTo: postActivityContainer.centerYAnchor).isActive = true
         postActivityImage.widthAnchor.constraint(equalToConstant: 30).isActive = true
         postActivityContainer.addSubview(label)
-        label.leftAnchor.constraint(equalTo: postActivityImage.rightAnchor, constant: 5).isActive = true
+        label.leftAnchor.constraint(equalTo: postActivityImage.rightAnchor, constant: 10).isActive = true
         label.centerYAnchor.constraint(equalTo: postActivityContainer.centerYAnchor).isActive = true
     }
     
