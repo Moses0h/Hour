@@ -24,7 +24,7 @@ class FeedHeaderCell: UICollectionViewCell{
     let activityLabel: UILabel = {
         let a = UILabel()
         a.font = UIFont.init(name: "Helvetica Neue", size: 18)
-        a.textColor = UIColor.darkText
+        a.textColor = UIColor.black
         a.numberOfLines = 2
         a.translatesAutoresizingMaskIntoConstraints = false
         return a
@@ -32,7 +32,7 @@ class FeedHeaderCell: UICollectionViewCell{
     
     let postActivityImage: UIImageView = {
         let imageView = UIImageView(image: #imageLiteral(resourceName: "write"))
-        imageView.contentMode = .scaleAspectFit
+        imageView.contentMode = .scaleAspectFill
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
         
@@ -40,10 +40,12 @@ class FeedHeaderCell: UICollectionViewCell{
     
     let postActivityContainer: BounceButton = {
         let pac = BounceButton()
-        pac.backgroundColor = UIColor.white
+        pac.backgroundColor = UIColor(r: 93, g: 125, b: 255)
         pac.translatesAutoresizingMaskIntoConstraints = false
         pac.layer.cornerRadius = 5
-        pac.layer.masksToBounds = true
+        pac.layer.shadowOffset = CGSize(width: 1, height: 1)
+        pac.layer.shadowOpacity = 0.5
+        pac.layer.masksToBounds = false
         pac.isUserInteractionEnabled = true
     
         pac.addTarget(self, action: #selector(FeedController.handleNewPost), for: .touchUpInside)
@@ -57,7 +59,7 @@ class FeedHeaderCell: UICollectionViewCell{
         let a = UILabel()
         a.font = UIFont.init(name: "Helvetica Neue", size: 18)
         a.text = " Post an activity"
-        a.textColor = UIColor.darkGray
+        a.textColor = UIColor.white
         a.translatesAutoresizingMaskIntoConstraints = false
         return a
     }()
@@ -66,6 +68,7 @@ class FeedHeaderCell: UICollectionViewCell{
     
     
     func setupViews() {
+        
         backgroundColor = UIColor(white: 0.95, alpha: 1)
         
         let feedController: FeedController = FeedController.controller!
@@ -103,11 +106,11 @@ class FeedHeaderCell: UICollectionViewCell{
         postActivityContainer.bottomAnchor.constraint(equalTo: bottomAnchor).isActive = true
 
         postActivityContainer.addSubview(postActivityImage)
-        postActivityImage.leftAnchor.constraint(equalTo: postActivityContainer.leftAnchor, constant: 15).isActive = true
+        postActivityImage.leftAnchor.constraint(equalTo: postActivityContainer.leftAnchor, constant: 10).isActive = true
         postActivityImage.centerYAnchor.constraint(equalTo: postActivityContainer.centerYAnchor).isActive = true
-        
+        postActivityImage.widthAnchor.constraint(equalToConstant: 30).isActive = true
         postActivityContainer.addSubview(label)
-        label.leftAnchor.constraint(equalTo: postActivityImage.rightAnchor, constant: 10).isActive = true
+        label.leftAnchor.constraint(equalTo: postActivityImage.rightAnchor, constant: 5).isActive = true
         label.centerYAnchor.constraint(equalTo: postActivityContainer.centerYAnchor).isActive = true
     }
     

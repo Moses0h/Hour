@@ -105,7 +105,7 @@ class FeedCell: UICollectionViewCell {
                             self.deleteButton.postUid = self.key
                             self.deleteButton.usersUid = usersUid
                             self.deleteButton.setImage(#imageLiteral(resourceName: "decline"), for: .normal)
-                            self.deleteButton.addTarget(self, action: #selector(FeedController.controller?.handleDelete), for: .touchUpInside)
+//                            self.deleteButton.addTarget(self, action: #selector(FeedController.controller?.handleDelete), for: .touchUpInside)
                         }
                         else if(usersUid[uid]!["status"] as! Int == 1 && self.post?.privateEnabled == 1)
                         {
@@ -199,7 +199,7 @@ class FeedCell: UICollectionViewCell {
         let imageView = UIButton()
         imageView.layer.borderWidth = 0.5
         imageView.backgroundColor = UIColor.white
-        imageView.layer.borderColor = UIColor.black.cgColor
+        imageView.layer.borderColor = UIColor.white.cgColor
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 15

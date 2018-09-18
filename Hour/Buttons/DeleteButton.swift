@@ -24,6 +24,11 @@ class DeleteButton: UIButton {
         super.init(coder: aDecoder)
     }
     
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        //                            self.deleteButton.addTarget(self, action: #selector(FeedController.controller?.handleDelete), for: .touchUpInside)
+        FeedController.controller?.handleDelete(sender: self)
+    }
+    
     func handleDelete() {
         var count = 0
         for uid in usersUid! {

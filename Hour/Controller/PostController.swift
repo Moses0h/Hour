@@ -20,7 +20,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var feedController: FeedController?
     var loginController: LoginController?
     
-    var numberOfPeople: Int = 1
+    var numberOfPeople: Int = 2
     var category: String = ""
     var date: Date?
     var startTime: String = ""
@@ -30,6 +30,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     var categoryButtons : [CategoryButton] = [CategoryButton]()
     var dispatchGroup = DispatchGroup()
     
+    var activityIndicator = UIActivityIndicatorView(frame: CGRect(x: 0, y: 0, width: 20, height: 20))
     var scrollView: UIScrollView = {
         let scroll = UIScrollView()
         scroll.translatesAutoresizingMaskIntoConstraints = false
@@ -89,6 +90,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Post", style: .plain, target: self, action: #selector(handlePost))
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
+        
 
         ref = Database.database().reference()
         geoFire = GeoFire(firebaseRef: ref.child("posts_location"))
@@ -644,7 +646,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @objc func deleteOnePerson() {
-        if(numberOfPeople > 1)
+        if(numberOfPeople > 2)
         {
             numberOfPeople -= 1
         }
@@ -726,8 +728,15 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }
     
     @objc func handlePost(){
+        
+        
         if(checkIfNil())
         {
+            //initiate loading sign
+            let barButton = UIBarButtonItem(customView: activityIndicator)
+            self.navigationItem.setRightBarButton(barButton, animated: true)
+            activityIndicator.startAnimating()
+            
             let key = ref.child("posts").childByAutoId().key
             let userID = Auth.auth().currentUser?.uid
             var enabledChat = 0
@@ -849,7 +858,9 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
                         }
                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             self.feedController?.determineMyCurrentLocation()
+                            self.activityIndicator.stopAnimating()
                             self.dismiss(animated: true, completion: nil)
+                            
                         }
                     }
                 }
