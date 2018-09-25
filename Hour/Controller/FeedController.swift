@@ -122,7 +122,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         
         let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
-//        navigationController?.hidesBarsOnSwipe = true
         
         let searchBar = searchController.searchBar
         searchBar.sizeToFit()
@@ -142,12 +141,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyBest
         locationManager.requestAlwaysAuthorization()
-        
-        setupOtherObservers()
         determineMyCurrentLocation()
-    }
-    
-    func setupOtherObservers(){
     }
     
     func updateSearchResults(for searchController: UISearchController) {

@@ -45,6 +45,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let itf = UITextField()
         itf.placeholder = "Enter message..."
         itf.translatesAutoresizingMaskIntoConstraints = false
+        itf.backgroundColor = UIColor.white
         itf.delegate = self
         return itf
     }()
@@ -78,8 +79,10 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     
     lazy var inputContainerView: UIView = {
         let containerView = UIView()
+        
         containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 50)
         containerView.backgroundColor = UIColor.white
+        containerView.translatesAutoresizingMaskIntoConstraints = false
         
         let sendButton = UIButton(type: .system)
         sendButton.setTitle("Send", for: .normal)
@@ -88,35 +91,77 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         sendButton.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(sendButton)
         
-        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
+        sendButton.rightAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.rightAnchor).isActive = true
+        sendButton.centerYAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.centerYAnchor).isActive = true
         sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        sendButton.heightAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.heightAnchor).isActive = true
         
         containerView.addSubview(self.inputTextField)
-        
-        self.inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
-        self.inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        self.inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-        self.inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
+        self.inputTextField.leftAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.leftAnchor, constant: 8).isActive = true
+        self.inputTextField.centerYAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.centerYAnchor).isActive = true
+        self.inputTextField.rightAnchor.constraint(equalTo: sendButton.safeAreaLayoutGuide.leftAnchor).isActive = true
+        self.inputTextField.heightAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.heightAnchor).isActive = true
         
         let seperatorLineView = UIView()
         seperatorLineView.backgroundColor = UIColor(r: 220, g:220, b:220)
         seperatorLineView.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(seperatorLineView)
         
-        seperatorLineView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-        seperatorLineView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        seperatorLineView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
+        seperatorLineView.leftAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.leftAnchor).isActive = true
+        seperatorLineView.topAnchor.constraint(equalTo: inputTextField.safeAreaLayoutGuide.topAnchor, constant: -10).isActive = true
+        seperatorLineView.widthAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.widthAnchor).isActive = true
         seperatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
         
         return containerView
     }()
     
+    var containerView: UIView!
+    
     override var inputAccessoryView: UIView? {
-        get {
-            return inputContainerView
+        
+        if containerView == nil {
+            
+            containerView = SendMessageView()
+            
+            containerView.frame = CGRect(x: 0, y: 0, width: self.view.frame.width, height: 70)
+            containerView.backgroundColor = UIColor.white
+            containerView.translatesAutoresizingMaskIntoConstraints = false
+            
+            let sendButton = UIButton(type: .system)
+            sendButton.setTitle("Send", for: .normal)
+            sendButton.backgroundColor = UIColor.white
+            sendButton.titleLabel?.font = UIFont.init(name: "Helvetica Neue", size: 18)!
+            sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
+            sendButton.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview(sendButton)
+            
+            sendButton.rightAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.rightAnchor).isActive = true
+            sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
+            
+            containerView.addSubview(self.inputTextField)
+            self.inputTextField.leftAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.leftAnchor, constant: 8).isActive = true
+            self.inputTextField.bottomAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.bottomAnchor, constant: -10).isActive = true
+            self.inputTextField.rightAnchor.constraint(equalTo: sendButton.safeAreaLayoutGuide.leftAnchor).isActive = true
+            self.inputTextField.heightAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.heightAnchor).isActive = true
+            sendButton.centerYAnchor.constraint(equalTo: self.inputTextField.safeAreaLayoutGuide.centerYAnchor).isActive = true
+            
+            sendButton.heightAnchor.constraint(equalTo: self.inputTextField.safeAreaLayoutGuide.heightAnchor).isActive = true
+
+
+            let seperatorLineView = UIView()
+            seperatorLineView.backgroundColor = UIColor(r: 220, g:220, b:220)
+            seperatorLineView.translatesAutoresizingMaskIntoConstraints = false
+            containerView.addSubview(seperatorLineView)
+            
+            seperatorLineView.leftAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.leftAnchor).isActive = true
+            seperatorLineView.topAnchor.constraint(equalTo: inputTextField.safeAreaLayoutGuide.topAnchor).isActive = true
+            seperatorLineView.widthAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.widthAnchor).isActive = true
+            seperatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
+            
+            return containerView
         }
+     
+        return containerView
     }
     
     override var canBecomeFirstResponder: Bool {
@@ -135,17 +180,12 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     @objc func handleKeyboardWillShow(notification: NSNotification) {
-        let keyboardFame = (notification.userInfo?[UIKeyboardFrameEndUserInfoKey] as! NSValue).cgRectValue
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber)
-        containerViewBottomAnchor?.constant = -keyboardFame.height
-        print("whut asdf ")
         UIView.animate(withDuration: TimeInterval(truncating: keyboardDuration)) {
             self.view.layoutIfNeeded()
             let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
             let lastItemIndex = IndexPath(item: item, section: 0)
             self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
-
-
         }
 
 
@@ -154,7 +194,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     @objc func handleKeyboardWillHide(notification: NSNotification) {
         let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
 
-        containerViewBottomAnchor?.constant = 0
         UIView.animate(withDuration: keyboardDuration) {
             self.view.layoutIfNeeded()
             self.collectionView?.scrollToItem(at: IndexPath(item:self.messages.count-1, section: 0), at: .bottom, animated: true)
@@ -185,55 +224,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
             }
         }
         
-        
-        
-        
-    }
-    
-    var containerViewBottomAnchor: NSLayoutConstraint?
-    
-    func setupInputComponents() {
-        let containerView = UIView()
-        containerView.backgroundColor = UIColor.white
-        containerView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(containerView)
-        
-        containerView.leftAnchor.constraint(equalTo: view.leftAnchor).isActive = true
-        
-        containerViewBottomAnchor = containerView.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        containerViewBottomAnchor?.isActive = true
-        
-        containerView.widthAnchor.constraint(equalTo: view.widthAnchor).isActive = true
-        containerView.heightAnchor.constraint(equalToConstant: 50).isActive = true
-        
-        let sendButton = UIButton(type: .system)
-        sendButton.setTitle("Send", for: .normal)
-        sendButton.titleLabel?.font = UIFont.init(name: "Helvetica Neue", size: 18)!
-        sendButton.addTarget(self, action: #selector(handleSend), for: .touchUpInside)
-        sendButton.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(sendButton)
-        
-        sendButton.rightAnchor.constraint(equalTo: containerView.rightAnchor).isActive = true
-        sendButton.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        sendButton.widthAnchor.constraint(equalToConstant: 80).isActive = true
-        sendButton.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-        
-        containerView.addSubview(inputTextField)
-        
-        inputTextField.leftAnchor.constraint(equalTo: containerView.leftAnchor, constant: 8).isActive = true
-        inputTextField.centerYAnchor.constraint(equalTo: containerView.centerYAnchor).isActive = true
-        inputTextField.rightAnchor.constraint(equalTo: sendButton.leftAnchor).isActive = true
-        inputTextField.heightAnchor.constraint(equalTo: containerView.heightAnchor).isActive = true
-        
-        let seperatorLineView = UIView()
-        seperatorLineView.backgroundColor = UIColor(r: 220, g:220, b:220)
-        seperatorLineView.translatesAutoresizingMaskIntoConstraints = false
-        containerView.addSubview(seperatorLineView)
-        
-        seperatorLineView.leftAnchor.constraint(equalTo: containerView.leftAnchor).isActive = true
-        seperatorLineView.topAnchor.constraint(equalTo: containerView.topAnchor).isActive = true
-        seperatorLineView.widthAnchor.constraint(equalTo: containerView.widthAnchor).isActive = true
-        seperatorLineView.heightAnchor.constraint(equalToConstant: 1).isActive = true
     }
     
     @objc func handleSend() {
@@ -287,7 +277,6 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! ChatMessageCell
         let message = messages[indexPath.item]
         cell.textView.text = message.message
-        
         setupCell(cell: cell, message: message)
         
         cell.bubbleWidthAnchor?.constant = estimateFrameForText(text: message.message!).width + 28
@@ -311,4 +300,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 16)], context: nil)
     }
     
+}
+
+class SendMessageView: UIView {
+    
+    // this is needed so that the inputAccesoryView is properly sized from the auto layout constraints
+    // actual value is not important
+    
+    override var intrinsicContentSize: CGSize {
+        return CGSize.zero
+    }
 }

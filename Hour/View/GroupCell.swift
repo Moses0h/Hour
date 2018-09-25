@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import Firebase
 
-class UserCell: UITableViewCell {
+class GroupCell: UITableViewCell {
     
     var group: Group? {
         didSet {
@@ -37,6 +37,7 @@ class UserCell: UITableViewCell {
         
         
         self.textLabel?.text = self.group?.groupName
+        self.detailTextLabel?.text = ""
         if group?.lastMessage != nil {
             
         var message = ""
@@ -56,7 +57,13 @@ class UserCell: UITableViewCell {
         })
         }
         
-
+        let postRef = Database.database().reference().child("posts").child((group?.uid)!)
+        postRef.observeSingleEvent(of: .value) { (snapshot) in
+            if let dictionary = snapshot.value as? [String: AnyObject] {
+                self.eventImageView.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String)
+            }
+        }
+        
         if let seconds = group?.timestamp {
             let timestampDate = NSDate(timeIntervalSince1970: TimeInterval(seconds))
             let dateFormatter = DateFormatter()
@@ -65,10 +72,10 @@ class UserCell: UITableViewCell {
         }
         
     }
-    let profileImageView: UIImageView = {
-        let imageView = UIImageView(image: #imageLiteral(resourceName: "food"))
+    let eventImageView: UIImageView = {
+        let imageView = UIImageView()
         imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 24
+        imageView.layer.cornerRadius = 8
         imageView.layer.masksToBounds = true
         imageView.contentMode = .scaleAspectFill
         return imageView
@@ -76,7 +83,7 @@ class UserCell: UITableViewCell {
     
     let timeLabel: UILabel = {
         let label = UILabel()
-        label.font = UIFont.systemFont(ofSize: 12)
+        label.font = UIFont.systemFont(ofSize: 15)
         label.textColor = UIColor.lightGray
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
@@ -85,18 +92,18 @@ class UserCell: UITableViewCell {
     override init(style: UITableViewCellStyle, reuseIdentifier: String?) {
         super.init(style: .subtitle, reuseIdentifier: reuseIdentifier)
         
-        addSubview(profileImageView)
+        addSubview(eventImageView)
         addSubview(timeLabel)
         
-        profileImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
-        profileImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
-        profileImageView.widthAnchor.constraint(equalToConstant: 48).isActive = true
-        profileImageView.heightAnchor.constraint(equalToConstant: 48).isActive = true
+        eventImageView.leftAnchor.constraint(equalTo: self.leftAnchor, constant: 8).isActive = true
+        eventImageView.centerYAnchor.constraint(equalTo: self.centerYAnchor).isActive = true
+        eventImageView.widthAnchor.constraint(equalToConstant: 60).isActive = true
+        eventImageView.heightAnchor.constraint(equalToConstant: 60).isActive = true
         
-        timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor).isActive = true
-        timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 18).isActive = true
-        timeLabel.widthAnchor.constraint(equalToConstant: 100).isActive = true
-        timeLabel.heightAnchor.constraint(equalTo: (textLabel?.heightAnchor)!).isActive = true
+        timeLabel.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -10).isActive = true
+        timeLabel.topAnchor.constraint(equalTo: (self.textLabel?.topAnchor)!).isActive = true
+//        timeLabel.topAnchor.constraint(equalTo: self.topAnchor, constant: 10).isActive = true
+//        timeLabel.heightAnchor.constraint(equalTo: (textLabel?.heightAnchor)!).isActive = true
         
         
     }
@@ -108,10 +115,10 @@ class UserCell: UITableViewCell {
     override func layoutSubviews() {
         super.layoutSubviews()
         
-        textLabel?.frame = CGRect(x: 64,y: textLabel!.frame.origin.y - 2,width: textLabel!.frame.width,height: textLabel!.frame.height)
+        textLabel?.frame = CGRect(x: 80,y: textLabel!.frame.origin.y - 2,width: textLabel!.frame.width,height: textLabel!.frame.height)
 
-        detailTextLabel?.frame = CGRect(x: 64,y: detailTextLabel!.frame.origin.y + 2,width: detailTextLabel!.frame.width,height: detailTextLabel!.frame.height)
-        
+        detailTextLabel?.frame = CGRect(x: 80,y: detailTextLabel!.frame.origin.y + 2,width: detailTextLabel!.frame.width,height: detailTextLabel!.frame.height)
+        detailTextLabel?.textColor = UIColor.gray
     }
     
    

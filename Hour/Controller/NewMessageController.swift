@@ -23,7 +23,7 @@ class NewMessageController: UITableViewController {
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(title: "Cancel", style: .plain, target: self, action: #selector(handleCancel))
 //        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Create", style: .plain, target: self, action: #selector(handleCreate))
-        tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(GroupCell.self, forCellReuseIdentifier: cellId)
         fetchUser()
     }
     

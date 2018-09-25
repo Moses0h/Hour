@@ -19,7 +19,7 @@
 		7B0F6BEA206046D1001F394F /* NewMessageController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BE9206046D1001F394F /* NewMessageController.swift */; };
 		7B0F6BEC20604923001F394F /* HUser.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BEB20604923001F394F /* HUser.swift */; };
 		7B0F6BEE206058EA001F394F /* Message.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BED206058EA001F394F /* Message.swift */; };
-		7B0F6BF120605F65001F394F /* UserCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BF020605F65001F394F /* UserCell.swift */; };
+		7B0F6BF120605F65001F394F /* GroupCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0F6BF020605F65001F394F /* GroupCell.swift */; };
 		7B177E7A21252A9200A80519 /* ProfileHeaderCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B177E7921252A9200A80519 /* ProfileHeaderCell.swift */; };
 		7B17D75620470A3500C69A9E /* MessagesController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B17D75520470A3500C69A9E /* MessagesController.swift */; };
 		7B17D75820470BE800C69A9E /* NotificationController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B17D75720470BE800C69A9E /* NotificationController.swift */; };
@@ -73,7 +73,7 @@
 		7B0F6BE9206046D1001F394F /* NewMessageController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewMessageController.swift; sourceTree = "<group>"; };
 		7B0F6BEB20604923001F394F /* HUser.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HUser.swift; sourceTree = "<group>"; };
 		7B0F6BED206058EA001F394F /* Message.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Message.swift; sourceTree = "<group>"; };
-		7B0F6BF020605F65001F394F /* UserCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserCell.swift; sourceTree = "<group>"; };
+		7B0F6BF020605F65001F394F /* GroupCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GroupCell.swift; sourceTree = "<group>"; };
 		7B177E7921252A9200A80519 /* ProfileHeaderCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileHeaderCell.swift; sourceTree = "<group>"; };
 		7B17D75520470A3500C69A9E /* MessagesController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MessagesController.swift; sourceTree = "<group>"; };
 		7B17D75720470BE800C69A9E /* NotificationController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationController.swift; sourceTree = "<group>"; };
@@ -143,7 +143,7 @@
 		7B0F6BEF20605E89001F394F /* View */ = {
 			isa = PBXGroup;
 			children = (
-				7B0F6BF020605F65001F394F /* UserCell.swift */,
+				7B0F6BF020605F65001F394F /* GroupCell.swift */,
 				7B0F6BE7205FADFE001F394F /* FeedCell.swift */,
 				7BFF98652061934F0062B159 /* ChatMessageCell.swift */,
 				7B72DBAB211A5C3C00065E53 /* FeedHeaderCell.swift */,
@@ -427,7 +427,7 @@
 				7B9A8871204B735D00FEDAC3 /* ChatLogController.swift in Sources */,
 				7B66226D2130AB4100ACB576 /* DeclineButton.swift in Sources */,
 				7B177E7A21252A9200A80519 /* ProfileHeaderCell.swift in Sources */,
-				7B0F6BF120605F65001F394F /* UserCell.swift in Sources */,
+				7B0F6BF120605F65001F394F /* GroupCell.swift in Sources */,
 				7BF4A2C92109A16B0060EDA3 /* FeedController.swift in Sources */,
 				7B17D75820470BE800C69A9E /* NotificationController.swift in Sources */,
 				7B9A8877204C5C8600FEDAC3 /* DateAndTimeController.swift in Sources */,

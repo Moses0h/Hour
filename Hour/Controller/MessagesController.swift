@@ -31,7 +31,8 @@ class MessagesController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = UIColor.white
-        tableView.register(UserCell.self, forCellReuseIdentifier: cellId)
+        tableView.register(GroupCell.self, forCellReuseIdentifier: cellId)
+        tableView.separatorStyle = .none
         observeUserMessages()
     }
     
@@ -46,7 +47,6 @@ class MessagesController: UITableViewController {
         }
         let user_uid_groups = Database.database().reference().child("users").child(uid).child("groups")
         user_uid_groups.observe(.childAdded) { (groupUid) in
-            print(groupUid)
             let groups_uid = Database.database().reference().child("groups").child(groupUid.key)
             groups_uid.observe(.value, with: { (groupData) in
                 if let dictionary = groupData.value as? [String: AnyObject] {
@@ -109,7 +109,7 @@ class MessagesController: UITableViewController {
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! UserCell
+        let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as! GroupCell
         let group = groups[indexPath.row]
         cell.group = group
         return cell
