@@ -1,7 +1,7 @@
 # H’OUR’ -  IOS App Development 
 
 ## Purpose
-Time is a valuable asset that is given to every single one of us, and it is precious. Since vast majority of people are busy, it is hard to find friends or family members who are willing to do the activities ranging from hobbies/interests to necessary work that one wants to do at a specific time. it will provide a platform through which people are brought together for a specific activity at a specific time without needing to join a group of interest. This app will allow efficient use of time for anything that one wants to do. People will be able to spend time together, sell time or buy time. This app is not just about bringing people together. It is a place that uses time as a commodity.
+Time is a valuable asset that is given to every single one of us, and it is precious. Since vast majority of people are busy, it is hard to find friends or family members who are willing to do the activities ranging from hobbies/interests to necessary work that one wants to do at a specific time. it will provide a platform through which people are brought together for a specific activity at a specific time without needing to join a group of interest. This app will allow efficient use of time for anything that one wants to do. This app is not just about bringing people together. It is a place that uses time as a commodity.
  
 ## Features
 ### Location-Based Feed
