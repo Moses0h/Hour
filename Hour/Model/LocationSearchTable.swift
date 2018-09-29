@@ -72,6 +72,8 @@ class LocationSearchTable: UITableViewController {
         return cell!
     }
     
+
+    
 }
 
 extension LocationSearchTable : UISearchResultsUpdating {

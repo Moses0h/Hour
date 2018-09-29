@@ -21,7 +21,11 @@ protocol HandleMapSearch: class {
     func dropPinZoomIn(placemark:MKPlacemark)
 }
 
-class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, CLLocationManagerDelegate{
+class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, CLLocationManagerDelegate, UISearchBarDelegate, UISearchResultsUpdating{
+    
+    func updateSearchResults(for searchController: UISearchController) {
+    }
+    
     
     var postController: PostController?
     var feedController: FeedController?
@@ -58,6 +62,7 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
         
         locationSearchTable = LocationSearchTable()
         resultSearchController = UISearchController(searchResultsController: locationSearchTable)
+        resultSearchController.searchResultsUpdater = self
         resultSearchController.searchBar.tintColor = UIColor.gray
         let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
@@ -78,7 +83,22 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
         locationSearchTable?.mapView = mapView
         locationSearchTable?.handleMapSearchDelegate = self as HandleMapSearch
         
+        view.addSubview(saveButton)
+        saveButton.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -80).isActive = true
+        saveButton.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        saveButton.widthAnchor.constraint(equalToConstant: 100).isActive = true
+        
     }
+    
+    let saveButton : BounceButton = {
+        let butt = BounceButton()
+        butt.backgroundColor = UIColor(r: 93, g: 125, b: 255)
+        butt.setTitle("Save", for: .normal)
+        butt.setTitleColor(UIColor.white, for: .normal)
+        butt.addTarget(self, action: #selector(setLocation), for: .touchUpInside)
+        butt.isHidden = true
+        return butt
+    }()
     
     @objc func handleCancel(){
         dismiss(animated: true, completion: nil)
@@ -97,6 +117,7 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
         postController?.locationLabel.setTitleColor(UIColor.gray, for: .normal)
         handleCancel()
     }
+
     
     func mapView(_ mapView: MKMapView, viewFor annotation: MKAnnotation) -> MKAnnotationView? {
         
@@ -108,15 +129,6 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
         }
         pinView?.pinTintColor = UIColor.blue
         pinView?.canShowCallout = true
-        let smallSquare = CGSize(width: 30, height: 30)
-        let button = UIButton(frame: CGRect(origin: CGPoint.zero, size: smallSquare))
-        button.setBackgroundImage(#imageLiteral(resourceName: "locationIcon"), for: .normal)
-        
-        // set location for new Post
-        // get directions for posts
-        
-        button.addTarget(self, action: #selector(setLocation), for: .touchUpInside)
-        pinView?.leftCalloutAccessoryView = button
         
         return pinView
     }
@@ -136,6 +148,8 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
         }
         
         mapView.addAnnotation(annotation)
+        mapView.selectAnnotation(annotation, animated: true)
+        saveButton.isHidden = false
         let span = MKCoordinateSpanMake(0.05, 0.05)
         let region = MKCoordinateRegionMake(placemark.coordinate, span)
         mapView.setRegion(region, animated: true)
