@@ -48,7 +48,7 @@ class NotificationController: UITableViewController {
         view.backgroundColor = UIColor.white
         
         refresher = UIRefreshControl()
-        refresher.addTarget(self, action: #selector(updateNotification), for: UIControlEvents.valueChanged)
+        refresher.addTarget(self, action: #selector(updateNotification), for: UIControl.Event.valueChanged)
         
         tableView.addSubview(refreshView)
         refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)

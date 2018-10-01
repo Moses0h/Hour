@@ -46,7 +46,10 @@ class FullPostController: UIViewController, UIImagePickerControllerDelegate, UIN
         present(picker, animated: true, completion: nil)
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
         
         var selectedImageFromPicker: UIImage?
         
@@ -106,7 +109,7 @@ class FullPostController: UIViewController, UIImagePickerControllerDelegate, UIN
     }()
     
     let postImageEffect: UIVisualEffectView = {
-        let blurr = UIBlurEffect(style: UIBlurEffectStyle.light)
+        let blurr = UIBlurEffect(style: UIBlurEffect.Style.light)
         let ev = UIVisualEffectView(effect: blurr)
         ev.layer.masksToBounds = true
         ev.translatesAutoresizingMaskIntoConstraints = false
@@ -272,56 +275,56 @@ class FullPostController: UIViewController, UIImagePickerControllerDelegate, UIN
     let tripsButton: CategoryButton = {
         let tb = CategoryButton()
         tb.setTitle("Trips", for: .normal)
-        tb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        tb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return tb
     }()
     
     let natureButton: CategoryButton = {
         let nb = CategoryButton()
         nb.setTitle("Nature", for: .normal)
-        nb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        nb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return nb
     }()
     
     let foodDrinkButton: CategoryButton = {
         let fdb = CategoryButton()
         fdb.setTitle("Food & Drink", for: .normal)
-        fdb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        fdb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return fdb
     }()
     
     let concertsButton: CategoryButton = {
         let cb = CategoryButton()
         cb.setTitle("Concerts", for: .normal)
-        cb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        cb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return cb
     }()
     
     let nightlifeButton: CategoryButton = {
         let nlb = CategoryButton()
         nlb.setTitle("Nightlife", for: .normal)
-        nlb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        nlb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return nlb
     }()
     
     let carpoolButton: CategoryButton = {
         let cb = CategoryButton()
         cb.setTitle("Carpool", for: .normal)
-        cb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        cb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return cb
     }()
     
     let sportsButton: CategoryButton = {
         let sb = CategoryButton()
         sb.setTitle("Sports", for: .normal)
-        sb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        sb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return sb
     }()
     
     let workButton: CategoryButton = {
         let wb = CategoryButton()
         wb.setTitle("Work", for: .normal)
-        wb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        wb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return wb
     }()
     
@@ -615,12 +618,12 @@ class FullPostController: UIViewController, UIImagePickerControllerDelegate, UIN
     func checkIfNil() -> Bool {
         if(activityTextField.text == "")
         {
-            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
             return false
         }
         else
         {
-            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray])
+            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         }
         
         if(date == nil)
@@ -727,4 +730,9 @@ class FullPostController: UIViewController, UIImagePickerControllerDelegate, UIN
     
     
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
 }

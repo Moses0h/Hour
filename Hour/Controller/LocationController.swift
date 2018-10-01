@@ -64,7 +64,7 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
         resultSearchController = UISearchController(searchResultsController: locationSearchTable)
         resultSearchController.searchResultsUpdater = self
         resultSearchController.searchBar.tintColor = UIColor.gray
-        let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        let attributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
         
         resultSearchController.searchResultsUpdater = locationSearchTable
@@ -150,14 +150,14 @@ class LocationController: UIViewController, MKMapViewDelegate, HandleMapSearch, 
         mapView.addAnnotation(annotation)
         mapView.selectAnnotation(annotation, animated: true)
         saveButton.isHidden = false
-        let span = MKCoordinateSpanMake(0.05, 0.05)
-        let region = MKCoordinateRegionMake(placemark.coordinate, span)
+        let span = MKCoordinateSpan.init(latitudeDelta: 0.05, longitudeDelta: 0.05)
+        let region = MKCoordinateRegion.init(center: placemark.coordinate, span: span)
         mapView.setRegion(region, animated: true)
     }
     
     func centerMapOnLocation(location: CLLocation)
     {
-        let coordinateRegion = MKCoordinateRegionMakeWithDistance(location.coordinate, 2000, 2000)
+        let coordinateRegion = MKCoordinateRegion.init(center: location.coordinate, latitudinalMeters: 2000, longitudinalMeters: 2000)
         mapView.setRegion(coordinateRegion, animated: true)
     }
     

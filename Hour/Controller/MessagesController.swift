@@ -129,8 +129,8 @@ extension MessagesController {
     func presentDetail(_ viewControllerToPresent: UIViewController) {
         let transition = CATransition()
         transition.duration = 0
-        transition.type = kCATransitionPush
-        transition.subtype = kCATransitionFromRight
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromRight
         self.view.window!.layer.add(transition, forKey: kCATransition)
         
         present(viewControllerToPresent, animated: false)
@@ -139,8 +139,8 @@ extension MessagesController {
     func dismissDetail() {
         let transition = CATransition()
         transition.duration = 0.25
-        transition.type = kCATransitionPush
-        transition.subtype = kCATransitionFromLeft
+        transition.type = CATransitionType.push
+        transition.subtype = CATransitionSubtype.fromLeft
         self.view.window!.layer.add(transition, forKey: kCATransition)
         
         dismiss(animated: false)

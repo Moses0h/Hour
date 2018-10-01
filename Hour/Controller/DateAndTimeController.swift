@@ -46,7 +46,7 @@ class DateAndTimeController: UIViewController {
     
     let startTimePicker: UIDatePicker = {
         let tp = UIDatePicker()
-        tp.datePickerMode = UIDatePickerMode.time
+        tp.datePickerMode = UIDatePicker.Mode.time
         tp.translatesAutoresizingMaskIntoConstraints = false
         return tp
     }()
@@ -71,7 +71,7 @@ class DateAndTimeController: UIViewController {
     
     let endTimePicker: UIDatePicker = {
         let tp = UIDatePicker()
-        tp.datePickerMode = UIDatePickerMode.time
+        tp.datePickerMode = UIDatePicker.Mode.time
         tp.translatesAutoresizingMaskIntoConstraints = false
         return tp
     }()

@@ -56,7 +56,7 @@ class CustomTabBarController: UITabBarController{
         case 0:
             if(index == pastIndex)
             {
-                let cv_attribute = FeedController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
+                let cv_attribute = FeedController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
                 if(cv_attribute != nil)
                 {
                     FeedController.controller?.collectionView?.scrollRectToVisible((cv_attribute?.frame)!, animated: true)
@@ -69,7 +69,7 @@ class CustomTabBarController: UITabBarController{
         case 3:
             if(index == pastIndex)
             {
-                let cv_attribute = ProfileController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionElementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
+                let cv_attribute = ProfileController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
                 if(cv_attribute != nil)
                 {
                     ProfileController.controller?.collectionView?.scrollRectToVisible((cv_attribute?.frame)!, animated: true)

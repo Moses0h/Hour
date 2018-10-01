@@ -55,19 +55,19 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         super.viewDidLoad()
         uid = (Auth.auth().currentUser?.uid)!
         refresher = UIRefreshControl()
-        refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
+        refresher.addTarget(self, action: #selector(updateFeed), for: UIControl.Event.valueChanged)
         
         collectionView?.addSubview(refreshView)
         refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
         refreshView.addSubview(refresher)
-        let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        let attributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
-            UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
+            UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
         navigationItem.rightBarButtonItem?.tintColor = UIColor.white
@@ -94,7 +94,10 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         present(loginController, animated: true, completion: nil)
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
         
         var selectedImageFromPicker: UIImage?
         
@@ -206,7 +209,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(5, 5, 0, 5);
+        return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width - 10, height: 230)
@@ -230,4 +233,9 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     }
     
     
+}
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
 }

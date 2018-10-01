@@ -16,7 +16,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     var window: UIWindow?
     static var THEME: UIColor = UIColor(r: 52, g: 73, b: 94)
     
-    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplicationLaunchOptionsKey: Any]?) -> Bool {
+    func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         AppDelegate.controller = self
         // Override point for customization after application launch.
         FirebaseApp.configure()
@@ -31,7 +31,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         UINavigationBar.appearance().barTintColor = AppDelegate.THEME
         UITabBar.appearance().tintColor = AppDelegate.THEME
 
-        UINavigationBar.appearance().titleTextAttributes = [NSAttributedStringKey.foregroundColor: UIColor.white]
+        UINavigationBar.appearance().titleTextAttributes = [NSAttributedString.Key.foregroundColor: UIColor.white]
         application.statusBarStyle = .lightContent
         return true
     }

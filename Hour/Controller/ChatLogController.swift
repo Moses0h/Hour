@@ -169,8 +169,8 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     func setupKeyboardObservers() {
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: NSNotification.Name.UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(handleKeyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
     }
     
     override func viewDidDisappear(_ animated: Bool) {
@@ -180,19 +180,19 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     }
     
     @objc func handleKeyboardWillShow(notification: NSNotification) {
-        let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber)
+        let keyboardDuration = (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber)
         UIView.animate(withDuration: TimeInterval(truncating: keyboardDuration)) {
             self.view.layoutIfNeeded()
             let item = self.collectionView(self.collectionView!, numberOfItemsInSection: 0) - 1
             let lastItemIndex = IndexPath(item: item, section: 0)
-            self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionViewScrollPosition.top, animated: true)
+            self.collectionView?.scrollToItem(at: lastItemIndex, at: UICollectionView.ScrollPosition.top, animated: true)
         }
 
 
     }
     
     @objc func handleKeyboardWillHide(notification: NSNotification) {
-        let keyboardDuration = (notification.userInfo?[UIKeyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
+        let keyboardDuration = (notification.userInfo?[UIResponder.keyboardAnimationDurationUserInfoKey] as! NSNumber).doubleValue
 
         UIView.animate(withDuration: keyboardDuration) {
             self.view.layoutIfNeeded()
@@ -211,14 +211,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 if(count == self.messages.count)
                 {
                     self.collectionView?.reloadData()
-                    self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionViewScrollPosition.top, animated: false)
+                    self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionView.ScrollPosition.top, animated: false)
 
                 }
                 else if(self.messages.count > count)
                 {
                     DispatchQueue.main.async {
                         self.collectionView?.reloadData()
-                        self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionViewScrollPosition.top, animated: true)
+                        self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionView.ScrollPosition.top, animated: true)
                     }
                 }
             }
@@ -297,7 +297,7 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
     private func estimateFrameForText(text: String) -> CGRect {
         let size = CGSize(width: 200, height: 1000)
         let options = NSStringDrawingOptions.usesFontLeading.union(.usesLineFragmentOrigin)
-        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedStringKey.font : UIFont.systemFont(ofSize: 16)], context: nil)
+        return NSString(string: text).boundingRect(with: size, options: options, attributes: [NSAttributedString.Key.font : UIFont.systemFont(ofSize: 16)], context: nil)
     }
     
 }

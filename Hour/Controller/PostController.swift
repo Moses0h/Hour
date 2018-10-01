@@ -53,7 +53,10 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
         present(picker, animated: true, completion: nil)
     }
     
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String : Any]) {
+    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
+// Local variable inserted by Swift 4.2 migrator.
+let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
+
 
         var selectedImageFromPicker: UIImage?
         
@@ -120,7 +123,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     }()
     
     let postImageEffect: UIVisualEffectView = {
-        let blurr = UIBlurEffect(style: UIBlurEffectStyle.light)
+        let blurr = UIBlurEffect(style: UIBlurEffect.Style.light)
         let ev = UIVisualEffectView(effect: blurr)
         ev.layer.masksToBounds = true
         ev.translatesAutoresizingMaskIntoConstraints = false
@@ -288,56 +291,56 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     let tripsButton: CategoryButton = {
         let tb = CategoryButton()
         tb.setTitle("Trips", for: .normal)
-        tb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        tb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return tb
     }()
 
     let natureButton: CategoryButton = {
         let nb = CategoryButton()
         nb.setTitle("Nature", for: .normal)
-        nb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        nb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return nb
     }()
     
     let foodDrinkButton: CategoryButton = {
         let fdb = CategoryButton()
         fdb.setTitle("Food & Drink", for: .normal)
-        fdb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        fdb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return fdb
     }()
     
     let concertsButton: CategoryButton = {
         let cb = CategoryButton()
         cb.setTitle("Concerts", for: .normal)
-        cb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        cb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return cb
     }()
     
     let nightlifeButton: CategoryButton = {
         let nlb = CategoryButton()
         nlb.setTitle("Nightlife", for: .normal)
-        nlb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        nlb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return nlb
     }()
     
     let carpoolButton: CategoryButton = {
         let cb = CategoryButton()
         cb.setTitle("Carpool", for: .normal)
-        cb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        cb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return cb
     }()
     
     let sportsButton: CategoryButton = {
         let sb = CategoryButton()
         sb.setTitle("Sports", for: .normal)
-        sb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        sb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return sb
     }()
     
     let workButton: CategoryButton = {
         let wb = CategoryButton()
         wb.setTitle("Work", for: .normal)
-        wb.addTarget(self, action: #selector(categoryPressed), for: UIControlEvents.touchUpInside)
+        wb.addTarget(self, action: #selector(categoryPressed), for: UIControl.Event.touchUpInside)
         return wb
     }()
     
@@ -676,12 +679,12 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
     func checkIfNil() -> Bool {
         if(activityTextField.text == "")
         {
-            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedStringKey.foregroundColor: UIColor.red])
+            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedString.Key.foregroundColor: UIColor.red])
             return false
         }
         else
         {
-            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedStringKey.foregroundColor: UIColor.gray])
+            activityTextField.attributedPlaceholder = NSAttributedString(string: " Activity", attributes: [NSAttributedString.Key.foregroundColor: UIColor.gray])
         }
         
         if(date == nil)
@@ -767,7 +770,7 @@ class PostController: UIViewController, UIImagePickerControllerDelegate, UINavig
                 if (self.imgSelected)
                 {
                     let storageRef = Storage.storage().reference().child("posts").child(key)
-                    if let uploadImg = UIImagePNGRepresentation((self.postImageView.imageView?.image)!)
+                    if let uploadImg = (self.postImageView.imageView?.image)!.pngData()
                     {
                         storageRef.putData(uploadImg, metadata: nil, completion: { (metadata, error) in
                             if error != nil {
@@ -910,7 +913,7 @@ extension UIImage {
     /// If the image object’s underlying image data has been purged, calling this function forces that data to be reloaded into memory.
     /// - returns: A data object containing the JPEG data, or nil if there was a problem generating the data. This function may return nil if the image has no data or if the underlying CGImageRef contains data in an unsupported bitmap format.
     func jpeg(_ quality: JPEGQuality) -> Data? {
-        return UIImageJPEGRepresentation(self, quality.rawValue)
+        return self.jpegData(compressionQuality: quality.rawValue)
     }
     
     func resize(targetSize: CGSize) -> UIImage {
@@ -938,3 +941,8 @@ extension PostController
     }
 }
 
+
+// Helper function inserted by Swift 4.2 migrator.
+fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
+	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+}

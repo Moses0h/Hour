@@ -43,30 +43,38 @@ class FeedCell: UICollectionViewCell {
             otherUsersViews.removeAll()
             joinButton.privateEnabled = post?.privateEnabled
             joinButton.chatEnabled = post?.chatEnabled
+            joinButton.isHidden = false
             if let activity = post?.activity
             {
                 activityLabel.text = activity
+                activityLabel.isHidden = false
             }
             if let name = post?.name
             {
                 profileName.text = name
+                profileName.isHidden = false
             }
             if let time = post?.time
             {
                 timeSince.text = timeAgoSinceDate(Date(timeIntervalSince1970: (time)/1000))
+                timeSince.isHidden = false
             }
             if let location = post?.location
             {
                 locationLabel.text = location
+                locationLabel.isHidden = false
+                locationImage.isHidden = false
             }
             if let date = post?.date
             {
                 dateLabel.text = date
+                dateLabel.isHidden = false
             }
             if let startTime = post?.startTime, let endTime = post?.endTime
             {
                 timeLabel.text = startTime
                 timeLabel.text = timeLabel.text! + " - \(endTime)"
+                timeLabel.isHidden = false
             }
             if let category = post?.category
             {
@@ -75,12 +83,14 @@ class FeedCell: UICollectionViewCell {
             if let groupCount = post?.groupCount
             {
                 filtersLabel.text = filtersLabel.text! + "\(groupCount) people • $"
+                filtersLabel.isHidden = false
             }
             if let imageUrl = post?.imageUrl
             {
                 if(imageUrl != "")
                 {
                     self.eventImageView.loadImageUsingCache(urlString: (post?.imageUrl!)!)
+                    self.eventImageView.isHidden = false
                 }
             }
             if let usersUid = post?.usersUid, let key = post?.key
@@ -105,6 +115,7 @@ class FeedCell: UICollectionViewCell {
                             self.deleteButton.postUid = self.key
                             self.deleteButton.usersUid = usersUid
                             self.deleteButton.setImage(#imageLiteral(resourceName: "decline"), for: .normal)
+                            self.deleteButton.isHidden = false
 //                            self.deleteButton.addTarget(self, action: #selector(FeedController.controller?.handleDelete), for: .touchUpInside)
                         }
                         else if(usersUid[uid]!["status"] as! Int == 1 && self.post?.privateEnabled == 1)
@@ -139,7 +150,7 @@ class FeedCell: UICollectionViewCell {
                         }
                     }
                     
-                    
+                    self.joinButton.isHidden = false
                     
                     
                     for(_, element) in (usersUid.enumerated()) {
@@ -148,6 +159,7 @@ class FeedCell: UICollectionViewCell {
                             if(dictionary["status"] as! Int == -1)
                             {
                                 self.profileImageView.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (self.post?.key)!)
+                                self.profileImageView.isHidden = false
                             }
                             else if(dictionary["status"] as! Int == 1)
                             {
@@ -204,12 +216,14 @@ class FeedCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 15
         imageView.layer.masksToBounds = true
+        imageView.isHidden = true
         return imageView
     }
     
     let deleteButton: DeleteButton = {
         let db = DeleteButton()
         db.translatesAutoresizingMaskIntoConstraints = false
+        db.isHidden = true
         return db
     }()
     
@@ -221,6 +235,7 @@ class FeedCell: UICollectionViewCell {
         a.numberOfLines = 1
         a.text = ""
         a.translatesAutoresizingMaskIntoConstraints = false
+        a.isHidden = true
         return a
     }()
     
@@ -231,6 +246,7 @@ class FeedCell: UICollectionViewCell {
         a.font = UIFont.boldSystemFont(ofSize: 18)
         a.numberOfLines = 2
         a.translatesAutoresizingMaskIntoConstraints = false
+        a.isHidden = true
         return a
     }()
     
@@ -241,6 +257,7 @@ class FeedCell: UICollectionViewCell {
         a.numberOfLines = 1
         a.text = ""
         a.translatesAutoresizingMaskIntoConstraints = false
+        a.isHidden = true
         return a
     }()
     
@@ -251,13 +268,15 @@ class FeedCell: UICollectionViewCell {
         a.numberOfLines = 1
         a.text = ""
         a.translatesAutoresizingMaskIntoConstraints = false
+        a.isHidden = true
         return a
     }()
     
     let locationImage: UIImageView = {
-        let imageView = UIImageView(image: #imageLiteral(resourceName: "locationIcon"))
+        let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
+        imageView.isHidden = true
         return imageView
     }()
     
@@ -268,6 +287,7 @@ class FeedCell: UICollectionViewCell {
         a.numberOfLines = 2
         a.text = ""
         a.translatesAutoresizingMaskIntoConstraints = false
+        a.isHidden = true
         return a
     }()
     
@@ -276,6 +296,7 @@ class FeedCell: UICollectionViewCell {
         button.addTarget(self, action: #selector(FeedController.controller?.handleFullView), for: .touchUpInside)
         button.isUserInteractionEnabled = true
         button.translatesAutoresizingMaskIntoConstraints = false
+        button.isHidden = true
         return button
     }()
     
@@ -288,6 +309,7 @@ class FeedCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 8
         imageView.layer.masksToBounds = true
+        imageView.isHidden = true
         return imageView
     }()
     
@@ -307,6 +329,7 @@ class FeedCell: UICollectionViewCell {
         d.isScrollEnabled = false
         d.isEditable = false
         d.translatesAutoresizingMaskIntoConstraints = false
+        d.isHidden = true
         return d
     }()
     
@@ -319,6 +342,7 @@ class FeedCell: UICollectionViewCell {
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.layer.cornerRadius = 20
         imageView.layer.masksToBounds = true
+        imageView.isHidden = true
         return imageView
     }()
     
@@ -330,6 +354,7 @@ class FeedCell: UICollectionViewCell {
         label.numberOfLines = 1
         label.text = ""
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
         return label
     }()
     
@@ -340,11 +365,13 @@ class FeedCell: UICollectionViewCell {
         label.numberOfLines = 1
         label.text = "1h"
         label.translatesAutoresizingMaskIntoConstraints = false
+        label.isHidden = true
         return label
     }()
     
     let joinButton: JoinButton = {
         let jb = JoinButton()
+        jb.isHidden = true
         return jb
     }()
     
@@ -352,6 +379,7 @@ class FeedCell: UICollectionViewCell {
         let cb = CommentButton()
         cb.setImage(#imageLiteral(resourceName: "comments"), for: .normal)
         cb.adjustsImageWhenHighlighted = true
+        cb.isHidden = true
         cb.translatesAutoresizingMaskIntoConstraints = false
         return cb
     }()
@@ -360,6 +388,7 @@ class FeedCell: UICollectionViewCell {
         let cb = HeartButton()
         cb.setImage(#imageLiteral(resourceName: "heart"), for: .normal)
         cb.adjustsImageWhenHighlighted = true
+        cb.isHidden = true
         cb.translatesAutoresizingMaskIntoConstraints = false
         return cb
     }()

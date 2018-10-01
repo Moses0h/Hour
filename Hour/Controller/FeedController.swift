@@ -86,7 +86,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
             let butt = FilterButton()
             categoryButtons.append(butt)
             butt.backgroundColor = UIColor.white
-            butt.contentEdgeInsets = UIEdgeInsetsMake(0, 8, 0, 7);
+            butt.contentEdgeInsets = UIEdgeInsets.init(top: 0, left: 8, bottom: 0, right: 7);
             butt.addTarget(self, action: #selector(categoryButtonPressed), for: .touchUpInside)
             
             butt.layer.shadowColor = UIColor(red: 0, green: 0, blue: 0, alpha: 0.25).cgColor
@@ -109,7 +109,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         geoFire = GeoFire(firebaseRef: ref.child("posts_location"))
         
         refresher = UIRefreshControl()
-        refresher.addTarget(self, action: #selector(updateFeed), for: UIControlEvents.valueChanged)
+        refresher.addTarget(self, action: #selector(updateFeed), for: UIControl.Event.valueChanged)
         
         collectionView?.addSubview(refreshView)
         refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
@@ -120,7 +120,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         searchController.hidesNavigationBarDuringPresentation = false
         definesPresentationContext = false
         
-        let attributes = [NSAttributedStringKey.foregroundColor : UIColor.white]
+        let attributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
         UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
         
         let searchBar = searchController.searchBar
@@ -133,7 +133,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         collectionView?.alwaysBounceVertical = true
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
         collectionView?.register(FeedHeaderCell.self, forSupplementaryViewOfKind:
-        UICollectionElementKindSectionHeader, withReuseIdentifier: headerId)
+        UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         collectionView?.dataSource = self
         tabBarController?.delegate = self
 
@@ -288,7 +288,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func handleDelete(sender: DeleteButton) {
-        let alert = UIAlertController(title: "Delete Post?", message: "", preferredStyle: UIAlertControllerStyle.alert)
+        let alert = UIAlertController(title: "Delete Post?", message: "", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { action in
             print("canceled")
         }))
@@ -324,7 +324,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsetsMake(5, 5, 0, 5);
+        return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
     }
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width - 10, height: 230)
@@ -376,7 +376,7 @@ extension UIView {
             view.translatesAutoresizingMaskIntoConstraints = false
         }
         
-        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutFormatOptions(), metrics: nil, views: viewsDictionary))
+        addConstraints(NSLayoutConstraint.constraints(withVisualFormat: format, options: NSLayoutConstraint.FormatOptions(), metrics: nil, views: viewsDictionary))
     }
 }
 
