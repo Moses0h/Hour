@@ -34,6 +34,7 @@ class FeedCell: UICollectionViewCell {
             self.joinButton.inFeedView = inFeedView
         }
     }
+    
     var post: Post?
     {
         didSet{
@@ -41,8 +42,14 @@ class FeedCell: UICollectionViewCell {
                 user.removeFromSuperview()
             }
             otherUsersViews.removeAll()
-            joinButton.privateEnabled = post?.privateEnabled
-            joinButton.chatEnabled = post?.chatEnabled
+            if let privateEnabled = post?.privateEnabled
+            {
+                joinButton.privateEnabled = privateEnabled
+            }
+            if let chatEnabled = post?.chatEnabled
+            {
+                joinButton.chatEnabled = chatEnabled
+            }
             joinButton.isHidden = false
             if let activity = post?.activity
             {
@@ -109,14 +116,12 @@ class FeedCell: UICollectionViewCell {
                         if(usersUid[uid]!["status"] as! Int == -1)
                         {
                             self.joinButton.setUserStatus(stat: JoinButton.status.host)
-                            self.addSubview(self.deleteButton)
-                            self.deleteButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -5).isActive = true
-                            self.deleteButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 5).isActive = true
                             self.deleteButton.postUid = self.key
                             self.deleteButton.usersUid = usersUid
                             self.deleteButton.setImage(#imageLiteral(resourceName: "decline"), for: .normal)
                             self.deleteButton.isHidden = false
-//                            self.deleteButton.addTarget(self, action: #selector(FeedController.controller?.handleDelete), for: .touchUpInside)
+                            self.deleteButtonTopConstraint?.isActive = true
+                            self.deleteButtonRightConstraint?.isActive = true
                         }
                         else if(usersUid[uid]!["status"] as! Int == 1 && self.post?.privateEnabled == 1)
                         {
@@ -177,6 +182,7 @@ class FeedCell: UICollectionViewCell {
                             element.widthAnchor.constraint(equalToConstant: 30).isActive = true
                             element.heightAnchor.constraint(equalToConstant: 30).isActive = true
                             element.centerYAnchor.constraint(equalTo: self.profileImageView.centerYAnchor).isActive = true
+                            element.isHidden = false
                         }
                         else
                         {
@@ -185,6 +191,7 @@ class FeedCell: UICollectionViewCell {
                             element.widthAnchor.constraint(equalToConstant: 30).isActive = true
                             element.heightAnchor.constraint(equalToConstant: 30).isActive = true
                             element.centerYAnchor.constraint(equalTo: self.profileImageView.centerYAnchor).isActive = true
+                            element.isHidden = false
                         }
                     }
                 }
@@ -274,6 +281,7 @@ class FeedCell: UICollectionViewCell {
     
     let locationImage: UIImageView = {
         let imageView = UIImageView()
+        imageView.image = #imageLiteral(resourceName: "locationIcon")
         imageView.contentMode = .scaleAspectFit
         imageView.translatesAutoresizingMaskIntoConstraints = false
         imageView.isHidden = true
@@ -379,7 +387,7 @@ class FeedCell: UICollectionViewCell {
         let cb = CommentButton()
         cb.setImage(#imageLiteral(resourceName: "comments"), for: .normal)
         cb.adjustsImageWhenHighlighted = true
-        cb.isHidden = true
+        cb.isHidden = false
         cb.translatesAutoresizingMaskIntoConstraints = false
         return cb
     }()
@@ -388,11 +396,14 @@ class FeedCell: UICollectionViewCell {
         let cb = HeartButton()
         cb.setImage(#imageLiteral(resourceName: "heart"), for: .normal)
         cb.adjustsImageWhenHighlighted = true
-        cb.isHidden = true
+        cb.isHidden = false
         cb.translatesAutoresizingMaskIntoConstraints = false
         return cb
     }()
     
+    var deleteButtonRightConstraint: NSLayoutConstraint?
+    var deleteButtonTopConstraint: NSLayoutConstraint?
+
     func setupViews() {
         layer.cornerRadius = 8
         layer.masksToBounds = true
@@ -406,6 +417,12 @@ class FeedCell: UICollectionViewCell {
         self.layer.shadowPath = UIBezierPath(roundedRect: self.bounds, cornerRadius: self.contentView.layer.cornerRadius).cgPath
         
         backgroundColor = UIColor.white
+        
+        addSubview(deleteButton)
+        deleteButtonRightConstraint = deleteButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -5)
+        deleteButtonRightConstraint?.isActive = false
+        deleteButtonTopConstraint = deleteButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 5)
+        deleteButtonTopConstraint?.isActive = false
         
         addSubview(eventImageView)
         eventImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true

@@ -25,7 +25,8 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     var refresher: UIRefreshControl!
     
     
-    let cellId = "cellId"
+    let feedCell = "feedCell"
+    let storyCell = "storyCell"
     
     let refreshView: UIView = {
         let view = UIView()
@@ -33,18 +34,10 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-    
-    var filterContainer: UIScrollView = {
-        let scrollView = UIScrollView()
-        scrollView.translatesAutoresizingMaskIntoConstraints = false
-        scrollView.isScrollEnabled = true
-        scrollView.showsHorizontalScrollIndicator = false
-        scrollView.showsVerticalScrollIndicator = false
-        scrollView.backgroundColor = UIColor(white: 0.95, alpha: 0.5)
-        return scrollView
-    }()
+
     
     @objc func updateFeed() {
+        uid = (Auth.auth().currentUser?.uid)!
         self.refreshView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.refreshPostArray()
@@ -65,7 +58,9 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
-        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: feedCell)
+        collectionView?.register(StoryCell.self, forCellWithReuseIdentifier: storyCell)
+
         collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
             UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         
@@ -109,18 +104,6 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
         }
         let decompressedImage = selectedImageFromPicker?.jpeg(.lowest)
         
-//        picker.dismissViewControllerAnimated(false, completion: { () -> Void in
-//
-//            var imageCropVC : RSKImageCropViewController!
-//
-//            imageCropVC = RSKImageCropViewController(image: image, cropMode: RSKImageCropMode.Circle)
-//
-//            imageCropVC.delegate = self
-//
-//            self.navigationController?.pushViewController(imageCropVC, animated: true)
-//
-//        })
-
         let storageRef = Storage.storage().reference().child("users").child(uid)
         if let uploadImg = decompressedImage
         {
@@ -189,28 +172,76 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
         })
     }
     
+    @objc func saveProfile() {
+        switch header?.editButton.titleLabel?.text {
+        case "Edit Profile":
+            header?.bioTextField.isEditable = true
+            header?.editButton.setTitle("Save Profile", for: .normal)
+            break
+        case "Save Profile":
+            header?.bioTextField.isEditable = false
+            let userPosts = ["bio":header?.bioTextField.text ?? ""] as [String : Any]
+            Database.database().reference().child("users").child(uid).updateChildValues(userPosts) {(err,ref) in
+                if err != nil{
+                    print(err ?? "error")
+                    return
+                }
+            }
+            header?.editButton.setTitle("Edit Profile", for: .normal)
+            break
+        default:
+            break
+        }
+    }
+    
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return posts.count
+        if(section == 0)
+        {
+            return posts.count
+        }
+        return 0
+    }
+    
+    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 2
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        if(indexPath.row < posts.count)
+        if(indexPath.section == 0)
         {
-            let post : Post
-            post = posts[indexPath.row]
-            feedCell.post = post
-            feedCell.key = post.key
-            feedCell.index = indexPath.row
-            feedCell.inFeedView = false
+            let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.feedCell, for: indexPath) as! FeedCell
+            if(indexPath.row < posts.count)
+            {
+                let post : Post
+                post = posts[indexPath.row]
+                feedCell.post = post
+                feedCell.key = post.key
+                feedCell.index = indexPath.row
+                feedCell.inFeedView = false
+                feedCell.deleteButton.isHidden = true
+                return feedCell
+            }
             return feedCell
         }
-        return feedCell
+        else
+        {
+            let storyCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.storyCell, for: indexPath) as! StoryCell
+            
+            return storyCell
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
+        if(section == 0)
+        {
+            return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
+        }
+        else
+        {
+            return UIEdgeInsets.init(top: 50, left: 5, bottom: 0, right: 5);
+        }
     }
+    
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: view.frame.width - 10, height: 230)
     }
@@ -220,17 +251,39 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
     }
     
     var header: ProfileHeaderCell?
-    
+  
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        header = (collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! ProfileHeaderCell)
-        header?.profileImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.handleSelectProfileImageView)))
-        header?.uid = uid
-        return header!
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            if(indexPath.section == 0)
+            {
+                header = (collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! ProfileHeaderCell)
+                header?.profileImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.handleSelectProfileImageView)))
+                header?.uid = uid
+                return header!
+            }
+            else
+            {
+                let invisibleHeader = UICollectionViewCell()
+                return invisibleHeader
+            }
+        default:
+            return UICollectionReusableView()
+        }
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
-        return CGSize(width: view.frame.width, height: 200)
+        if(section == 0)
+        {
+            return CGSize(width: view.frame.width, height: 410)
+        }
+        else
+        {
+            return CGSize.zero
+            
+        }
     }
+    
     
     
 }

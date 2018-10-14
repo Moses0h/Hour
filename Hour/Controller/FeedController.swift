@@ -228,7 +228,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         circleQuery = geoFire.query(at: currLocation, withRadius: 100)
         var distanceArray = [Double]()
         circleQuery.observe(.keyEntered) { (key: String!, location: CLLocation!) in
-            print(key)
             self.keyArray.append(key)
         }
         self.dispatchGroup.enter()
@@ -320,6 +319,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         feedCell.index = indexPath.row
         feedCell.key = post.key
         feedCell.inFeedView = true
+        feedCell.deleteButton.isHidden = true
         return feedCell
     }
     

@@ -101,17 +101,8 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
         setupViews()
     }
     
-    var didAppear = true
     override func viewDidAppear(_ animated: Bool) {
-        if(didAppear)
-        {
-            var height: CGFloat = 0
-            for view in scrollView.subviews {
-                height += view.frame.height
-            }
-            scrollView.contentSize = CGSize(width: self.view.frame.size.width, height: height)
-            didAppear = false
-        }
+        self.scrollView.contentSize = CGSize(width: self.view.frame.size.width, height: (privateContainer.frame.origin.y + privateContainer.frame.size.height))
     }
     
     let postImageContainer: UIImageView = {
