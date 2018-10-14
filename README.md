@@ -23,3 +23,7 @@ Time is a valuable asset that is given to every single one of us, and it is prec
 
 <img src="https://github.com/Moses0h/Hour/blob/master/Images/Messages.PNG" width="200" height= "400"> <img src="https://github.com/Moses0h/Hour/blob/master/Images/chatlog.jpeg" width="200" height= "400">
 
+### Profile View
+- Simple profile interface that displays all the activities you have joined
+
+<img src="https://github.com/Moses0h/Hour/blob/master/Images/ProfileView.PNG" width="200" height= "400"> 
