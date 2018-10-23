@@ -286,6 +286,14 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         navigationController?.pushViewController(fullPostController, animated: true)
     }
     
+    @objc func handleProfileView(sender: UserButton) {
+        let profileController = OtherProfileController(collectionViewLayout: UICollectionViewFlowLayout())
+//        profileController.navigationItem.backBarButtonItem?.tintColor = UIColor.white
+        profileController.navigationController?.navigationBar.barTintColor = UIColor.white
+        profileController.uid = sender.uid!
+        navigationController?.pushViewController(profileController, animated: true)
+    }
+    
     @objc func handleDelete(sender: DeleteButton) {
         let alert = UIAlertController(title: "Delete Post?", message: "", preferredStyle: UIAlertController.Style.alert)
         alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { action in
@@ -307,19 +315,29 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! FeedCell
-        let post : Post
         if ((searchController.isActive && searchController.searchBar.text != "") || categorySelected.count != 0){
-            post = filteredPosts[indexPath.row]
+            if filteredPosts.indices.contains(indexPath.row)
+            {
+                let post = filteredPosts[indexPath.row]
+                feedCell.post = post
+                feedCell.index = indexPath.row
+                feedCell.key = post.key
+                feedCell.inFeedView = true
+                feedCell.deleteButton.isHidden = true
+            }
         }
         else
         {
-            post = posts[indexPath.row]
+            if posts.indices.contains(indexPath.row)
+            {
+                let post = posts[indexPath.row]
+                feedCell.post = post
+                feedCell.index = indexPath.row
+                feedCell.key = post.key
+                feedCell.inFeedView = true
+                feedCell.deleteButton.isHidden = true
+            }
         }
-        feedCell.post = post
-        feedCell.index = indexPath.row
-        feedCell.key = post.key
-        feedCell.inFeedView = true
-        feedCell.deleteButton.isHidden = true
         return feedCell
     }
     

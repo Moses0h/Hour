@@ -169,6 +169,7 @@ class FeedCell: UICollectionViewCell {
                             else if(dictionary["status"] as! Int == 1)
                             {
                                 let view = self.getOtherUserView()
+                                view.uid = element.key
                                 view.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (self.post?.key)!)
                                 self.otherUsersViews.append(view)
                             }
@@ -214,15 +215,8 @@ class FeedCell: UICollectionViewCell {
         }
     }
     
-    func getOtherUserView() -> UIButton{
-        let imageView = UIButton()
-        imageView.layer.borderWidth = 0.5
-        imageView.backgroundColor = UIColor.white
-        imageView.layer.borderColor = UIColor.white.cgColor
-        imageView.contentMode = .scaleAspectFit
-        imageView.translatesAutoresizingMaskIntoConstraints = false
-        imageView.layer.cornerRadius = 15
-        imageView.layer.masksToBounds = true
+    func getOtherUserView() -> UserButton{
+        let imageView = UserButton()
         imageView.isHidden = true
         return imageView
     }
@@ -566,4 +560,28 @@ class FeedCell: UICollectionViewCell {
             }
     
         }
+}
+
+class UserButton: UIButton {
+    var uid: String?
+    
+    override init(frame: CGRect) {
+        super.init(frame: frame)
+        layer.borderWidth = 0.5
+        backgroundColor = UIColor.white
+        layer.borderColor = UIColor.white.cgColor
+        contentMode = .scaleAspectFit
+        translatesAutoresizingMaskIntoConstraints = false
+        layer.cornerRadius = 15
+        layer.masksToBounds = true
+    }
+    
+    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
+        FeedController.controller?.handleProfileView(sender: self)
+        ProfileController.controller?.handleProfileView(sender: self)
+    }
+    
+    required init?(coder aDecoder: NSCoder) {
+        super.init(coder: aDecoder)
+    }
 }

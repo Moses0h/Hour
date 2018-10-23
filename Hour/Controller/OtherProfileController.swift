@@ -2,7 +2,7 @@
 //  ProfileController.swift
 //  Hour
 //
-//  Created by Moses Oh on 8/14/18.
+//  Created by Moses Oh on 10/14/18.
 //  Copyright © 2018 Moses Oh. All rights reserved.
 //
 
@@ -11,15 +11,13 @@ import Firebase
 import GeoFire
 import CoreLocation
 
-class ProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
-    
-    static var controller: ProfileController?
+class OtherProfileController: UICollectionViewController, UICollectionViewDelegateFlowLayout, UIImagePickerControllerDelegate, UINavigationControllerDelegate{
     
     var headerId = "header"
     var uid = ""
     var posts = [Post]()
     var postKeys = [String]()
-
+    
     var keyArray: [String] = []
     var doFetch: Bool = false
     var refresher: UIRefreshControl!
@@ -34,10 +32,9 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         view.translatesAutoresizingMaskIntoConstraints = false
         return view
     }()
-
+    
     
     @objc func updateFeed() {
-        uid = (Auth.auth().currentUser?.uid)!
         self.refreshView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.refreshPostArray()
@@ -46,26 +43,24 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        uid = (Auth.auth().currentUser?.uid)!
         refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(updateFeed), for: UIControl.Event.valueChanged)
         
         collectionView?.addSubview(refreshView)
         refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
         refreshView.addSubview(refresher)
-        let attributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
-        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
-        
+//        let attributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
+//        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
+        navigationController?.navigationBar.tintColor = UIColor.white
+
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
         collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: feedCell)
         collectionView?.register(StoryCell.self, forCellWithReuseIdentifier: storyCell)
-
+        
         collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
             UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerId)
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Logout", style: .plain, target: self, action: #selector(handleLogout))
-        navigationItem.rightBarButtonItem?.tintColor = UIColor.white
         collectionView?.dataSource = self
         refreshPostArray()
         
@@ -79,72 +74,12 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         present(picker, animated: true, completion: nil)
     }
     
-    @objc func handleProfileView(sender: UserButton) {
-        let profileController = OtherProfileController(collectionViewLayout: UICollectionViewFlowLayout())
-        //        profileController.navigationItem.backBarButtonItem?.tintColor = UIColor.white
-        profileController.navigationController?.navigationBar.barTintColor = UIColor.white
-        profileController.uid = sender.uid!
-        navigationController?.pushViewController(profileController, animated: true)
-    }
-    
-    @objc func handleLogout() {
-        do {
-            try Auth.auth().signOut()
-        } catch let logoutError {
-            print(logoutError)
-        }
-        let loginController = LoginController()
-        present(loginController, animated: true, completion: nil)
-    }
-    
-    func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-// Local variable inserted by Swift 4.2 migrator.
-let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
-
-        
-        var selectedImageFromPicker: UIImage?
-        
-        if let editedImage = info["UIImagePickerControllerEditedImage"] as? UIImage {
-            selectedImageFromPicker = editedImage
-        }
-        else if let originalImage = info["UIImagePickerControllerOriginalImage"] as? UIImage {
-            selectedImageFromPicker = originalImage
-        }
-        let decompressedImage = selectedImageFromPicker?.jpeg(.lowest)
-        
-        let storageRef = Storage.storage().reference().child("users").child(uid)
-        if let uploadImg = decompressedImage
-        {
-            storageRef.putData(uploadImg, metadata: nil, completion: { (metadata, error) in
-                if error != nil {
-                    return
-                }
-                storageRef.downloadURL(completion: { (url, error) in
-                    if error != nil {
-                        return
-                    }
-                    let value = ["imageUrl" : url?.absoluteString] as! [String : String]
-                    
-                    let ref = Database.database().reference().child("users").child(self.uid)
-                    ref.updateChildValues(value as Any as! [AnyHashable : Any], withCompletionBlock: { (error, ref) in
-                        self.header?.profileImage.setImage(selectedImageFromPicker, for: .normal)
-                        self.dismiss(animated: true, completion: nil)
-                    })
-
-                })
-            })
-        }
-        
-    }
-    
-
     func refreshPostArray() {
         self.posts.removeAll()
         self.postKeys.removeAll()
         
-        uid = Auth.auth().currentUser!.uid
         let users_uid_posts = Database.database().reference().child("users").child(uid).child("posts")
-
+        
         users_uid_posts.observeSingleEvent(of: .value, with: { (snap) in
             if let dictionary = snap.value as? [String: AnyObject]
             {
@@ -259,7 +194,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
     }
     
     var header: ProfileHeaderCell?
-  
+    
     override func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
         switch kind {
         case UICollectionView.elementKindSectionHeader:
@@ -298,5 +233,5 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
 
 // Helper function inserted by Swift 4.2 migrator.
 fileprivate func convertFromUIImagePickerControllerInfoKeyDictionary(_ input: [UIImagePickerController.InfoKey: Any]) -> [String: Any] {
-	return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
+    return Dictionary(uniqueKeysWithValues: input.map {key, value in (key.rawValue, value)})
 }
