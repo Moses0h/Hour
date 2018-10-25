@@ -20,42 +20,25 @@ class OtherProfileController: UICollectionViewController, UICollectionViewDelega
     
     var keyArray: [String] = []
     var doFetch: Bool = false
-    var refresher: UIRefreshControl!
     
     
-    let feedCell = "feedCell"
+    let profileFeedCell = "feedCell"
     let storyCell = "storyCell"
     
-    let refreshView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.clear
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
-    
-    @objc func updateFeed() {
-        self.refreshView.heightAnchor.constraint(equalToConstant: 200).isActive = true
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-            self.refreshPostArray()
-        }
-    }
+//    @objc func updateFeed() {
+//        self.refreshView.heightAnchor.constraint(equalToConstant: 200).isActive = true
+//        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+//            self.refreshPostArray()
+//        }
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        refresher = UIRefreshControl()
-        refresher.addTarget(self, action: #selector(updateFeed), for: UIControl.Event.valueChanged)
-        
-        collectionView?.addSubview(refreshView)
-        refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
-        refreshView.addSubview(refresher)
-//        let attributes = [NSAttributedString.Key.foregroundColor : UIColor.white]
-//        UIBarButtonItem.appearance(whenContainedInInstancesOf: [UISearchBar.self]).setTitleTextAttributes(attributes, for: .normal)
         navigationController?.navigationBar.tintColor = UIColor.white
 
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
-        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: feedCell)
+        collectionView?.register(ProfileFeedCell.self, forCellWithReuseIdentifier: profileFeedCell)
         collectionView?.register(StoryCell.self, forCellWithReuseIdentifier: storyCell)
         
         collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
@@ -95,7 +78,7 @@ class OtherProfileController: UICollectionViewController, UICollectionViewDelega
                             self.posts.append(post)
                             if(self.postKeys.count == self.posts.count)
                             {
-                                self.refresher.endRefreshing()
+                                self.header?.titleLabel.text = "Activities (\(self.posts.count))"
                                 self.collectionView?.reloadData()
                             }
                         })
@@ -103,38 +86,14 @@ class OtherProfileController: UICollectionViewController, UICollectionViewDelega
                 }
                 else
                 {
-                    self.refresher.endRefreshing()
                     self.collectionView?.reloadData()
                 }
             }
             else
             {
-                self.refresher.endRefreshing()
                 self.collectionView?.reloadData()
             }
         })
-    }
-    
-    @objc func saveProfile() {
-        switch header?.editButton.titleLabel?.text {
-        case "Edit Profile":
-            header?.bioTextField.isEditable = true
-            header?.editButton.setTitle("Save Profile", for: .normal)
-            break
-        case "Save Profile":
-            header?.bioTextField.isEditable = false
-            let userPosts = ["bio":header?.bioTextField.text ?? ""] as [String : Any]
-            Database.database().reference().child("users").child(uid).updateChildValues(userPosts) {(err,ref) in
-                if err != nil{
-                    print(err ?? "error")
-                    return
-                }
-            }
-            header?.editButton.setTitle("Edit Profile", for: .normal)
-            break
-        default:
-            break
-        }
     }
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -152,7 +111,7 @@ class OtherProfileController: UICollectionViewController, UICollectionViewDelega
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if(indexPath.section == 0)
         {
-            let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.feedCell, for: indexPath) as! FeedCell
+            let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.profileFeedCell, for: indexPath) as! ProfileFeedCell
             if(indexPath.row < posts.count)
             {
                 let post : Post
@@ -174,23 +133,23 @@ class OtherProfileController: UICollectionViewController, UICollectionViewDelega
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if(section == 0)
-        {
-            return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
-        }
-        else
-        {
-            return UIEdgeInsets.init(top: 50, left: 5, bottom: 0, right: 5);
-        }
-    }
+    //    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+    //        if(section == 0)
+    //        {
+    //            return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
+    //        }
+    //        else
+    //        {
+    //            return UIEdgeInsets.init(top: 50, left: 5, bottom: 0, right: 5);
+    //        }
+    //    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 10, height: 230)
+        return CGSize(width: view.frame.width - 10, height: 120)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+        return 1.5
     }
     
     var header: ProfileHeaderCell?
@@ -218,7 +177,7 @@ class OtherProfileController: UICollectionViewController, UICollectionViewDelega
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         if(section == 0)
         {
-            return CGSize(width: view.frame.width, height: 410)
+            return CGSize(width: view.frame.width, height: 470)
         }
         else
         {
@@ -226,7 +185,6 @@ class OtherProfileController: UICollectionViewController, UICollectionViewDelega
             
         }
     }
-    
     
     
 }

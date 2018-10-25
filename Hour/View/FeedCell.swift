@@ -38,6 +38,7 @@ class FeedCell: UICollectionViewCell {
     var post: Post?
     {
         didSet{
+            //set postUid for FullPostController            
             for user in otherUsersViews {
                 user.removeFromSuperview()
             }
@@ -165,6 +166,7 @@ class FeedCell: UICollectionViewCell {
                             {
                                 self.profileImageView.loadImageUsingCache(urlString: dictionary["imageUrl"] as! String, userUid: element.key, postUid: (self.post?.key)!)
                                 self.profileImageView.isHidden = false
+                                self.profileImageView.uid = element.key
                             }
                             else if(dictionary["status"] as! Int == 1)
                             {
@@ -205,6 +207,9 @@ class FeedCell: UICollectionViewCell {
         didSet{
             joinButton.index = index
             deleteButton.index = index
+            
+            //tag ClickableView so that FeedController can assign all the variables of the post to FullPostController
+            clickableView.tag = index!
         }
     }
     
@@ -298,7 +303,6 @@ class FeedCell: UICollectionViewCell {
         button.addTarget(self, action: #selector(FeedController.controller?.handleFullView), for: .touchUpInside)
         button.isUserInteractionEnabled = true
         button.translatesAutoresizingMaskIntoConstraints = false
-        button.isHidden = true
         return button
     }()
     
@@ -335,8 +339,8 @@ class FeedCell: UICollectionViewCell {
         return d
     }()
     
-    let profileImageView: UIButton = {
-        let imageView = UIButton()
+    let profileImageView: UserButton = {
+        let imageView = UserButton()
         imageView.backgroundColor = UIColor.lightGray
         imageView.layer.borderWidth = 0.5
         imageView.layer.borderColor = UIColor.lightGray.cgColor
@@ -412,12 +416,6 @@ class FeedCell: UICollectionViewCell {
         
         backgroundColor = UIColor.white
         
-        addSubview(deleteButton)
-        deleteButtonRightConstraint = deleteButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -5)
-        deleteButtonRightConstraint?.isActive = false
-        deleteButtonTopConstraint = deleteButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 5)
-        deleteButtonTopConstraint?.isActive = false
-        
         addSubview(eventImageView)
         eventImageView.leftAnchor.constraint(equalTo: leftAnchor, constant: 10).isActive = true
         eventImageView.topAnchor.constraint(equalTo: topAnchor, constant:10).isActive = true
@@ -465,6 +463,12 @@ class FeedCell: UICollectionViewCell {
         clickableView.topAnchor.constraint(equalTo: topAnchor).isActive = true
         clickableView.bottomAnchor.constraint(equalTo: lineView.topAnchor).isActive = true
         clickableView.widthAnchor.constraint(equalTo: widthAnchor).isActive = true
+        
+        addSubview(deleteButton)
+        deleteButtonRightConstraint = deleteButton.rightAnchor.constraint(equalTo: self.rightAnchor, constant: -5)
+        deleteButtonRightConstraint?.isActive = false
+        deleteButtonTopConstraint = deleteButton.topAnchor.constraint(equalTo: self.topAnchor, constant: 5)
+        deleteButtonTopConstraint?.isActive = false
         
         addSubview(profileImageView)
         profileImageView.bottomAnchor.constraint(equalTo: lineView.bottomAnchor, constant: -15).isActive = true

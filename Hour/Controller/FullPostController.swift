@@ -38,6 +38,12 @@ class FullPostController: UIViewController, UIImagePickerControllerDelegate, UIN
         fatalError("init(coder:) has not been implemented")
     }
     
+    var post: Post? {
+        didSet{
+            print(post?.activity)
+        }
+    }
+    
     @objc func handleSelectProfileImageView() {
         let picker = UIImagePickerController()
         picker.navigationBar.tintColor = UIColor.white

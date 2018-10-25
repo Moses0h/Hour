@@ -108,9 +108,31 @@ class ProfileHeaderCell: UICollectionViewCell{
         butt.setTitleColor(UIColor.lightGray, for: .normal)
         butt.translatesAutoresizingMaskIntoConstraints = false
         butt.isUserInteractionEnabled = true
+        butt.isHidden = true
         return butt
     }()
     
+    let titleContainer: UIView = {
+        let view = UIView()
+        view.layer.cornerRadius = 8
+        view.translatesAutoresizingMaskIntoConstraints = false
+        view.backgroundColor = UIColor.white
+        view.layer.shadowColor = UIColor.lightGray.cgColor
+        view.layer.shadowOffset = CGSize(width: 0, height: 2.0)
+        view.layer.shadowRadius = 2.0
+        view.layer.shadowOpacity = 0.5
+        view.layer.masksToBounds = false
+        view.layer.shadowPath = UIBezierPath(roundedRect: view.bounds, cornerRadius: view.layer.cornerRadius).cgPath
+        return view
+    }()
+    
+    var titleLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.text = "Activites"
+        label.font = UIFont.init(name: "Helvetica Bold", size: 18)
+        return label
+    }()
     
     func setupViews() {
         backgroundColor = UIColor.clear
@@ -146,6 +168,17 @@ class ProfileHeaderCell: UICollectionViewCell{
         bioTextField.leftAnchor.constraint(equalTo: profileContainer.leftAnchor, constant: 15).isActive = true
         bioTextField.bottomAnchor.constraint(equalTo: profileContainer.bottomAnchor, constant: -20).isActive = true
         bioTextField.rightAnchor.constraint(equalTo: profileContainer.rightAnchor,constant: -20).isActive = true
+        
+        
+        addSubview(titleContainer)
+        titleContainer.topAnchor.constraint(equalTo: profileContainer.bottomAnchor, constant: 10).isActive = true
+        titleContainer.centerXAnchor.constraint(equalTo: centerXAnchor).isActive = true
+        titleContainer.heightAnchor.constraint(equalToConstant: 60).isActive = true
+        titleContainer.widthAnchor.constraint(equalTo: widthAnchor, constant: -10).isActive = true
+        
+        titleContainer.addSubview(titleLabel)
+        titleLabel.topAnchor.constraint(equalTo: titleContainer.topAnchor,constant: 20).isActive = true
+        titleLabel.leftAnchor.constraint(equalTo: titleContainer.leftAnchor,constant:20).isActive = true
     }
     
 }

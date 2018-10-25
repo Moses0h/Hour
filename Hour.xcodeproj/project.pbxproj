@@ -12,6 +12,7 @@
 		7B0BDBAB2143A80700F8C82B /* DeleteButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0BDBAA2143A80700F8C82B /* DeleteButton.swift */; };
 		7B0D090321407465000E4896 /* StartViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0D090221407465000E4896 /* StartViewController.swift */; };
 		7B0D09052140A589000E4896 /* CellFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0D09042140A589000E4896 /* CellFunctions.swift */; };
+		7B0D4DE82181E3D600BDB0BB /* ProfileFeedCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0D4DE72181E3D600BDB0BB /* ProfileFeedCell.swift */; };
 		7B0DE8A2212604520058DE6D /* Notification.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A1212604520058DE6D /* Notification.swift */; };
 		7B0DE8A42126045C0058DE6D /* NotificationCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A32126045C0058DE6D /* NotificationCell.swift */; };
 		7B0DE8A6212632BC0058DE6D /* DetailedPostController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B0DE8A5212632BC0058DE6D /* DetailedPostController.swift */; };
@@ -68,6 +69,7 @@
 		7B0BDBAA2143A80700F8C82B /* DeleteButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DeleteButton.swift; sourceTree = "<group>"; };
 		7B0D090221407465000E4896 /* StartViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StartViewController.swift; sourceTree = "<group>"; };
 		7B0D09042140A589000E4896 /* CellFunctions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CellFunctions.swift; sourceTree = "<group>"; };
+		7B0D4DE72181E3D600BDB0BB /* ProfileFeedCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileFeedCell.swift; sourceTree = "<group>"; };
 		7B0DE8A1212604520058DE6D /* Notification.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Notification.swift; sourceTree = "<group>"; };
 		7B0DE8A32126045C0058DE6D /* NotificationCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationCell.swift; sourceTree = "<group>"; };
 		7B0DE8A5212632BC0058DE6D /* DetailedPostController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DetailedPostController.swift; sourceTree = "<group>"; };
@@ -150,6 +152,7 @@
 				7B0F6BF020605F65001F394F /* GroupCell.swift */,
 				7BDFDCE7216893C800F61E0A /* StoryCell.swift */,
 				7B0F6BE7205FADFE001F394F /* FeedCell.swift */,
+				7B0D4DE72181E3D600BDB0BB /* ProfileFeedCell.swift */,
 				7BFF98652061934F0062B159 /* ChatMessageCell.swift */,
 				7B72DBAB211A5C3C00065E53 /* FeedHeaderCell.swift */,
 				7B177E7921252A9200A80519 /* ProfileHeaderCell.swift */,
@@ -462,6 +465,7 @@
 				7B6A08962050ED1A003178E6 /* WeekdaysView.swift in Sources */,
 				7B4273BC213D152C00D17DC4 /* Extensions.swift in Sources */,
 				7B4015752053AF09008D2865 /* LocationController.swift in Sources */,
+				7B0D4DE82181E3D600BDB0BB /* ProfileFeedCell.swift in Sources */,
 				7B0DE8A6212632BC0058DE6D /* DetailedPostController.swift in Sources */,
 				7B0DE8A2212604520058DE6D /* Notification.swift in Sources */,
 				7B6A08952050ED1A003178E6 /* MonthView.swift in Sources */,

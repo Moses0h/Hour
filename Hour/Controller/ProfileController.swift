@@ -25,7 +25,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
     var refresher: UIRefreshControl!
     
     
-    let feedCell = "feedCell"
+    let profileFeedCell = "feedCell"
     let storyCell = "storyCell"
     
     let refreshView: UIView = {
@@ -58,7 +58,7 @@ class ProfileController: UICollectionViewController, UICollectionViewDelegateFlo
         
         collectionView?.backgroundColor = UIColor(white: 0.95, alpha: 1)
         collectionView?.alwaysBounceVertical = true
-        collectionView?.register(FeedCell.self, forCellWithReuseIdentifier: feedCell)
+        collectionView?.register(ProfileFeedCell.self, forCellWithReuseIdentifier: profileFeedCell)
         collectionView?.register(StoryCell.self, forCellWithReuseIdentifier: storyCell)
 
         collectionView?.register(ProfileHeaderCell.self, forSupplementaryViewOfKind:
@@ -160,6 +160,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
                             self.posts.append(post)
                             if(self.postKeys.count == self.posts.count)
                             {
+                                self.header?.titleLabel.text = "Activities (\(self.posts.count))"
                                 self.refresher.endRefreshing()
                                 self.collectionView?.reloadData()
                             }
@@ -217,7 +218,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if(indexPath.section == 0)
         {
-            let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.feedCell, for: indexPath) as! FeedCell
+            let feedCell = collectionView.dequeueReusableCell(withReuseIdentifier: self.profileFeedCell, for: indexPath) as! ProfileFeedCell
             if(indexPath.row < posts.count)
             {
                 let post : Post
@@ -239,23 +240,23 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
         }
     }
     
-    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
-        if(section == 0)
-        {
-            return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
-        }
-        else
-        {
-            return UIEdgeInsets.init(top: 50, left: 5, bottom: 0, right: 5);
-        }
-    }
+//    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+//        if(section == 0)
+//        {
+//            return UIEdgeInsets.init(top: 5, left: 5, bottom: 0, right: 5);
+//        }
+//        else
+//        {
+//            return UIEdgeInsets.init(top: 50, left: 5, bottom: 0, right: 5);
+//        }
+//    }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
-        return CGSize(width: view.frame.width - 10, height: 230)
+        return CGSize(width: view.frame.width - 10, height: 120)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
-        return 5
+        return 1.5
     }
     
     var header: ProfileHeaderCell?
@@ -268,6 +269,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
                 header = (collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! ProfileHeaderCell)
                 header?.profileImage.addGestureRecognizer(UITapGestureRecognizer(target: self, action: #selector(self.handleSelectProfileImageView)))
                 header?.uid = uid
+                header?.editButton.isHidden = false
                 return header!
             }
             else
@@ -283,7 +285,7 @@ let info = convertFromUIImagePickerControllerInfoKeyDictionary(info)
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
         if(section == 0)
         {
-            return CGSize(width: view.frame.width, height: 410)
+            return CGSize(width: view.frame.width, height: 470)
         }
         else
         {

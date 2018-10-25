@@ -17,13 +17,6 @@ class NotificationController: UITableViewController {
     var notifications = [Notification]()
     var userPosts = [String]()
     var refresher: UIRefreshControl!
-
-    let refreshView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.clear
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
     
     override init(nibName nibNameOrNil: String?, bundle nibBundleOrNil: Bundle?) {
         print("MessagesController loaded")
@@ -50,9 +43,7 @@ class NotificationController: UITableViewController {
         refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(updateNotification), for: UIControl.Event.valueChanged)
         
-        tableView.addSubview(refreshView)
-        refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
-        refreshView.addSubview(refresher)
+        tableView.addSubview(refresher)
         
         tableView.register(NotificationCell.self, forCellReuseIdentifier: cellId)
         observeNotifications()

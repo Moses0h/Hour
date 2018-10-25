@@ -10,10 +10,11 @@ import Foundation
 import UIKit
 import Firebase
 
-class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout {
+class ChatLogController: UICollectionViewController, UITextFieldDelegate, UICollectionViewDelegateFlowLayout{
     
     let cellId = "cellId"
     var refresher: UIRefreshControl!
+    
     var messagesLimit = 5
 //    var userMessagesRef: DatabaseReference?
     
@@ -26,14 +27,14 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 title += user.name! + " "
             }
             navigationItem.title = title
-            observeMessages()
+            initialObserveMessages()
         }
     }
     
     var group: Group? {
         didSet {
             navigationItem.title = group?.groupName
-            observeMessages()
+            initialObserveMessages()
         }
     }
     
@@ -50,31 +51,43 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
         return itf
     }()
     
+    var canRefresh = true
+    
+    override func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        
+        if scrollView.contentOffset.y < -100 { //change 100 to whatever you want
+            
+            if canRefresh && !self.refresher.isRefreshing {
+                
+                self.canRefresh = false
+                self.refresher.beginRefreshing()
+                
+                observeMessages() // your viewController refresh function
+            }
+        }else if scrollView.contentOffset.y >= 0 {
+            
+            self.canRefresh = true
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-//        let userMessagesRef = Database.database().reference().child("user-messages").child(uid).child(toId)
-
-//        refresher = UIRefreshControl()
-//        refresher.addTarget(self, action: #selector(retrieveMessages), for: UIControlEvents.valueChanged)
-//
-//        collectionView?.addSubview(refresher)
+        
+        refresher = UIRefreshControl()
+//        refresher.addTarget(self, action: #selector(endRefresh), for: UIControl.Event.valueChanged)
+        collectionView?.addSubview(refresher)
         
         collectionView?.contentInset = UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 0)
-//        collectionView?.scrollIndicatorInsets = UIEdgeInsets(top: 0, left: 0, bottom: 50, right: 0)
+
         collectionView?.alwaysBounceVertical = true
         collectionView?.backgroundColor = UIColor.white
         collectionView?.register(ChatMessageCell.self, forCellWithReuseIdentifier: cellId)
         navigationController?.navigationBar.tintColor = UIColor.white
         collectionView?.keyboardDismissMode = .interactive
-//        setupInputComponents()
-//        setupKeyboardObservers()
     }
     
-    @objc func retrieveMessages() {
-        print("retrieveing")
-        messagesLimit = messagesLimit * 2
-        self.refresher.endRefreshing()
-
+    @objc func endRefresh() {
+        
     }
     
     lazy var inputContainerView: UIView = {
@@ -200,10 +213,9 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
 
         }
     }
-    
-    func observeMessages() {
+    func initialObserveMessages() {
+        let messagesRef = Database.database().reference().child("group-messages").child(groupKey!).queryLimited(toLast: 20)
         
-        let messagesRef = Database.database().reference().child("group-messages").child(groupKey!)
         messagesRef.observeSingleEvent(of: .value) { (snap) in
             let count = snap.childrenCount
             messagesRef.observe(.childAdded) { (snapshot) in
@@ -212,13 +224,43 @@ class ChatLogController: UICollectionViewController, UITextFieldDelegate, UIColl
                 {
                     self.collectionView?.reloadData()
                     self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionView.ScrollPosition.top, animated: false)
-
+                    
                 }
                 else if(self.messages.count > count)
                 {
                     DispatchQueue.main.async {
                         self.collectionView?.reloadData()
                         self.collectionView?.scrollToItem(at: IndexPath(item: self.messages.count-1, section: 0), at: UICollectionView.ScrollPosition.top, animated: true)
+                    }
+                }
+            }
+        }
+    }
+    
+    func observeMessages() {
+        
+        var tempArray : [Message] = [Message]()
+        let messagesRef = Database.database().reference().child("group-messages").child(groupKey!).queryOrdered(byChild: "timestamp").queryEnding(atValue: messages.first?.timestamp).queryLimited(toLast: 20)
+        
+
+        messagesRef.observeSingleEvent(of: .value) { (snap) in
+            let count = snap.childrenCount
+            messagesRef.observe(.childAdded) { (snapshot) in
+                tempArray.append(Message(snapshot: snapshot))
+                if(count == tempArray.count)
+                {
+                    tempArray.remove(at: tempArray.count-1)
+                    self.messages = tempArray + self.messages
+                    self.collectionView?.reloadData()
+                    self.refresher.endRefreshing()
+                }
+                else if(tempArray.count > count)
+                {
+                    DispatchQueue.main.async {
+                        tempArray.remove(at: tempArray.count-1)
+                        self.messages = tempArray + self.messages
+                        self.collectionView?.reloadData()
+                        self.refresher.endRefreshing()
                     }
                 }
             }

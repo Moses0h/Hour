@@ -15,6 +15,7 @@ class Message: NSObject {
     var fromId: String?
     var message: String?
     var timestamp: Double?
+    var uid: String?
 //    var toId: String?
     
 //    func chatPartnerId() -> String? {
@@ -28,7 +29,7 @@ class Message: NSObject {
     
     init(snapshot: DataSnapshot) {
         if let dictionary = snapshot.value as? [String: AnyObject] {
-            
+            uid = snapshot.key
             fromId = dictionary["fromId"] as? String
             message = dictionary["message"] as? String
             timestamp = dictionary["timestamp"] as? Double

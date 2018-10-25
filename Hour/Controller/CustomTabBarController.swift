@@ -51,9 +51,11 @@ class CustomTabBarController: UITabBarController{
     
     
     override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
-        let index = tabBar.items?.index(of: item)        
+        let index = tabBar.items?.index(of: item)
+        
         switch index {
         case 0:
+            FeedController.controller!.navigationController?.popToRootViewController(animated: true)
             if(index == pastIndex)
             {
                 let cv_attribute = FeedController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))
@@ -67,6 +69,7 @@ class CustomTabBarController: UITabBarController{
         case 2:
             break
         case 3:
+            ProfileController.controller!.navigationController?.popToRootViewController(animated: true)
             if(index == pastIndex)
             {
                 let cv_attribute = ProfileController.controller?.collectionView?.layoutAttributesForSupplementaryElement(ofKind: UICollectionView.elementKindSectionHeader, at: IndexPath.init(item: 0, section: 0))

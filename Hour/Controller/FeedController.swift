@@ -35,13 +35,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     var categoryButtons = [FilterButton]()
     var categorySelected = [String]()
     
-    let refreshView: UIView = {
-        let view = UIView()
-        view.backgroundColor = UIColor.clear
-        view.translatesAutoresizingMaskIntoConstraints = false
-        return view
-    }()
-    
     var filterContainer: UIScrollView = {
         let scrollView = UIScrollView()
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -111,9 +104,7 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         refresher = UIRefreshControl()
         refresher.addTarget(self, action: #selector(updateFeed), for: UIControl.Event.valueChanged)
         
-        collectionView?.addSubview(refreshView)
-        refreshView.frame = CGRect(x: 0, y: 0, width: 0, height: 100)
-        refreshView.addSubview(refresher)
+        collectionView?.addSubview(refresher)
         
         searchController.searchResultsUpdater = self
         searchController.dimsBackgroundDuringPresentation = false
@@ -192,7 +183,6 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
     }
     
     @objc func updateFeed() {
-        self.refreshView.heightAnchor.constraint(equalToConstant: 200).isActive = true
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.determineMyCurrentLocation()
         }
@@ -280,8 +270,9 @@ class FeedController: UICollectionViewController, UICollectionViewDelegateFlowLa
         present(navController, animated: true, completion: nil)
     }
     
-    @objc func handleFullView() {
+    @objc func handleFullView(sender: UIButton) {
         let fullPostController = FullPostController(nibName: nil, bundle: nil)
+        fullPostController.post = posts[sender.tag]
         fullPostController.hidesBottomBarWhenPushed = true
         navigationController?.pushViewController(fullPostController, animated: true)
     }
